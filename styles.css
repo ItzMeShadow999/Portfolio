@@ -1147,7 +1147,7 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
 @media (max-width: 760px) {
   /* --------- MOBILE LAYOUT (final) ---------
      Bottom is a drag-up drawer. When closed, only a slim handle peeks
-     above the dock. Drag/tap the handle to reveal weather / music /
+     above the dock. Drag/tap the handle to reveal music /
      wallpaper / snake. Sprout sits above the drawer on the left. */
 
   /* Mobile: uniform 72px rounded-square tiles (iPhone home-screen rhythm).
