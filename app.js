@@ -1,4 +1,4 @@
-﻿(function(){
+(function(){
   // ---- Menubar dropdowns ----
   const menus = document.querySelectorAll('#menubar .mb-menu');
   const closeAll = (except) => menus.forEach(m => { if (m !== except) m.classList.remove('open'); });
@@ -19,87 +19,185 @@
   document.addEventListener('click', () => closeAll(null));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(null); });
 
-  // ---- Emoji picker ----
-  const picker = document.getElementById('emoji-picker');
-  const grid = document.getElementById('emojiGrid');
-  const EMOJIS = ['🌀','✨','🌸','🌷','🌈','☁️','⭐','💫','🌙','☀️','🌊','🔥','💐','🌻','🌿','🍒','🍓','🍋','🍊','🥐','☕','🎧','📸','💌','💖','🦋','🐚','🐣','🐰','🐱','🦄','🎨','🎀','🕊️','🪩','📚','✏️','🗝️','🍄','🌼','💎','🧸','🪷','🫧','🎈','⚡','🌺','👉'];
-  EMOJIS.forEach(e => {
-    const b = document.createElement('button');
-    b.type = 'button'; b.textContent = e;
-    b.addEventListener('click', () => { setCursorEmoji(e); closePicker(); });
-    grid.appendChild(b);
-  });
-  const openPicker = () => { picker.classList.add('show'); };
-  const closePicker = () => picker.classList.remove('show');
-  picker.querySelector('.close-x').addEventListener('click', closePicker);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePicker(); });
+  // ---- SVG Cursor Picker ----
+  // Three built-in SVG cursors
+  const CURSOR_SVGS = {
+    // Paper: cream arrow with dog-ear fold, ink-pen aesthetic
+    paper: {
+      label: '✦',
+      // default arrow (hotspot 3,2)
+      normal: `<svg xmlns='http://www.w3.org/2000/svg' width='28' height='32' viewBox='0 0 28 32'><path d='M4 2 L24 12.5 L15.5 15.5 L11.5 26.5 Z' fill='%23f5f0e8' stroke='%23555' stroke-width='1.2' stroke-linejoin='round'/><path d='M11.5 26.5 L15.5 15.5 L24 12.5' fill='none' stroke='%23333' stroke-width='0.8' opacity='0.4'/><path d='M20.5 12 L18 14.5' stroke='%23333' stroke-width='0.6' opacity='0.3'/></svg>`,
+      // pointer hand variant (hotspot 8,3)
+      pointer: `<svg xmlns='http://www.w3.org/2000/svg' width='28' height='32' viewBox='0 0 28 32'><path d='M4 2 L24 12.5 L15.5 15.5 L11.5 26.5 Z' fill='%23f5f0e8' stroke='%23555' stroke-width='1.2' stroke-linejoin='round'/><path d='M11.5 26.5 L15.5 15.5 L24 12.5' fill='none' stroke='%23333' stroke-width='0.8' opacity='0.4'/></svg>`,
+      hotspot: '3 2',
+    },
+    // macOS: smooth rounded white arrow
+    macos: {
+      label: '⬡',
+      normal: `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='28' viewBox='0 0 24 28'><path d='M3 2 L3 22 L8 17.5 L12 26 L14.5 24.8 L10.5 16 L17 16 Z' fill='white' stroke='rgba(0,0,0,0.45)' stroke-width='1.4' stroke-linejoin='round' paint-order='stroke'/></svg>`,
+      pointer: `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='28' viewBox='0 0 24 28'><path d='M3 2 L3 22 L8 17.5 L12 26 L14.5 24.8 L10.5 16 L17 16 Z' fill='white' stroke='rgba(0,0,0,0.45)' stroke-width='1.4' stroke-linejoin='round' paint-order='stroke'/></svg>`,
+      hotspot: '3 2',
+    },
+  };
 
-  // ---- Custom emoji cursor ----
-  const DEFAULT_EMOJI = '🌀';
-  const CURSOR_KEY = 'cursorEmojiV1';
-  const styleTag = document.createElement('style');
-  styleTag.id = 'cursor-emoji-style';
-  document.head.appendChild(styleTag);
-  function setCursorEmoji(emoji) {
-    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'><text x='0' y='28' font-size='28'>${emoji}</text></svg>`;
-    const url = `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}") 4 4`;
-    styleTag.textContent = `
-      body, body * { cursor: ${url}, auto !important; }
-      a, button, .di, .wp-swatch, .mp-btn, .node, .folder, .photo-node .thumb, .book, .poster-card, .snake-expand, .sm-close, .restore-btn {
-        cursor: ${url}, pointer !important;
-      }
+  // Render preview SVGs into the picker
+  function renderCursorPreviews() {
+    const paperEl = document.getElementById('cursorPreviewPaper');
+    const macosEl = document.getElementById('cursorPreviewMacos');
+    if (paperEl) paperEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="36" viewBox="0 0 28 32"><path d="M4 2 L24 12.5 L15.5 15.5 L11.5 26.5 Z" fill="#f5f0e8" stroke="#555" stroke-width="1.2" stroke-linejoin="round"/><path d="M11.5 26.5 L15.5 15.5 L24 12.5" fill="none" stroke="#333" stroke-width="0.8" opacity="0.4"/><path d="M20.5 12 L18 14.5" stroke="#333" stroke-width="0.6" opacity="0.3"/></svg>`;
+    if (macosEl) macosEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="34" viewBox="0 0 24 28"><path d="M3 2 L3 22 L8 17.5 L12 26 L14.5 24.8 L10.5 16 L17 16 Z" fill="white" stroke="rgba(0,0,0,0.45)" stroke-width="1.4" stroke-linejoin="round" paint-order="stroke"/></svg>`;
+  }
+  renderCursorPreviews();
+
+  // Apply a built-in cursor type
+  const cursorStyleTag = document.createElement('style');
+  cursorStyleTag.id = 'custom-cursor-style';
+  document.head.appendChild(cursorStyleTag);
+
+  function buildCursorURL(svgStr, hotspot) {
+    return `url("data:image/svg+xml;utf8,${encodeURIComponent(svgStr)}") ${hotspot}`;
+  }
+
+  function applyBuiltinCursor(type) {
+    const def = CURSOR_SVGS[type];
+    if (!def) { cursorStyleTag.textContent = ''; return; }
+    const normal  = buildCursorURL(def.normal,  def.hotspot);
+    const pointer = buildCursorURL(def.pointer, def.hotspot);
+    cursorStyleTag.textContent = `
+      html, body, #stage, .node, .folder, .photo-node, .thumb { cursor: ${normal}, auto !important; }
+      a, button, .di, .wp-swatch, .mp-btn, .node, .folder, .photo-node .thumb, .book, .poster-card, .snake-expand, .sm-close, .restore-btn { cursor: ${pointer}, pointer !important; }
     `;
-    try { localStorage.setItem(CURSOR_KEY, emoji); } catch(_){}
-    const label = document.getElementById('cursorEmojiCurrent');
-    if (label) label.textContent = emoji;
+    const label = document.getElementById('cursorStyleCurrent');
+    if (label) label.textContent = def.label;
+    try { localStorage.setItem('cursorTypeV2', type); } catch(_){}
   }
-  function resetCursor() {
-    styleTag.textContent = '';
-    try { localStorage.removeItem(CURSOR_KEY); } catch(_){}
-    const label = document.getElementById('cursorEmojiCurrent');
-    if (label) label.textContent = DEFAULT_EMOJI;
-    // Fall back to default emoji cursor rather than the OS pointer
-    setCursorEmoji(DEFAULT_EMOJI);
-  }
-  // Load saved or default on start
-  let savedEmoji = DEFAULT_EMOJI;
-  try { savedEmoji = localStorage.getItem(CURSOR_KEY) || DEFAULT_EMOJI; } catch(_){}
-  setCursorEmoji(savedEmoji);
-  window.__resetCursor = resetCursor;
 
-  // ---- Trail: while pointer is held down, drop fading emoji copies ----
-  let trailInterval = null;
-  let lastPointer = { x: 0, y: 0 };
-  function currentEmoji() {
-    try { return localStorage.getItem(CURSOR_KEY) || DEFAULT_EMOJI; } catch(_) { return DEFAULT_EMOJI; }
+  function applyCustomCursor(dataURL) {
+    const normal  = `url("${dataURL}") 0 0`;
+    cursorStyleTag.textContent = `
+      html, body, #stage, .node, .folder, .photo-node, .thumb { cursor: ${normal}, auto !important; }
+      a, button, .di, .wp-swatch, .mp-btn, .node, .folder, .photo-node .thumb, .book, .poster-card, .snake-expand, .sm-close, .restore-btn { cursor: ${normal}, pointer !important; }
+    `;
+    const label = document.getElementById('cursorStyleCurrent');
+    if (label) label.textContent = '✏';
+    // custom draws don't persist (noted in UI)
   }
-  function spawnTrail(x, y) {
-    const el = document.createElement('div');
-    el.className = 'cursor-trail';
-    el.textContent = currentEmoji();
-    el.style.left = x + 'px';
-    el.style.top  = y + 'px';
-    el.style.setProperty('--drift', (Math.random() * 30 - 15) + 'px');
-    el.style.setProperty('--rot',   (Math.random() * 40 - 20) + 'deg');
-    el.style.setProperty('--scale', (0.75 + Math.random() * 0.4).toFixed(2));
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 900);
+
+  function resetCursorStyle() {
+    cursorStyleTag.textContent = '';
+    try { localStorage.removeItem('cursorTypeV2'); } catch(_){}
+    const label = document.getElementById('cursorStyleCurrent');
+    if (label) label.textContent = '✦';
+    updateActiveOption(null);
   }
-  document.addEventListener('pointermove', e => {
-    lastPointer.x = e.clientX; lastPointer.y = e.clientY;
-  }, { passive: true });
-  document.addEventListener('pointerdown', e => {
-    if (trailInterval) return;
-    lastPointer.x = e.clientX; lastPointer.y = e.clientY;
-    spawnTrail(lastPointer.x, lastPointer.y);
-    trailInterval = setInterval(() => spawnTrail(lastPointer.x, lastPointer.y), 90);
+
+  // Load saved cursor on start (only built-in types persist)
+  try {
+    const saved = localStorage.getItem('cursorTypeV2');
+    if (saved && CURSOR_SVGS[saved]) applyBuiltinCursor(saved);
+  } catch(_){}
+
+  window.__resetCursor = resetCursorStyle;
+
+  // ---- Cursor Picker dialog ----
+  const cursorPicker = document.getElementById('cursor-picker');
+  const openCursorPicker = () => {
+    cursorPicker.classList.add('show');
+    // reset draw panel to hidden state each open
+    drawStarted = false;
+    const hint = document.getElementById('cursorDrawHint');
+    if (hint) hint.classList.remove('hidden');
+    document.getElementById('cursorDrawActions').style.display = 'none';
+    const drawOpt = cursorPicker.querySelector('[data-cursor="draw"]');
+    if (drawOpt) drawOpt.classList.remove('active');
+  };
+  const closeCursorPicker = () => cursorPicker.classList.remove('show');
+  document.getElementById('cursorPickerClose').addEventListener('click', closeCursorPicker);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCursorPicker(); });
+
+  function updateActiveOption(type) {
+    cursorPicker.querySelectorAll('.cursor-option').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.cursor === type);
+    });
+  }
+
+  cursorPicker.querySelectorAll('.cursor-option[data-cursor="paper"], .cursor-option[data-cursor="macos"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const type = btn.dataset.cursor;
+      applyBuiltinCursor(type);
+      updateActiveOption(type);
+      // hide draw actions if they were showing
+      document.getElementById('cursorDrawActions').style.display = 'none';
+      setTimeout(closeCursorPicker, 260);
+    });
   });
-  function stopTrail() {
-    if (trailInterval) { clearInterval(trailInterval); trailInterval = null; }
+
+  // ---- Draw-your-own cursor (canvas) ----
+  const drawCanvas = document.getElementById('cursorDrawCanvas');
+  const drawCtx = drawCanvas ? drawCanvas.getContext('2d') : null;
+  let drawPainting = false;
+  let drawStarted = false;
+
+  if (drawCtx) {
+    drawCtx.strokeStyle = '#111';
+    drawCtx.lineWidth = 2.5;
+    drawCtx.lineCap = 'round';
+    drawCtx.lineJoin = 'round';
+
+    const getPos = (e) => {
+      const r = drawCanvas.getBoundingClientRect();
+      const scaleX = drawCanvas.width / r.width;
+      const scaleY = drawCanvas.height / r.height;
+      const src = e.touches ? e.touches[0] : e;
+      return { x: (src.clientX - r.left) * scaleX, y: (src.clientY - r.top) * scaleY };
+    };
+
+    const startDraw = (e) => {
+      e.stopPropagation();
+      drawPainting = true;
+      if (!drawStarted) {
+        drawStarted = true;
+        const hint = document.getElementById('cursorDrawHint');
+        if (hint) hint.classList.add('hidden');
+        document.getElementById('cursorDrawActions').style.display = 'flex';
+        const drawOpt = cursorPicker.querySelector('[data-cursor="draw"]');
+        if (drawOpt) { updateActiveOption('draw'); }
+      }
+      const pos = getPos(e);
+      drawCtx.beginPath();
+      drawCtx.moveTo(pos.x, pos.y);
+    };
+    const draw = (e) => {
+      if (!drawPainting) return;
+      e.preventDefault();
+      const pos = getPos(e);
+      drawCtx.lineTo(pos.x, pos.y);
+      drawCtx.stroke();
+    };
+    const endDraw = () => { drawPainting = false; };
+
+    drawCanvas.addEventListener('mousedown', startDraw);
+    drawCanvas.addEventListener('mousemove', draw);
+    drawCanvas.addEventListener('mouseup', endDraw);
+    drawCanvas.addEventListener('touchstart', startDraw, { passive: false });
+    drawCanvas.addEventListener('touchmove', draw, { passive: false });
+    drawCanvas.addEventListener('touchend', endDraw);
+
+    document.getElementById('cursorDrawClear').addEventListener('click', () => {
+      drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+      drawStarted = false;
+      const hint = document.getElementById('cursorDrawHint');
+      if (hint) hint.classList.remove('hidden');
+      document.getElementById('cursorDrawActions').style.display = 'none';
+      updateActiveOption(null);
+    });
+
+    document.getElementById('cursorDrawApply').addEventListener('click', () => {
+      const dataURL = drawCanvas.toDataURL('image/png');
+      applyCustomCursor(dataURL);
+      closeCursorPicker();
+    });
   }
-  document.addEventListener('pointerup', stopTrail);
-  document.addEventListener('pointercancel', stopTrail);
-  window.addEventListener('blur', stopTrail);
 
   // ---- Peach walkthrough ----
   const peach = document.getElementById('peach-guide');
