@@ -2624,20 +2624,19 @@ window.__caseGate = (function(){
 /* ============ Bookshelf + Watchlist collections ============ */
 (function initCollections(){
   const BOOKS = [
-    { title:"Evicted", sub:"Matthew Desmond · 2016", isbn:"0553447432" },
-    { title:"My Brilliant Friend", sub:"Elena Ferrante · 2012", isbn:"1609450787" },
-    { title:"Half of a Yellow Sun", sub:"Chimamanda Ngozi Adichie · 2006", isbn:"1400095204" },
-    { title:"Pachinko", sub:"Min Jin Lee · 2017", isbn:"1455563927" },
-    { title:"Sapiens", sub:"Yuval Noah Harari · 2014", isbn:"0062316117" },
-    { title:"East of Eden", sub:"John Steinbeck · 1952", isbn:"0142004235" },
-    { title:"The Glass Bead Game", sub:"Hermann Hesse · 1943", isbn:"0312278497" },
+    { title: "Rich Dad Poor Dad", sub: "Robert T. Kiyosaki · 1997", isbn: "1612680194" },
+    { title: "The 48 Laws of Power", sub: "Robert Greene · 1998", isbn: "0140280197" },
+    { title: "The Book", sub: "Alan Watts · 1966", isbn: "067976237X" },
+    { title: "The Ultimate Guide to Rebuilding Civilization", sub: "Lewis Dartnell · 2014", isbn: "0143127047" },
+    { title: "How We Die", sub: "Sherwin B. Nuland · 1993", isbn: "0679742441" },
+    { title: "The Richest Man in Babylon", sub: "George S. Clason · 1926", isbn: "0451205367" },
   ];
   const FILMS = [
     { title:"A Silent Voice", sub:"2016 ‧ Romance/Drama ‧ 2h 10m", poster:"https://i.pinimg.com/1200x/83/5c/d4/835cd4892e3741678f0fb99c0bdee8f5.jpg" },
     { title:"Waiting in the Summer", sub:"2012 ‧ Romance ‧ 1 season", poster:"https://i.pinimg.com/736x/b2/a2/da/b2a2da49cc414979cdbd7a120a6738d7.jpg" },
     { title:"Charlotte", sub:"Pippa Ehrlich & James Reed · 2020", poster:"https://i.pinimg.com/736x/dc/4d/82/dc4d82df6ec7a78a9b39ab5a8466f699.jpg" },
     { title:"The Eminence in Shadow", sub:"Novel series", poster:"https://i.pinimg.com/736x/9a/06/c5/9a06c55f66c706fa0aa818fac24cfe09.jpg" },
-    { title:"Demon Lord 2099", sub:"Novel series", poster:"https://m.media-amazon.com/images/M/MV5BNzdiYjQ1OGYtYTJlNC00YjlkLTg1MzEtNWRiYzlhMTZlZjgwXkEyXkFqcGc@._V1_.jpg" },
+    { title:"Gosick", sub:"2011 ‧ Mystery ‧ 2 seasons", poster:"https://i.pinimg.com/1200x/21/d6/30/21d630064f6b58da23b175e1523ebf81.jpg" },
     { title:"Plastic Memories", sub:"2015 ‧ Sci-fi ‧ 1 season", poster:"https://i.pinimg.com/736x/78/27/af/7827af7c1055d6001e9e79fd8721d967.jpg" },
   ];
 
