@@ -666,9 +666,9 @@
     <div class="mb-menu" data-menu="edit">
       <button class="mb-trigger" type="button">Edit</button>
       <div class="mb-dropdown">
-        <button type="button" data-action="emoji">Cursor Emoji<span class="mb-shortcut" id="cursorEmojiCurrent">🌀</span></button>
+        <button type="button" data-action="cursor-style">Cursor Style<span class="mb-shortcut" id="cursorStyleCurrent">✦</span></button>
         <div class="mb-sep"></div>
-        <button type="button" data-action="clear-emojis">Reset Cursor</button>
+        <button type="button" data-action="reset-cursor">Reset Cursor</button>
       </div>
     </div>
     <div class="mb-menu" data-menu="help">
@@ -704,12 +704,32 @@
   </div>
 </div>
 
-<!-- Emoji picker (Edit > Cursor Emoji) -->
-<div id="emoji-picker" role="dialog" aria-label="Emojis and symbols">
-  <button type="button" class="close-x" aria-label="Close">×</button>
-  <h4>Pick your cursor</h4>
-  <div class="grid" id="emojiGrid"></div>
-  <div class="hint">Tap an emoji to make it your cursor. Reset any time from Edit → Reset Cursor.</div>
+<!-- Cursor style picker (Edit > Cursor Style) -->
+<div id="cursor-picker" role="dialog" aria-label="Cursor style">
+  <button type="button" class="close-x" id="cursorPickerClose" aria-label="Close">×</button>
+  <h4>Cursor Style</h4>
+  <div class="cursor-picker-grid">
+    <button type="button" class="cursor-option" data-cursor="paper">
+      <div class="cursor-preview" id="cursorPreviewPaper"></div>
+      <div class="cursor-option-label">Paper</div>
+    </button>
+    <button type="button" class="cursor-option" data-cursor="macos">
+      <div class="cursor-preview" id="cursorPreviewMacos"></div>
+      <div class="cursor-option-label">macOS</div>
+    </button>
+    <button type="button" class="cursor-option" data-cursor="draw">
+      <div class="cursor-preview cursor-preview-draw" id="cursorPreviewDraw">
+        <canvas id="cursorDrawCanvas" width="56" height="56"></canvas>
+        <div class="cursor-draw-hint" id="cursorDrawHint">Draw here</div>
+      </div>
+      <div class="cursor-option-label">Draw yours</div>
+    </button>
+  </div>
+  <div class="cursor-draw-actions" id="cursorDrawActions" style="display:none;">
+    <button type="button" id="cursorDrawClear" class="cursor-draw-act">Clear</button>
+    <button type="button" id="cursorDrawApply" class="cursor-draw-act primary">Use it</button>
+  </div>
+  <div class="cursor-picker-hint">Won't save after refresh or leaving the page.</div>
 </div>
 
 
@@ -735,28 +755,6 @@
 
 <!-- Right-side widget rail -->
 <div id="widget-rail">
-  <div class="widget" id="weather-widget">
-    <div class="w-title">Weather · Now</div>
-    <div class="w-body" style="display:flex;gap:14px;align-items:stretch;">
-      <div style="flex:1;display:flex;gap:8px;align-items:center;">
-        <div class="w-emoji" id="wxEmoji">☀️</div>
-        <div>
-          <div class="w-temp"><span id="wxTemp">—</span>°</div>
-          <div class="w-loc">NYC</div>
-          <div class="w-cond" id="wxCond">Loading…</div>
-        </div>
-      </div>
-      <div style="width:1px;background:currentColor;opacity:0.15;"></div>
-      <div style="flex:1;display:flex;gap:8px;align-items:center;">
-        <div class="w-emoji" id="wxEmoji2">☀️</div>
-        <div>
-          <div class="w-temp"><span id="wxTemp2">—</span>°</div>
-          <div class="w-loc">Bay Area</div>
-          <div class="w-cond" id="wxCond2">Loading…</div>
-        </div>
-      </div>
-    </div>
-  </div>
   <div class="widget" id="music-widget">
     <div class="w-title">Now Playing</div>
     <div class="mp-cover" id="mpCover" aria-hidden="true">
@@ -859,7 +857,7 @@
     <nav class="msh-nav">
       <button type="button" data-sheet="about">About Shadow</button>
       <button type="button" data-sheet="tour">Getting Started</button>
-      <button type="button" data-sheet="emoji">Cursor Emoji</button>
+      <button type="button" data-sheet="cursor-style">Cursor Style</button>
       <div class="msh-sep"></div>
       <a href="https://stock.adobe.com/contributor/213420721/Parinaz" target="_blank" rel="noopener noreferrer">Stock Images <span>↗</span></a>
       <div class="msh-sep"></div>
