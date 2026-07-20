@@ -2633,10 +2633,10 @@ window.__caseGate = (function(){
     { title:"The Glass Bead Game", sub:"Hermann Hesse · 1943", isbn:"0312278497" },
   ];
   const FILMS = [
-    { title:"A Silent Voice", sub:"2016 ‧ Romance/Drama ‧ 2h 10m", poster:"https://www.imdb.com/title/tt5323662/mediaviewer/rm3392757504/?ref_=tt_ov_i" },
-    { title:"Waiting in the Summer", sub:"2012 ‧ Romance ‧ 1 season", poster:"https://www.imdb.com/title/tt2187287/mediaviewer/rm1356110594/?ref_=tt_ov_i" },
-    { title:"My Octopus Teacher", sub:"Pippa Ehrlich & James Reed · 2020", poster:"https://image.tmdb.org/t/p/w500/hvTVZb7hBC8tZAGoEhH5eiMJu2B.jpg" },
-    { title:"Planet Earth", sub:"BBC · 2006", poster:"https://image.tmdb.org/t/p/w500/bNcNxUtZ520d5de5s78onoiSiwQ.jpg" },
+    { title:"A Silent Voice", sub:"2016 ‧ Romance/Drama ‧ 2h 10m", poster:"https://i.pinimg.com/1200x/83/5c/d4/835cd4892e3741678f0fb99c0bdee8f5.jpg" },
+    { title:"Waiting in the Summer", sub:"2012 ‧ Romance ‧ 1 season", poster:"https://i.pinimg.com/736x/b2/a2/da/b2a2da49cc414979cdbd7a120a6738d7.jpg" },
+    { title:"Charlotte", sub:"Pippa Ehrlich & James Reed · 2020", poster:"https://i.pinimg.com/736x/dc/4d/82/dc4d82df6ec7a78a9b39ab5a8466f699.jpg" },
+    { title:"The Eminence in Shadow", sub:"Novel series", poster:"https://i.pinimg.com/736x/9a/06/c5/9a06c55f66c706fa0aa818fac24cfe09.jpg" },
     { title:"Game of Thrones", sub:"HBO · 2011", poster:"https://image.tmdb.org/t/p/w500/1XS1oqL89opfnbLl8WnZY1O1uJx.jpg" },
     { title:"The Welcome Table", sub:"Documentary · 2026", poster:"https://image.tmdb.org/t/p/w500/bDprEGBOo509wnq0iwb6OlmOiW0.jpg" },
   ];
