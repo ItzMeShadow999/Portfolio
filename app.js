@@ -2628,7 +2628,7 @@ window.__caseGate = (function(){
     { title: "The 48 Laws of Power", sub: "Robert Greene · 1998", isbn: "0140280197" },
     { title: "Confessions of a Dying Mind", sub: "Haulianlal Guite · 2017", img: "https://m.media-amazon.com/images/I/81vXEVL42CL._SY466_.jpg" },
     { title: "The Ultimate Guide to Rebuilding Civilization", sub: "Lewis Dartnell · 2014", isbn: "0143127047" },
-    { title: "How We Die", sub: "Sherwin B. Nuland · 1993", isbn: "0679742441" },
+    { title: "How We Die", sub: "Sherwin B. Nuland · 1993", img: "https://m.media-amazon.com/images/I/71zUwiUBF5L._SY466_.jpg" },
     { title: "The Richest Man in Babylon", sub: "George S. Clason · 1926", isbn: "0451205367" },
   ];
   const FILMS = [
