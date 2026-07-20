@@ -2630,6 +2630,12 @@ window.__caseGate = (function(){
     { title: "The Ultimate Guide to Rebuilding Civilization", sub: "Lewis Dartnell · 2014", isbn: "0143127047" },
     { title: "How We Die", sub: "Sherwin B. Nuland · 1993", img: "https://m.media-amazon.com/images/I/71zUwiUBF5L._SY466_.jpg" },
     { title: "The Richest Man in Babylon", sub: "George S. Clason · 1926", isbn: "0451205367" },
+    { title: "Atomic Habits", sub: "James Clear · 2018", isbn: "0735211299" },
+    { title: "Thinking, Fast and Slow", sub: "Daniel Kahneman · 2011", isbn: "0374533555" },
+    { title: "Man's Search for Meaning", sub: "Viktor E. Frankl · 1946", isbn: "080701429X" },
+    { title: "Project Hail Mary", sub: "Andy Weir · 2021", isbn: "0593135202" },
+    { title: "Educated", sub: "Tara Westover · 2018", isbn: "0399590501" },
+    { title: "The Psychology of Money", sub: "Morgan Housel · 2020", isbn: "0857197681" }
   ];
   const FILMS = [
     { title:"A Silent Voice", sub:"2016 ‧ Romance/Drama ‧ 2h 10m", poster:"https://i.pinimg.com/1200x/83/5c/d4/835cd4892e3741678f0fb99c0bdee8f5.jpg" },
