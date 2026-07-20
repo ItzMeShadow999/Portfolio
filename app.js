@@ -2648,26 +2648,25 @@ window.__caseGate = (function(){
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
 
-  function renderBookshelf() {
-    // Split into shelves of 6
-    const perShelf = 6;
-    const rows = [];
-    for (let i = 0; i < BOOKS.length; i += perShelf) rows.push(BOOKS.slice(i, i + perShelf));
-    const html = `<div class="bookshelf">` + rows.map(row => `
-      <div class="shelf-row">
-        ${row.map(b => {
-          const src = `https://covers.openlibrary.org/b/isbn/${b.isbn}-L.jpg?default=false`;
-          const fallback = `https://covers.openlibrary.org/b/isbn/${b.isbn}-M.jpg?default=false`;
-          return `<div class="book" title="${b.title}">
-            <span class="caption">${b.title} — ${b.sub}</span>
-            <img src="${src}" onerror="this.onerror=null;this.src='${fallback}'" alt="${b.title}">
-          </div>`;
-        }).join('')}
-      </div>
-      <div class="shelf-plank"></div>
-    `).join('') + `</div>`;
-    body.innerHTML = html;
-  }
+function renderBookshelf() {
+  const perShelf = 3;
+  const rows = [];
+  for (let i = 0; i < BOOKS.length; i += perShelf) rows.push(BOOKS.slice(i, i + perShelf));
+  const html = `<div class="bookshelf">` + rows.map(row => `
+    <div class="shelf-row">
+      ${row.map(b => {
+        const src = b.img ? b.img : `https://covers.openlibrary.org/b/isbn/${b.isbn}-L.jpg?default=false`;
+        const fallback = b.img ? b.img : `https://covers.openlibrary.org/b/isbn/${b.isbn}-M.jpg?default=false`;
+        return `<div class="book" title="${b.title}">
+          <span class="caption">${b.title} — ${b.sub}</span>
+          <img src="${src}" onerror="this.onerror=null;this.src='${fallback}'" alt="${b.title}">
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="shelf-plank"></div>
+  `).join('') + `</div>`;
+  body.innerHTML = html;
+}
 
   function renderWatchlist() {
     body.innerHTML = `<div class="posters">` + FILMS.map(f => `
