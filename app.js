@@ -210,7 +210,7 @@
     { t:'Open the case studies 📁', b:'Folders 1–4 are the real case studies. Double-click to open. No peeking at the titles until you do.' },
     { t:'Play with the widgets 🎛️', b:'The synth on the left actually plays. Bookshelf, Watchlist, and Photos open collections. Notes and the resume are draggable.' },
     { t:'Shop the extras 🛍️', b:'Top menu → Shop has my Framer components, Gumroad templates, and Adobe Stock library.' },
-    { t:'Pick your cursor ✨', b:'Edit → Cursor Emoji swaps your pointer for any emoji you like. Reset any time from Edit → Reset Cursor.' },
+    { t:'Pick your cursor ✨', b:'Edit → Cursor Style lets you switch to a paper pointer, a soft macOS arrow, or draw your own. Reset any time from Edit → Reset Cursor.' },
   ];
   let idx = 0;
   let shortcutMode = false;
@@ -279,8 +279,8 @@
       const act = btn.dataset.action;
       closeAll(null);
       if (act === 'about') { window.__openAbout && window.__openAbout(); }
-      else if (act === 'emoji') openPicker();
-      else if (act === 'clear-emojis') { window.__resetCursor && window.__resetCursor(); }
+      else if (act === 'cursor-style') openCursorPicker();
+      else if (act === 'reset-cursor') resetCursorStyle();
       else if (act === 'tour') openPeach();
       else if (act === 'tour-shortcuts') {
         shortcutMode = true;
@@ -300,10 +300,11 @@ const clockEl = document.getElementById('clock');
 const dateEl = document.getElementById('datebox');
 function tick() {
   const d = new Date();
-  clockEl.textContent = d.toLocaleTimeString('en-US', { timeZone:'America/New_York', hour:'numeric', minute:'2-digit', hour12:true });
-  dateEl.textContent = d.toLocaleDateString('en-US', { timeZone:'America/New_York', month:'short', day:'numeric' });
+  const time = d.toLocaleTimeString('en-US', { timeZone:'UTC', hour:'numeric', minute:'2-digit', second:'2-digit', hour12:false });
+  clockEl.textContent = time + ' UTC';
+  dateEl.textContent = d.toLocaleDateString('en-US', { timeZone:'UTC', month:'short', day:'numeric' });
 }
-tick(); setInterval(tick, 15000);
+tick(); setInterval(tick, 1000);
 
 /* ============ Soft interaction sounds (unlocked by user gestures) ============ */
 (function initDesktopSfx(){
@@ -378,34 +379,6 @@ tick(); setInterval(tick, 15000);
     window.addEventListener(ev, unlock, { capture:true })
   );
   document.addEventListener('pointerdown', unlock, { capture:true });
-})();
-
-/* ============ NYC Weather (Open-Meteo, no key) ============ */
-(async function loadWeather(){
-  const map = {
-      0:['☀️','Clear'], 1:['🌤️','Mostly clear'], 2:['⛅','Partly cloudy'], 3:['☁️','Overcast'],
-      45:['<svg viewBox="0 0 32 24" width="1em" height="0.75em" style="display:inline-block;vertical-align:-0.12em" aria-hidden="true"><g fill="none" stroke="#c9d3e0" stroke-width="2.4" stroke-linecap="round"><line x1="3" y1="6" x2="29" y2="6"/><line x1="6" y1="12" x2="26" y2="12"/><line x1="3" y1="18" x2="24" y2="18"/></g></svg>','Fog'], 48:['<svg viewBox="0 0 32 24" width="1em" height="0.75em" style="display:inline-block;vertical-align:-0.12em" aria-hidden="true"><g fill="none" stroke="#c9d3e0" stroke-width="2.4" stroke-linecap="round"><line x1="3" y1="6" x2="29" y2="6"/><line x1="6" y1="12" x2="26" y2="12"/><line x1="3" y1="18" x2="24" y2="18"/></g></svg>','Fog'],
-      51:['🌦️','Light drizzle'], 53:['🌦️','Drizzle'], 55:['🌦️','Drizzle'],
-      61:['🌧️','Light rain'], 63:['🌧️','Rain'], 65:['🌧️','Heavy rain'],
-      71:['🌨️','Light snow'], 73:['🌨️','Snow'], 75:['❄️','Heavy snow'],
-      80:['🌦️','Showers'], 81:['🌧️','Showers'], 82:['⛈️','Heavy showers'],
-      95:['⛈️','Thunderstorm'], 96:['⛈️','Thunderstorm'], 99:['⛈️','Thunderstorm']
-  };
-  async function load(lat, lon, tz, ids){
-    try {
-      const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon} t=temperature_2m,weather_code&temperature_unit=fahrenheit&timezone=${encodeURIComponent(tz)}`);
-      const j = await r.json();
-      const t = Math.round(j.current.temperature_2m);
-      const [emoji, label] = map[j.current.weather_code] || ['🌡️','—'];
-      document.getElementById(ids.temp).textContent = t;
-      document.getElementById(ids.emoji).innerHTML = emoji;
-      document.getElementById(ids.cond).textContent = label;
-    } catch (e) {
-      document.getElementById(ids.cond).textContent = 'Offline';
-    }
-  }
-  load(40.7128, -74.0060, 'America/New_York', {temp:'wxTemp', emoji:'wxEmoji', cond:'wxCond'});
-  load(37.7749, -122.4194, 'America/Los_Angeles', {temp:'wxTemp2', emoji:'wxEmoji2', cond:'wxCond2'});
 })();
 
 /* ============ THEMES — same grid/lines/nodes always; this data drives what's allowed to change ============ */
@@ -1363,15 +1336,15 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
     ready = true;
     if (hint) hint.textContent = 'Click anywhere to unlock';
   }
-  /* Live NYC clock on the lock screen (mobile / tablet only) */
+  /* Live UTC clock on the lock screen (mobile / tablet only) */
   (function tickLockClock(){
     const timeEl = document.getElementById('lockTime');
     const dateEl = document.getElementById('lockDate');
     if (!timeEl || !dateEl) return;
-    const tzOpts = { timeZone: 'America/New_York' };
+    const tzOpts = { timeZone: 'UTC' };
     function update(){
       const now = new Date();
-      timeEl.textContent = now.toLocaleTimeString('en-US', { ...tzOpts, hour: 'numeric', minute: '2-digit', hour12: false });
+      timeEl.textContent = now.toLocaleTimeString('en-US', { ...tzOpts, hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: false }) + ' UTC';
       dateEl.textContent = now.toLocaleDateString('en-US', { ...tzOpts, weekday: 'short', month: 'short', day: 'numeric' });
     }
     update();
@@ -2997,7 +2970,7 @@ function renderBookshelf() {
   if (!drawer || !body) return;
 
   const mq = window.matchMedia('(max-width: 760px)');
-  const ids = ['weather-widget', 'music-widget', 'wallpaper-picker', 'snake-widget', 'awards-widget'];
+  const ids = ['music-widget', 'wallpaper-picker', 'snake-widget', 'awards-widget'];
   const originalParents = new Map();
 
   function moveIn(){
@@ -3078,16 +3051,15 @@ function renderBookshelf() {
 
 
 (function(){
-  // Mobile iOS-style clock (matches menubar clock)
+  // Mobile iOS-style clock (matches menubar clock) — live UTC time
   const c = document.getElementById('msClock');
   function tick(){
     if(!c) return;
     const now = new Date();
-    const opts = { hour:'numeric', minute:'2-digit', hour12:true, timeZone:'America/New_York' };
-    let s = now.toLocaleTimeString('en-US', opts).replace(/\s?(AM|PM)$/i,'');
-    c.textContent = s.replace(/^0/,'');
+    const opts = { hour:'numeric', minute:'2-digit', second:'2-digit', hour12:false, timeZone:'UTC' };
+    c.textContent = now.toLocaleTimeString('en-US', opts) + ' UTC';
   }
-  tick(); setInterval(tick, 15000);
+  tick(); setInterval(tick, 1000);
 
   // Hamburger sheet
   const btn = document.getElementById('msHamburger');
@@ -3103,7 +3075,7 @@ function renderBookshelf() {
   sheet.querySelectorAll('[data-sheet]').forEach(el => {
     el.addEventListener('click', () => {
       const key = el.getAttribute('data-sheet');
-      const map = { about:'about', tour:'tour', emoji:'emoji' };
+      const map = { about:'about', tour:'tour', 'cursor-style':'cursor-style' };
       const target = document.querySelector(`#menubar [data-action="${map[key]}"]`);
       close();
       setTimeout(() => target?.click(), 200);
