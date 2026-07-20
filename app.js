@@ -19,11 +19,17 @@
   document.addEventListener('click', () => closeAll(null));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(null); });
 
-  // ---- Cursor Style Picker (file-based cursor themes) ----
+  // ---- Cursor Style Picker (file-based, truly animated cursor themes) ----
   // Each theme is a folder under ./cursors containing Arrow.gif (normal/pointer)
   // and Working.gif (hand cursor used on interactive elements).
+  //
+  // NOTE: browsers only render the FIRST FRAME of an animated GIF when it's
+  // used via the CSS `cursor` property (Firefox is the lone exception). To get
+  // real animation everywhere, we hide the native cursor and follow the mouse
+  // with an <img> element instead, which animates normally like any other GIF.
   const CURSOR_THEMES = ['Anime', 'Cute', 'MacOS', 'Minecraft', 'Minecraft2', 'Normal Black', 'Normal White -soft', 'RGB'];
   const CURSOR_BASE_PATH = 'cursors';
+  const CURSOR_INTERACTIVE_SELECTOR = 'a, button, .di, .wp-swatch, .mp-btn, .node, .folder, .photo-node .thumb, .book, .poster-card, .snake-expand, .sm-close, .restore-btn';
 
   function cursorFilePath(theme, file) {
     return `${CURSOR_BASE_PATH}/${theme}/${file}`;
@@ -33,14 +39,43 @@
   cursorStyleTag.id = 'custom-cursor-style';
   document.head.appendChild(cursorStyleTag);
 
+  // Floating element that stands in for the real cursor so the GIF can animate.
+  const cursorFollower = document.createElement('div');
+  cursorFollower.id = 'cursor-follower';
+  cursorFollower.style.cssText = 'position:fixed; top:0; left:0; display:none; pointer-events:none; z-index:2147483647;';
+  const cursorFollowerImg = document.createElement('img');
+  cursorFollowerImg.style.cssText = 'display:block; user-select:none; -webkit-user-drag:none;';
+  cursorFollowerImg.draggable = false;
+  cursorFollower.appendChild(cursorFollowerImg);
+  document.body.appendChild(cursorFollower);
+
+  let activeCursorTheme = null;
+  let cursorFollowerFrame = null; // 'arrow' | 'hand'
+
+  function setCursorFollowerFrame(frame) {
+    if (!activeCursorTheme || cursorFollowerFrame === frame) return;
+    cursorFollowerFrame = frame;
+    cursorFollowerImg.src = cursorFilePath(activeCursorTheme, frame === 'hand' ? 'Working.gif' : 'Arrow.gif');
+  }
+
+  function onCursorFollowerMove(e) {
+    if (!activeCursorTheme) return;
+    cursorFollower.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    const overInteractive = !!(e.target && e.target.closest && e.target.closest(CURSOR_INTERACTIVE_SELECTOR));
+    setCursorFollowerFrame(overInteractive ? 'hand' : 'arrow');
+  }
+  document.addEventListener('mousemove', onCursorFollowerMove);
+  document.addEventListener('mouseleave', () => { cursorFollower.style.display = 'none'; });
+  document.addEventListener('mouseenter', () => { if (activeCursorTheme) cursorFollower.style.display = 'block'; });
+
   function applyCursorTheme(theme) {
-    if (!CURSOR_THEMES.includes(theme)) { cursorStyleTag.textContent = ''; return; }
-    const arrow = `url("${cursorFilePath(theme, 'Arrow.gif')}"), auto`;
-    const hand  = `url("${cursorFilePath(theme, 'Working.gif')}"), pointer`;
-    cursorStyleTag.textContent = `
-      html, body, #stage, .node, .folder, .photo-node, .thumb { cursor: ${arrow} !important; }
-      a, button, .di, .wp-swatch, .mp-btn, .node, .folder, .photo-node .thumb, .book, .poster-card, .snake-expand, .sm-close, .restore-btn { cursor: ${hand} !important; }
-    `;
+    if (!CURSOR_THEMES.includes(theme)) { resetCursorStyle(); return; }
+    activeCursorTheme = theme;
+    cursorFollowerFrame = null;
+    setCursorFollowerFrame('arrow');
+    cursorFollower.style.display = 'block';
+    // Hide the native system cursor everywhere so only the animated follower shows.
+    cursorStyleTag.textContent = `* { cursor: none !important; }`;
     const label = document.getElementById('cursorStyleCurrent');
     if (label) label.textContent = theme;
     try { localStorage.setItem('cursorThemeV1', theme); } catch(_){}
@@ -48,6 +83,9 @@
   }
 
   function resetCursorStyle() {
+    activeCursorTheme = null;
+    cursorFollowerFrame = null;
+    cursorFollower.style.display = 'none';
     cursorStyleTag.textContent = '';
     try { localStorage.removeItem('cursorThemeV1'); } catch(_){}
     const label = document.getElementById('cursorStyleCurrent');
