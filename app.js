@@ -2626,7 +2626,7 @@ window.__caseGate = (function(){
   const BOOKS = [
     { title: "Rich Dad Poor Dad", sub: "Robert T. Kiyosaki · 1997", isbn: "1612680194" },
     { title: "The 48 Laws of Power", sub: "Robert Greene · 1998", isbn: "0140280197" },
-    { title: "The Book", sub: "Alan Watts · 1966", isbn: "067976237X" },
+    { title: "Confessions of a Dying Mind", sub: "Haulianlal Guite · 2017", isbn: "938643220X" },
     { title: "The Ultimate Guide to Rebuilding Civilization", sub: "Lewis Dartnell · 2014", isbn: "0143127047" },
     { title: "How We Die", sub: "Sherwin B. Nuland · 1993", isbn: "0679742441" },
     { title: "The Richest Man in Babylon", sub: "George S. Clason · 1926", isbn: "0451205367" },
