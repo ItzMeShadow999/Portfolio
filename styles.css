@@ -1,1138 +1,1579 @@
-<!DOCTYPE html><html lang="en"><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Shadow's Desktop Portfolio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:100%; height:100%; overflow:hidden; font-family:"Courier New",monospace; background:#0a0e14; }
 
-<link rel="stylesheet" href="styles.css">
-</head>
-<body data-theme="sky">
+/* ============ Pixel vintage custom cursor (SVG data URI) ============ */
+html, body, #stage, .node, .folder, .photo-node, .thumb, button, a, .di, .wp-swatch, .mp-btn {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 28 28"><path d="M4 3.2 Q3 2.2 4 2 L23.4 10.4 Q24.6 11 23.3 11.6 L15.2 14 Q14.4 14.3 14 15 L11.2 22.6 Q10.7 24 10 22.7 Z" fill="%23111" stroke="%23fff" stroke-width="1.3" stroke-linejoin="round"/></svg>') 1 1, auto;
+}
+a, button, .di, .wp-swatch, .mp-btn, .node, .folder, .photo-node .thumb, .book, .poster-card, .snake-expand, .sm-close, .restore-btn {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 28 28"><path d="M4 3.2 Q3 2.2 4 2 L23.4 10.4 Q24.6 11 23.3 11.6 L15.2 14 Q14.4 14.3 14 15 L11.2 22.6 Q10.7 24 10 22.7 Z" fill="%23111" stroke="%23fff" stroke-width="1.3" stroke-linejoin="round"/></svg>') 1 1, pointer;
+}
 
-<h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Shadow — Product Designer Portfolio</h1>
+/* ============ Loading screen ============ */
+#loader {
+  position:fixed; inset:0; z-index:99999;
+  background:
+    linear-gradient(180deg, #2b4d8c 0%, #3a6aa8 35%, #7ba4c9 70%, #c7dcec 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:22px; padding-bottom:10vh;
+  transition:opacity 500ms ease; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;
+  cursor:pointer; overflow:hidden; isolation:isolate;
+}
+#loader::before {
+  content:""; position:absolute; inset:-2px; pointer-events:none; z-index:0;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.9'/></svg>");
+  background-size:240px 240px; opacity:0.28; mix-blend-mode:overlay;
+}
+#loader > * { position:relative; z-index:1; }
+#loader.hide { opacity:0; pointer-events:none; }
+#loader .logo { width:88px; height:88px; object-fit:contain; opacity:1; animation:loaderSpin 4s linear infinite; transform-origin:50% 50%; filter:brightness(0) invert(1) drop-shadow(0 6px 18px rgba(20,40,70,0.45)); }
+#loader .lock-name { font-size:22px; font-weight:600; letter-spacing:-0.01em; color:#ffffff; margin-top:-6px; text-shadow:0 1px 16px rgba(20,40,70,0.35); }
+#loader .lock-role { font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.75); margin-top:-18px; }
+#loader .lock-cta { display:inline-flex; align-items:center; gap:10px; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.9); padding:12px 20px; border:1px solid rgba(255,255,255,0.35); border-radius:999px; background:rgba(255,255,255,0.12); backdrop-filter:blur(6px); user-select:none; }
+#loader .lock-cta svg { width:12px; height:12px; }
+#loader .lock-hint { position:absolute; bottom:28px; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.6); z-index:1; }
+/* Slide-to-unlock (mobile/tablet only) */
+#loader .lock-slider { display:none; width:min(320px, 78vw); margin-top:4px; user-select:none; -webkit-user-select:none; }
+#loader .lock-slider-track { position:relative; height:64px; border-radius:999px; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.3); backdrop-filter:blur(6px); overflow:hidden; }
+#loader .lock-slider-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding-left:56px; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.55); pointer-events:none; background:linear-gradient(90deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0.35) 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; background-size:200% 100%; animation: lockShimmer 2.6s linear infinite; }
+#loader .lock-slider-knob { position:absolute; top:4px; left:4px; width:56px; height:56px; border-radius:50%; background:#fff; color:#222; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,0.28); touch-action:none; cursor:grab; transition:transform 0.28s ease; }
+#loader .lock-slider-knob.dragging { transition:none; cursor:grabbing; }
+#loader .lock-slider-knob svg { width:22px; height:22px; }
+@keyframes lockShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@media (max-width: 1024px), (pointer: coarse) {
+  #loader .lock-cta { display:none; }
+  #loader .lock-slider { display:block; position:absolute; left:50%; bottom:calc(env(safe-area-inset-bottom, 0px) + 48px); transform:translateX(-50%); margin-top:0; z-index:2; }
+  #loader .lock-hint { bottom:20px; }
+  /* Keep the spinning logo + identity visible underneath the clock */
+  #loader .logo { width:64px; height:64px; margin-top:22vh; }
+  #loader .lock-name { font-size:18px; }
+  #loader .lock-role { font-size:10px; }
+}
+/* iPhone/iPad-style lock clock (all viewports) */
+#loader .lock-clock {
+  display:flex; flex-direction:column; align-items:center; gap:2px;
+  position:absolute; left:50%; top:calc(env(safe-area-inset-top, 0px) + 56px);
+  transform:translateX(-50%); z-index:2; color:#fff; text-align:center;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",sans-serif;
+  text-shadow:0 2px 24px rgba(20,40,70,0.35);
+}
+#loader .lock-date { font-size:18px; font-weight:600; letter-spacing:-0.01em; color:rgba(255,255,255,0.95); }
+#loader .lock-time { font-size:clamp(84px, 12vw, 128px); font-weight:200; letter-spacing:-0.05em; line-height:0.95; margin-top:-4px; font-variant-numeric:tabular-nums; }
+/* On touch/small screens the clock returns to iPhone-style large */
+@media (max-width: 1024px), (pointer: coarse) {
+  #loader .lock-time { font-size:clamp(110px, 26vw, 190px); }
+  #loader { justify-content:flex-end; padding-bottom:16vh; }
+}
+@keyframes loaderPulse { 0%,100% { opacity:0.55; } 50% { opacity:1; } }
+@keyframes loaderSpin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+#menubar .brand { cursor:pointer; }
 
-<!-- ============ Lock screen (also acts as initial load screen) ============ -->
-<div id="loader" role="button" tabindex="0" aria-label="Click to unlock">
-  <div class="lock-clock" aria-hidden="true">
-    <div class="lock-date" id="lockDate">—</div>
-    <div class="lock-time" id="lockTime">—</div>
-  </div>
-  <img class="logo" src="images/spiral2.png" alt="Shadow">
-  <div class="lock-name">Shadow</div>
-  <div class="lock-role">Product Designer</div>
-  <div class="lock-cta">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
-    Click to unlock
-  </div>
-  <div class="lock-slider" id="lockSlider">
-    <div class="lock-slider-track">
-      <div class="lock-slider-label">Slide to unlock</div>
-      <div class="lock-slider-knob" id="lockSliderKnob" role="button" aria-label="Slide to unlock">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
-      </div>
-    </div>
-  </div>
-  <div class="lock-hint" id="lockHint">Preparing desktop…</div>
-</div>
+/* ============ Case-study password gate ============ */
+#pwGate { position:fixed; inset:0; z-index:8000; display:none; align-items:center; justify-content:center; background:rgba(10,14,22,0.72); backdrop-filter:blur(10px); font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif; }
+#pwGate.on { display:flex; }
+#pwGate .pw-card { width:min(360px,88vw); background:#fafafa; border-radius:14px; box-shadow:0 40px 100px rgba(0,0,0,0.55),0 0 0 1px rgba(0,0,0,0.12); overflow:hidden; }
+#pwGate .pw-head { padding:22px 22px 8px; text-align:center; }
+#pwGate .pw-lock { width:44px; height:44px; margin:0 auto 12px; display:flex; align-items:center; justify-content:center; border-radius:12px; background:#111; color:#fff; }
+#pwGate .pw-title { font-size:15px; font-weight:600; color:#111; }
+#pwGate .pw-sub { font-size:11px; color:#666; margin-top:4px; letter-spacing:0.03em; }
+#pwGate .pw-body { padding:14px 22px 22px; display:flex; flex-direction:column; gap:10px; }
+#pwGate input { width:100%; padding:10px 12px; border:1px solid rgba(0,0,0,0.15); border-radius:8px; font-size:13px; font-family:inherit; background:#fff; box-sizing:border-box; }
+#pwGate input:focus { outline:none; border-color:#4A6FA0; box-shadow:0 0 0 3px rgba(74,111,160,0.18); }
+#pwGate .pw-btns { display:flex; gap:8px; }
+#pwGate button { flex:1; padding:9px 12px; border:1px solid rgba(0,0,0,0.14); border-radius:8px; background:#fff; font-family:inherit; font-size:12px; font-weight:600; cursor:pointer; }
+#pwGate button.primary { background:#111; color:#fff; border-color:#111; }
+#pwGate .pw-err { font-size:11px; color:#c33; min-height:14px; }
 
-<!-- ============ Password gate for locked case studies ============ -->
-<div id="pwGate" role="dialog" aria-modal="true">
-  <form class="pw-card" id="pwForm" autocomplete="off">
-    <div class="pw-head">
-      <div class="pw-lock">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
-      </div>
-      <div class="pw-title" id="pwTitle">Locked case study</div>
-      <div class="pw-sub">Enter the password to view this project.</div>
-      <div class="pw-sub" style="margin-top:8px; color:#4A6FA0; font-weight:600; letter-spacing:0.04em;">Password available upon request</div>
-    </div>
-    <div class="pw-body">
-      <input type="password" id="pwInput" placeholder="Password" autocomplete="off" spellcheck="false">
-      <div class="pw-err" id="pwErr"></div>
-      <div class="pw-btns">
-        <button type="button" id="pwCancel">Cancel</button>
-        <button type="submit" class="primary">Unlock</button>
-      </div>
-    </div>
-  </form>
-</div>
+/* Case node lock badge — centered over the folder body (JS reparents it inside .folder .body) */
+.node { position:relative; }
+.folder { position:relative; }
+.folder .cs-lock-badge, .node > .cs-lock-badge, .photo-node .thumb .cs-lock-badge { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:26px; height:26px; border-radius:50%; background:rgba(15,18,24,0.86); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 14px rgba(0,0,0,0.38), 0 0 0 2px rgba(255,255,255,0.6); pointer-events:none; z-index:5; backdrop-filter:blur(4px); }
+.folder .cs-lock-badge svg, .node > .cs-lock-badge svg, .photo-node .thumb .cs-lock-badge svg { width:13px; height:13px; }
+.node.unlocked .cs-lock-badge { display:none; }
+/* mobile-only Photos folder */
+.photos-mobile { display:none !important; }
 
-<!-- ============ L·AI·C case study modal ============ -->
-<div id="caseModal" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6500;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.68);backdrop-filter:blur(10px);">
-  <div class="cs-card">
-    <div style="height:72px;background:linear-gradient(#ececef,#dcdce0);border-bottom:1px solid rgba(0,0,0,0.12);display:flex;align-items:center;padding:0 28px;gap:12px;position:relative;">
-      <button type="button" id="csClose" title="Close" aria-label="Close" style="width:20px;height:20px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.18);padding:0;display:inline-flex;align-items:center;justify-content:center;color:transparent;">
-        <svg viewBox="0 0 10 10" width="8" height="8" aria-hidden="true"><path d="M2 2 L8 8 M8 2 L2 8" stroke="rgba(0,0,0,0.55)" stroke-width="1.4" stroke-linecap="round"></path></svg>
-      </button>
-      <span style="position:absolute;left:0;right:0;text-align:center;font-size:13px;color:#333;font-weight:600;pointer-events:none;">Case 01 — L·AI·C</span>
-    </div>
-    <div class="cs-scroll">
-      <div class="cs-banner">
-        <img class="cs-banner-img" data-locked="laic-thumbnail.png" src="" alt="L·AI·C in hand">
-        <div class="cs-hero-copy">
-          <div class="cs-kicker">Case 01 · 2024</div>
-          <div class="cs-title">L·AI·C</div>
-          <div class="cs-subtitle">AI concierge for 800K+ Life Time members</div>
-        </div>
-      </div>
-      <div class="cs-tags">
-        <span class="cs-tag">UX Design</span>
-        <span class="cs-tag">Strategy</span>
-        <span class="cs-tag">Conversational Design</span>
-        <span class="cs-tag">2024</span>
-      </div>
-      <div class="cs-copy">
-        <p>L·AI·C was already being built when I joined. Engineering had moved fast — but no one had defined what the AI should say, how it should think, or why members would use it.</p>
-        <p>I went back to the beginning. Interviewed the concierge team, mapped the most repeated questions, and designed the full conversation routing — what L·AI·C could answer, what it couldn't, and where to send users when it hit its limit.</p>
-        <p style="font-style:italic;color:#555;">Every dead end became a pathway. Every question became a conversion opportunity.</p>
-      </div>
-      <div class="cs-metrics">
-        <div class="cs-metric">
-          <strong>↓</strong>
-          <span>Concierge load reduced</span>
-        </div>
-        <div class="cs-metric">
-          <strong>800K+</strong>
-          <span>Members served</span>
-        </div>
-        <div class="cs-metric">
-          <strong>Live</strong>
-          <span>in the LT app</span>
-        </div>
-      </div>
-      <div class="cs-artifacts paired">
-        <div class="cs-artifact contain">
-          <div class="cs-section-title">Conversation architecture</div>
-          <img data-locked="laic-diagram.png" src="" alt="LAIC conversation routing">
-        </div>
-        <div class="cs-artifact contain">
-          <div class="cs-section-title">Prototype flow</div>
-          <video autoplay="" muted="" loop="" playsinline="" data-locked="laic-wireframe.mp4" src=""></video>
-        </div>
-      </div>
-      <div class="cs-footer-row">
-        <div class="cs-footer-video">
-          <div class="cs-section-title">In-context demo</div>
-          <video autoplay="" muted="" loop="" playsinline="" data-locked="laic-video.mp4" src=""></video>
-        </div>
-        <div class="cs-findings">
-          <div class="cs-section-title">Findings</div>
-          <div class="cs-finding"><span class="num">↓</span><div><span class="lbl">Concierge load dropped</span><span class="txt">Repetitive hours-and-location questions handled entirely by L·AI·C.</span></div></div>
-          <div class="cs-finding"><span class="num">3×</span><div><span class="lbl">Faster time-to-answer</span><span class="txt">Members reach a booking, class, or amenity in three steps or fewer.</span></div></div>
-          <div class="cs-finding"><span class="num">100%</span><div><span class="lbl">Graceful fallbacks</span><span class="txt">Every dead-end routes to a human — never a blank screen.</span></div></div>
-          <div class="cs-finding"><span class="num">↑</span><div><span class="lbl">Concierge time reclaimed</span><span class="txt">Freed staff for high-touch, revenue-driving conversations.</span></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+/* ============ Mobile iOS-style status bar + hamburger sheet ============ */
+#mobile-statusbar { display:none; }
+#mobile-sheet { display:none; }
+@media (max-width: 760px) {
+  /* Hide the desktop macOS-style menubar on mobile */
+  #menubar { display:none !important; }
+  /* Bump layer down to clear the new status bar */
+  #layer-wrap { top:44px !important; }
 
-<!-- ============ On Demand case study modal ============ -->
-<div id="caseModal2" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6500;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.68);backdrop-filter:blur(10px);">
-  <div class="cs-card">
-    <div style="height:72px;background:linear-gradient(#ececef,#dcdce0);border-bottom:1px solid rgba(0,0,0,0.12);display:flex;align-items:center;padding:0 28px;gap:12px;position:relative;">
-      <button type="button" id="cs2Close" title="Close" aria-label="Close" style="width:20px;height:20px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.18);padding:0;display:inline-flex;align-items:center;justify-content:center;color:transparent;">
-        <svg viewBox="0 0 10 10" width="8" height="8" aria-hidden="true"><path d="M2 2 L8 8 M8 2 L2 8" stroke="rgba(0,0,0,0.55)" stroke-width="1.4" stroke-linecap="round"></path></svg>
-      </button>
-      <span style="position:absolute;left:0;right:0;text-align:center;font-size:13px;color:#333;font-weight:600;pointer-events:none;">Case 02 — On Demand</span>
-    </div>
-    <div class="cs-scroll">
-      <div class="cs-banner">
-        <img class="cs-banner-img" data-locked="ondemand-thumbnail.png" src="" alt="On Demand in hand">
-        <div class="cs-hero-copy">
-          <div class="cs-kicker">Case 02 · 2024</div>
-          <div class="cs-title">On Demand</div>
-          <div class="cs-subtitle">Filter, sort, and actually find a class — 800K+ Life Time members</div>
-        </div>
-      </div>
-      <div class="cs-tags">
-        <span class="cs-tag">Product Design</span>
-        <span class="cs-tag">UX Research</span>
-        <span class="cs-tag">Information Architecture</span>
-        <span class="cs-tag">2024</span>
-      </div>
-      <div class="cs-copy">
-        <p>On Demand had thousands of classes and no way to sort through them. The library grew faster than the way people could find anything in it — no filter, no sort, no way to narrow by duration, level, or coach.</p>
-        <p>I audited the full content catalogue, ran 20+ user sessions, and benchmarked Peloton, Apple Fitness+, and Nike Training across six dimensions. Duration surfaced as the most-requested filter by a wide margin — so the system was rebuilt around it, then expanded to nine dimensions members could actually navigate.</p>
-        <p style="font-style:italic;color:#555;">Category → discipline → your class. One clear path where there used to be none.</p>
-      </div>
-      <div class="cs-metrics">
-        <div class="cs-metric"><strong>9</strong><span>filter dimensions</span></div>
-        <div class="cs-metric"><strong>800K+</strong><span>members served</span></div>
-        <div class="cs-metric"><strong>Live</strong><span>in the LT app</span></div>
-      </div>
-      <div class="cs-artifacts">
-        <div class="cs-artifact contain tall">
-          <div class="cs-section-title">Process & solution</div>
-          <img data-locked="ondemand-diagram.png" src="" alt="On Demand process, research, competitor analysis, and solution">
-        </div>
-        <div class="cs-artifact">
-          <div class="cs-section-title">Endless scroll — before</div>
-          <video autoplay="" muted="" loop="" playsinline="" data-locked="ondemand-endless.mp4" src=""></video>
-        </div>
-        <div class="cs-artifact">
-          <div class="cs-section-title">No-dev prototype</div>
-          <video autoplay="" muted="" loop="" playsinline="" data-locked="ondemand-nocode.mp4" src=""></video>
-        </div>
-      </div>
-      <div class="cs-footer-row">
-        <div class="cs-footer-video">
-          <div class="cs-section-title">In-context demo</div>
-          <video autoplay="" muted="" loop="" playsinline="" data-locked="ondemand-video.mp4" src=""></video>
-        </div>
-        <div class="cs-findings">
-          <div class="cs-section-title">Findings</div>
-          <div class="cs-finding"><span class="num">9</span><div><span class="lbl">Filter dimensions</span><span class="txt">Members can now sort by duration, level, coach, format, and more.</span></div></div>
-          <div class="cs-finding"><span class="num">20+</span><div><span class="lbl">User sessions</span><span class="txt">Insights validated against Peloton, Apple Fitness+, and Nike Training.</span></div></div>
-          <div class="cs-finding"><span class="num">#1</span><div><span class="lbl">Duration surfaced</span><span class="txt">The most-requested filter — now the entry point to every class.</span></div></div>
-          <div class="cs-finding"><span class="num">1</span><div><span class="lbl">Clear path</span><span class="txt">Category → discipline → class, where there used to be none.</span></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+  #mobile-statusbar {
+    display:flex; align-items:center; justify-content:space-between;
+    position:fixed; top:0; left:0; right:0; height:44px; z-index:220;
+    padding:0 18px 0 22px;
+    color:#ffffff; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;
+    text-shadow:0 1px 2px rgba(0,0,0,0.18);
+    pointer-events:auto;
+  }
+  body[data-theme="night"] #mobile-statusbar { color:#ffffff; }
+  #mobile-statusbar .ms-clock {
+    font-size:16px; font-weight:600; letter-spacing:0.01em;
+    font-variant-numeric:tabular-nums;
+  }
+  #mobile-statusbar .ms-logo {
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:30px; height:30px; object-fit:contain; pointer-events:none;
+    filter:brightness(0) invert(1) drop-shadow(0 1px 2px rgba(0,0,0,0.25));
+    opacity:0.95;
+  }
+  #mobile-statusbar .ms-right {
+    display:flex; align-items:center; gap:6px;
+  }
+  #mobile-statusbar .ms-ic { color:currentColor; }
+  #mobile-statusbar .ms-signal { width:17px; height:11px; fill:currentColor; }
+  #mobile-statusbar .ms-wifi   { width:15px; height:11px; fill:currentColor; }
+  #mobile-statusbar .ms-bat    { width:26px; height:12px; }
+  #mobile-statusbar .ms-hamburger {
+    margin-left:8px; width:28px; height:28px; border-radius:0;
+    background:transparent; border:0; padding:0; cursor:pointer;
+    display:inline-grid; grid-template-columns:repeat(2, 6px); grid-template-rows:repeat(2, 6px);
+    gap:4px; align-content:center; justify-content:center;
+    color:currentColor;
+  }
+  body[data-theme="night"] #mobile-statusbar .ms-hamburger {
+    background:transparent; border:0;
+  }
+  #mobile-statusbar .ms-hamburger span {
+    display:block; width:6px; height:6px; border-radius:50%;
+    background:currentColor;
+  }
 
-<!-- ============ Strategic Comms case study modal ============ -->
-<div id="caseModal3" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6500;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.68);backdrop-filter:blur(10px);">
-  <div class="cs-card">
-    <div style="height:72px;background:linear-gradient(#ececef,#dcdce0);border-bottom:1px solid rgba(0,0,0,0.12);display:flex;align-items:center;padding:0 28px;gap:12px;position:relative;">
-      <button type="button" id="cs3Close" title="Close" aria-label="Close" style="width:20px;height:20px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.18);padding:0;display:inline-flex;align-items:center;justify-content:center;color:transparent;">
-        <svg viewBox="0 0 10 10" width="8" height="8" aria-hidden="true"><path d="M2 2 L8 8 M8 2 L2 8" stroke="rgba(0,0,0,0.55)" stroke-width="1.4" stroke-linecap="round"></path></svg>
-      </button>
-      <span style="position:absolute;left:0;right:0;text-align:center;font-size:13px;color:#333;font-weight:600;pointer-events:none;">Case 03 — Strategic Comms</span>
-    </div>
-    <div class="cs-scroll">
-      <div class="cs-banner" style="padding:24px 30px;background:#f0f0f0;">
-        <img class="cs-banner-img" data-locked="sc-deck-v4.jpg" src="" alt="Investor deck system — clean 3x3 grid of slides" style="height:auto;max-height:520px;object-fit:contain;background:transparent;border-radius:8px;">
-        <div class="cs-hero-copy">
-          <div class="cs-kicker">Case 03 · 2025–2026</div>
-          <div class="cs-title">Strategic Comms</div>
-          <div class="cs-subtitle">High-stakes corporate narratives, designed quickly and clearly</div>
-        </div>
-      </div>
-      <div class="cs-tags">
-        <span class="cs-tag">Creative Direction</span>
-        <span class="cs-tag">Design</span>
-        <span class="cs-tag">Strategy</span>
-        <span class="cs-tag">April 2025 – April 2026</span>
-      </div>
-      <div class="cs-copy">
-        <p>I was the in-house designer at a strategic communications and investor relations firm, translating complex financial and corporate narratives into clear, credible visual communications across decks, infographics, social content, websites, print, and events.</p>
-        <p style="font-style:italic;color:#555;">Because the original work is confidential, these are original reconstructions that represent the scope, tone, and craft of the engagement.</p>
-      </div>
-      <div class="cs-metrics">
-        <div class="cs-metric"><strong>40+</strong><span>total deliverables</span></div>
-        <div class="cs-metric"><strong>20+</strong><span>investor decks</span></div>
-        <div class="cs-metric"><strong>12</strong><span>months · 1 designer</span></div>
-      </div>
-      <div class="cs-artifacts" style="grid-template-columns:1fr 1.15fr; align-items:stretch;">
-        <div class="cs-artifact contain" style="padding:20px;display:flex;flex-direction:column;min-height:480px;">
-          <div class="cs-section-title">Investor deck system</div>
-          <img data-locked="sc-deck-v4.jpg" src="" alt="Full investor deck system — nine slides organized in an even grid" style="flex:1;min-height:0;object-fit:contain;width:100%;height:100%;">
-        </div>
-        <div class="cs-artifact contain" style="padding:20px;display:flex;flex-direction:column;min-height:480px;">
-          <div class="cs-section-title">Capital markets infographic</div>
-          <img data-locked="sc-infographic-navy.jpg" src="" alt="Q3 capital markets snapshot infographic on deep navy" style="flex:1;min-height:0;object-fit:contain;width:100%;height:100%;">
-        </div>
-      </div>
-      <div style="margin:0 26px 26px; display:grid; grid-template-columns:1.4fr 1fr; gap:14px;">
-        <div class="cs-artifact contain" style="border-radius:12px;">
-          <div class="cs-section-title">Website system</div>
-          <img data-locked="sc-web-v2.jpg" src="" alt="Monument Strategic Communications — full website system">
-        </div>
-        <div class="cs-findings">
-          <div class="cs-section-title">Signature work</div>
-          <div class="cs-finding"><span class="num">◆</span><div><span class="lbl">Investor decks</span><span class="txt">Serif-led editorial system for earnings, IPOs, and fundraises.</span></div></div>
-          <div class="cs-finding"><span class="num">◆</span><div><span class="lbl">Market infographics</span><span class="txt">Quarterly snapshots, transaction announcements, sector reports.</span></div></div>
-          <div class="cs-finding"><span class="num">◆</span><div><span class="lbl">Print + events</span><span class="txt">Roadshow collateral, signage, and executive one-pagers.</span></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+  /* Hamburger sheet */
+  #mobile-sheet { display:block; position:fixed; inset:0; z-index:400; pointer-events:none; }
+  #mobile-sheet.open { pointer-events:auto; }
+  #mobile-sheet .msh-scrim {
+    position:absolute; inset:0; background:rgba(10,14,22,0.35);
+    opacity:0; transition:opacity .22s ease;
+  }
+  #mobile-sheet.open .msh-scrim { opacity:1; }
+  #mobile-sheet .msh-panel {
+    position:absolute; top:0; right:0; bottom:0; width:min(84vw, 340px);
+    background:rgba(250,250,252,0.94); backdrop-filter:blur(28px) saturate(1.4);
+    -webkit-backdrop-filter:blur(28px) saturate(1.4);
+    border-left:1px solid rgba(0,0,0,0.08);
+    box-shadow:-24px 0 60px rgba(0,0,0,0.22);
+    padding:calc(env(safe-area-inset-top,0) + 18px) 18px 24px;
+    transform:translateX(100%); transition:transform .28s cubic-bezier(.4,.14,.3,1);
+    display:flex; flex-direction:column; gap:14px;
+    font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif; color:#111;
+  }
+  body[data-theme="night"] #mobile-sheet .msh-panel {
+    background:rgba(22,24,30,0.94); color:#f0f2f6; border-left-color:rgba(255,255,255,0.1);
+  }
+  #mobile-sheet.open .msh-panel { transform:translateX(0); }
+  #mobile-sheet .msh-head { display:flex; align-items:center; justify-content:space-between; }
+  #mobile-sheet .msh-brand { display:flex; align-items:center; gap:10px; }
+  #mobile-sheet .msh-logo { width:34px; height:34px; object-fit:contain; }
+  #mobile-sheet .msh-name { font-weight:700; font-size:15px; letter-spacing:0.01em; }
+  #mobile-sheet .msh-role { font-size:11px; opacity:0.6; letter-spacing:0.06em; text-transform:uppercase; }
+  #mobile-sheet .msh-close {
+    width:32px; height:32px; border-radius:50%; border:0;
+    background:rgba(0,0,0,0.06); color:inherit; font-size:22px; line-height:1;
+    cursor:pointer;
+  }
+  #mobile-sheet .msh-nav { display:flex; flex-direction:column; margin-top:6px; }
+  #mobile-sheet .msh-nav button,
+  #mobile-sheet .msh-nav a {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:13px 4px; font-size:15px; color:inherit;
+    background:transparent; border:0; text-align:left; cursor:pointer;
+    border-bottom:1px solid rgba(0,0,0,0.06); text-decoration:none;
+    font-family:inherit;
+  }
+  body[data-theme="night"] #mobile-sheet .msh-nav button,
+  body[data-theme="night"] #mobile-sheet .msh-nav a { border-bottom-color:rgba(255,255,255,0.08); }
+  #mobile-sheet .msh-nav span { opacity:0.45; font-size:14px; }
+  #mobile-sheet .msh-sep { height:14px; }
+  #mobile-sheet .msh-social { margin-top:auto; display:flex; gap:16px; padding-top:12px; opacity:0.7; }
+  #mobile-sheet .msh-social a { color:inherit; }
+  #mobile-sheet .msh-social svg { width:20px; height:20px; }
+}
 
-<!-- ============ Notes modal ============ -->
+#stage {
+  position:relative; width:100%; height:100%; overflow:hidden;
+  transition:background 1s ease;
+}
+.grain { position:absolute; inset:0; z-index:2; pointer-events:none; opacity:0.42; mix-blend-mode:multiply; }
+body[data-theme="night"] .grain { mix-blend-mode:overlay; opacity:0.55; }
 
-<!-- ============ Case 04 · Rebrand case study modal ============ -->
-<div id="caseModal4" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6500;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.68);backdrop-filter:blur(10px);">
-  <div class="cs-card">
-    <div style="height:72px;background:linear-gradient(#ececef,#dcdce0);border-bottom:1px solid rgba(0,0,0,0.12);display:flex;align-items:center;padding:0 28px;gap:12px;position:relative;">
-      <button type="button" id="cs4Close" title="Close" aria-label="Close" style="width:20px;height:20px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.18);padding:0;display:inline-flex;align-items:center;justify-content:center;color:transparent;">
-        <svg viewBox="0 0 10 10" width="8" height="8" aria-hidden="true"><path d="M2 2 L8 8 M8 2 L2 8" stroke="rgba(0,0,0,0.55)" stroke-width="1.4" stroke-linecap="round"></path></svg>
-      </button>
-      <span style="position:absolute;left:0;right:0;text-align:center;font-size:13px;color:#333;font-weight:600;pointer-events:none;">Case 04 — Rebrand</span>
-    </div>
-    <div class="cs-scroll">
-      <div class="cs-banner">
-        <img class="cs-banner-img" data-locked="cs4-hr-flatlay.jpg" src="" alt="Harland & Reyes stationery flatlay — oxblood cards, ivory letterhead, wax seal">
-        <div class="cs-hero-copy">
-          <div class="cs-kicker">Case 04 · 2025</div>
-          <div class="cs-title">Rebrand</div>
-          <div class="cs-subtitle">A full identity system for a white-collar firm — mark, kit, and every touchpoint.</div>
-        </div>
-      </div>
-      <div class="cs-tags">
-        <span class="cs-tag">Brand Identity</span>
-        <span class="cs-tag">Art Direction</span>
-        <span class="cs-tag">Print + Social</span>
-        <span class="cs-tag">2025</span>
-      </div>
-      <div class="cs-copy">
-        <p>Sole designer on a full identity rebrand for a white-collar firm — wordmark, monogram, palette, typography, stationery, social system, and event collateral. Positioned to feel discreet, senior, and unmistakably editorial.</p>
-        <p style="font-style:italic;color:#555;">The client cannot currently be named — the engagement is under confidentiality. The visuals shown here are original reconstructions built from scratch to represent the scope, tone, and craft of the actual work.</p>
-      </div>
-      <div class="cs-metrics">
-        <div class="cs-metric"><strong>30+</strong><span>identity assets</span></div>
-        <div class="cs-metric"><strong>1</strong><span>designer, end-to-end</span></div>
-        <div class="cs-metric"><strong>4</strong><span>months to launch</span></div>
-      </div>
-      <div class="cs-artifacts">
-        <div class="cs-artifact contain tall">
-          <div class="cs-section-title">Brand kit — mark, palette, type</div>
-          <img data-locked="cs4-hr-guidelines.jpg" src="" alt="Harland & Reyes brand system page — wordmark, monogram, palette, typography">
-        </div>
-        <div class="cs-artifact contain">
-          <div class="cs-section-title">Social system</div>
-          <img data-locked="cs4-hr-social.jpg" src="" alt="Harland & Reyes social system — six alternating oxblood and ivory editorial posts">
-        </div>
-      </div>
-      <div class="cs-footer-row">
-        <div class="cs-artifact contain" style="border-radius:12px;">
-          <div class="cs-section-title">Event collateral — flyer + program</div>
-          <img data-locked="cs4-hr-flyer.jpg" src="" alt="Harland & Reyes event flyer and program in oxblood and ivory">
-        </div>
-        <div class="cs-findings">
-          <div class="cs-section-title">Deliverables</div>
-          <div class="cs-finding"><span class="num">◆</span><div><span class="lbl">Wordmark + monogram</span><span class="txt">Serif primary lockup with a hand-built H&R monogram for tight touchpoints and wax seals.</span></div></div>
-          <div class="cs-finding"><span class="num">◆</span><div><span class="lbl">Palette + type system</span><span class="txt">Oxblood, ink navy, ivory, antique brass. Chronicle Display paired with Founders Grotesk.</span></div></div>
-          <div class="cs-finding"><span class="num">◆</span><div><span class="lbl">Stationery + business cards</span><span class="txt">Letterhead, envelope, oxblood cards with brass foil monogram, wax-sealed mailers.</span></div></div>
-          <div class="cs-finding"><span class="num">◆</span><div><span class="lbl">Social + event kit</span><span class="txt">Six-post editorial social system, event flyer, program booklet, and signage.</span></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+/* tech grid overlay — subtle in light themes, prominent in night */
+.tech-grid {
+  position:absolute; inset:0; z-index:1; pointer-events:none; opacity:0.14;
+  background-image:
+    linear-gradient(rgba(74,111,160,0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74,111,160,0.16) 1px, transparent 1px),
+    linear-gradient(rgba(74,111,160,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74,111,160,0.08) 1px, transparent 1px);
+  background-size: 160px 160px, 160px 160px, 32px 32px, 32px 32px;
+  transition:opacity 0.6s;
+}
+/* per-theme accent tokens */
+:root { --accent:#4A6FA0; --accent-soft:rgba(74,111,160,0.75); --accent-glow:rgba(74,111,160,0.25); --hub-1:#e7f1fb; --hub-2:#7fa3c8; --hub-3:#24384e; }
+body[data-theme="sky"]    { --accent:#4A6FA0; --accent-soft:rgba(74,111,160,0.78); --accent-glow:rgba(74,111,160,0.25); --hub-1:#eef8ff; --hub-2:#87acd3; --hub-3:#2e4963; }
+body[data-theme="forest"] { --accent:#4a6b47; --accent-soft:rgba(74,107,71,0.72);   --accent-glow:rgba(74,107,71,0.25); --hub-1:#f0f2dc; --hub-2:#6f8a58; --hub-3:#243f2b; }
+body[data-theme="desert"] { --accent:#a97a4a; --accent-soft:rgba(169,122,74,0.72);  --accent-glow:rgba(169,122,74,0.25); --hub-1:#ffe6bf; --hub-2:#bf7f43; --hub-3:#57361f; }
+body[data-theme="night"]  { --accent:#ffffff; --accent-soft:rgba(255,255,255,0.7);--accent-glow:rgba(255,255,255,0.3); --hub-1:#ffffff; --hub-2:#d7d7d7; --hub-3:#646464; }
 
-<!-- ============ About modal (Shadow menu) ============ -->
-<div id="aboutModal" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6400;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.35);backdrop-filter:blur(6px);">
-  <div style="width:min(440px,92vw);max-height:88vh;overflow:auto;background:linear-gradient(180deg,#eef4fb 0%,#dfe8f2 100%);border-radius:14px;box-shadow:0 32px 80px rgba(0,0,0,0.35),0 0 0 1px rgba(0,0,0,0.14);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;color:#1c1d22;">
-    <div style="height:28px;display:flex;align-items:center;padding:0 12px;gap:8px;">
-      <button type="button" id="aboutClose" aria-label="Close" style="width:13px;height:13px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.22);padding:0;cursor:pointer;"></button>
-      <span style="width:13px;height:13px;border-radius:50%;background:#c8c8ce;border:1px solid rgba(0,0,0,0.18);"></span>
-      <span style="width:13px;height:13px;border-radius:50%;background:#c8c8ce;border:1px solid rgba(0,0,0,0.18);"></span>
-    </div>
-    <div style="padding:6px 34px 30px;text-align:center;">
-      <img src="images/photo-headshot.png" alt="Shadow" style="width:150px;height:150px;border-radius:50%;object-fit:cover;margin:6px auto 18px;box-shadow:0 8px 24px rgba(30,50,90,0.18);display:block;">
-      <h2 style="margin:0;font-size:26px;font-weight:700;letter-spacing:-0.01em;">Shadow</h2>
-      <div style="font-size:13px;color:#6a7482;margin-top:2px;">Product Designer · 2026</div>
-      <div style="margin:22px auto 0;display:grid;grid-template-columns:auto 1fr;column-gap:16px;row-gap:8px;font-size:13px;text-align:left;max-width:320px;">
-        <div style="color:#6a7482;text-align:right;">Focus</div><div>Design systems & AI</div>
-        <div style="color:#6a7482;text-align:right;">Based in</div><div>New York, NY</div>
-        <div style="color:#6a7482;text-align:right;">Languages</div><div>EN · FA · ES · FR</div>
-      </div>
-      <div style="margin-top:22px;">
-        <button type="button" id="aboutMore" style="background:#fff;border:1px solid rgba(0,0,0,0.14);padding:6px 20px;border-radius:8px;font:600 13px inherit;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.05);">More Info…</button>
-      </div>
-      <div id="aboutMoreBody" style="display:none;margin:22px 0 0;padding-top:22px;border-top:1px solid rgba(0,0,0,0.08);text-align:left;font-size:13px;line-height:1.6;color:#33383f;">
-        <p style="margin:0 0 10px;"><strong>Designing useful systems through research, motion, prototypes, and a little productive discomfort.</strong></p>
-        <p style="margin:0 0 10px;">I grow the same way I design—by studying something deeply, then testing it against reality.</p>
-        <p style="margin:0 0 10px;">As a first-generation Iranian-American, I learned early how to navigate between different perspectives. Growing up between two cultures taught me to ask better questions, embrace ambiguity, and find common ground.</p>
-        <p style="margin:0 0 10px;">That curiosity has taken me from the midwest to New York, and across new communities, cultures, and problems that challenged how I think.</p>
-        <p style="margin:14px 0 4px;"><strong>Principles</strong></p>
-        <p style="margin:0;">Study deeply · Test against reality · Keep changing perspective.</p>
-      </div>
-      <div style="margin-top:18px;font-size:11px;color:#8590a0;">™ and © 2020–2026 Shadow. All rights reserved.</div>
-    </div>
-  </div>
-</div>
+body[data-theme="night"] .tech-grid {
+  opacity:0.35;
+  background-image:
+    linear-gradient(rgba(120,200,255,0.28) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120,200,255,0.28) 1px, transparent 1px),
+    linear-gradient(rgba(120,200,255,0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120,200,255,0.12) 1px, transparent 1px);
+  background-size: 160px 160px, 160px 160px, 32px 32px, 32px 32px;
+}
 
-<!-- ============ Stickies modal (draw a little sticky note) ============ -->
-<div id="stickiesModal" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6420;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.5);backdrop-filter:blur(8px);">
-  <div style="width:min(640px,94vw);max-height:94vh;background:#fff8a8;border-radius:10px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,0.4),0 0 0 1px rgba(0,0,0,0.14);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;color:#3a2f10;display:flex;flex-direction:column;">
-    <div style="height:38px;background:#f2df76;border-bottom:1px solid rgba(0,0,0,0.12);display:flex;align-items:center;padding:0 12px;gap:10px;flex-shrink:0;">
-      <button type="button" id="stickiesClose" aria-label="Close" style="width:14px;height:14px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.22);padding:0;cursor:pointer;"></button>
-      <span style="font-size:13px;color:#5b4d10;font-weight:650;">Stickies</span>
-      <div style="margin-left:14px;display:flex;gap:2px;">
-        <button type="button" class="st-tab active" data-tab="draw" style="padding:4px 12px;border-radius:6px;border:0;background:rgba(0,0,0,0.12);font:600 11px inherit;color:#3a2f10;cursor:pointer;">✏️ Draw</button>
-        <button type="button" class="st-tab" data-tab="wall" style="padding:4px 12px;border-radius:6px;border:0;background:transparent;font:600 11px inherit;color:#5b4d10;cursor:pointer;">🧱 Wall</button>
-      </div>
-      <div id="stDrawTools" style="margin-left:auto;display:flex;gap:6px;align-items:center;">
-        <button type="button" class="st-color" data-c="#3a2f10" aria-label="Ink" style="width:18px;height:18px;border-radius:50%;background:#3a2f10;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.2);cursor:pointer;padding:0;"></button>
-        <button type="button" class="st-color" data-c="#c96b4a" aria-label="Peach" style="width:18px;height:18px;border-radius:50%;background:#c96b4a;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.2);cursor:pointer;padding:0;"></button>
-        <button type="button" class="st-color" data-c="#3068C4" aria-label="Blue" style="width:18px;height:18px;border-radius:50%;background:#3068C4;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.2);cursor:pointer;padding:0;"></button>
-        <button type="button" class="st-color" data-c="#5aa06a" aria-label="Green" style="width:18px;height:18px;border-radius:50%;background:#5aa06a;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.2);cursor:pointer;padding:0;"></button>
-        <button type="button" id="stClear" style="margin-left:6px;padding:4px 10px;border-radius:6px;border:1px solid rgba(0,0,0,0.18);background:#fff9df;font:600 11px inherit;cursor:pointer;">Clear</button>
-      </div>
-    </div>
+#layer-wrap { position:absolute; top:38px; left:0; right:0; bottom:102px; overflow:hidden; }
+#layer { position:absolute; left:50%; top:50%; width:2200px; height:1300px; padding-top:34px; transform-origin:center center; transform:translate(-50%,-50%); will-change:transform; }
 
-    <div id="stDrawPane" style="display:flex;flex-direction:column;overflow:auto;">
-      <canvas id="stCanvas" width="1120" height="820" style="display:block;width:100%;height:auto;background:#fff8a8;cursor:crosshair;touch-action:none;"></canvas>
-      <div style="padding:10px 14px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#fff5a0;border-top:1px solid rgba(0,0,0,0.08);">
-        <input type="text" id="stName" placeholder="Your name (optional)" maxlength="40" style="flex:1;min-width:140px;padding:7px 10px;border-radius:6px;border:1px solid rgba(0,0,0,0.16);background:#fff9df;font:500 12px inherit;color:#3a2f10;">
-        <input type="text" id="stMessage" placeholder="Say hi 👋 (optional)" maxlength="200" style="flex:2;min-width:180px;padding:7px 10px;border-radius:6px;border:1px solid rgba(0,0,0,0.16);background:#fff9df;font:500 12px inherit;color:#3a2f10;">
-        <button type="button" id="stPost" style="padding:8px 16px;border-radius:8px;border:0;background:#3a2f10;color:#fff8a8;font:700 12px inherit;cursor:pointer;letter-spacing:0.02em;">Post to wall ↗</button>
-      </div>
-      <div id="stPostStatus" style="padding:0 14px 10px;font-size:11px;color:#8a7a3a;min-height:16px;">Draw a little sticky · pick a color · add a name and say hi.</div>
-    </div>
+/* ============ TOP MENU BAR ============ */
+#menubar { display:flex; justify-content:space-between; align-items:center;
+  position:fixed; top:0; left:0; right:0; height:38px; z-index:200;
+  padding:0 16px; gap:12px; white-space:nowrap;
+  background:rgba(255,255,255,0.5);
+  backdrop-filter:blur(16px) saturate(160%);
+  border-bottom:1px solid rgba(0,0,0,0.08);
+  font-size:11px; letter-spacing:0.04em; color:rgba(40,40,40,0.85);
+  transition:background 0.6s, color 0.6s;
+}
+body[data-theme="night"] #menubar { background:rgba(0,0,0,0.65); color:rgba(220,228,240,0.9); border-bottom:1px solid rgba(255,255,255,0.1); }
+#menubar .left { display:flex; align-items:center; gap:2px; flex:1; min-width:0; }
+#brand-stack {
+  position:fixed; top:48px; left:20px; z-index:180;
+  display:flex; flex-direction:column; gap:4px;
+  max-width:260px; color:rgba(28,28,32,0.9); pointer-events:auto;
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;
+}
+body[data-theme="night"] #brand-stack { color:rgba(230,236,245,0.94); }
+#brand-stack .avail { display:inline-flex; align-items:center; gap:7px; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; font-weight:700; }
+#brand-stack .avail .dot { width:7px; height:7px; border-radius:50%; background:#5aa06a; box-shadow:0 0 0 2px rgba(90,160,106,0.22); animation:availPulse 1.15s ease-in-out infinite; }
+#brand-stack .hero-lede { font-size:10px; line-height:1.45; margin:0; max-width:260px; opacity:0.72; font-weight:500; letter-spacing:0.01em; }
+@media (max-width:760px) {
+  #brand-stack { max-width:calc(100vw - 40px); gap:4px; }
+  #brand-stack .hero-lede { font-size:9.5px; max-width:calc(100vw - 40px); }
+}
+@keyframes availPulse {
+  0%,100% { box-shadow:0 0 0 2px rgba(90,160,106,0.22), 0 0 0 0 rgba(90,160,106,0.55); }
+  50%     { box-shadow:0 0 0 2px rgba(90,160,106,0.22), 0 0 0 8px rgba(90,160,106,0); }
+}
+#copyright { position:fixed; left:16px; bottom:10px; z-index:180; font-size:10px; letter-spacing:0.08em; color:rgba(40,40,40,0.6); text-transform:uppercase; pointer-events:none; }
+body[data-theme="night"] #copyright { color:rgba(220,228,240,0.55); }
+#menubar .center { display:flex; align-items:center; justify-content:center; flex:0 0 auto; }
+#menubar .right { flex:1; justify-content:flex-end; min-width:0; overflow:hidden; }
+#menubar .brand { font-weight:700; letter-spacing:0.05em; display:flex; align-items:center; gap:8px; font-size:12px; }
+#menubar .brand-logo { width:18px; height:18px; object-fit:contain; }
+#menubar .tagline-inline { font-size:11px; letter-spacing:0.02em; opacity:0.55; font-style:italic; overflow:hidden; text-overflow:ellipsis; }
+#menubar .brand { font-size:13px !important; }
+#menubar .social { color:inherit; display:inline-flex; opacity:0.65; transition:opacity 0.15s; }
+#menubar .social:hover { opacity:1; }
+#menubar .social svg { width:14px; height:14px; }
+#menubar .menu-item { opacity:0.6; cursor:default; }
+#menubar .right { display:flex; align-items:center; gap:14px; opacity:0.85; }
+#menubar .status-dot { width:5px; height:5px; border-radius:50%; background:#5aa06a; box-shadow:0 0 0 2px rgba(90,160,106,0.2); }
 
-    <div id="stWallPane" style="display:none;flex-direction:column;overflow:hidden;background:#fff5a0;">
-      <div id="stWallMeta" style="padding:10px 14px;font-size:11px;color:#8a7a3a;border-bottom:1px solid rgba(0,0,0,0.08);display:flex;justify-content:space-between;align-items:center;gap:8px;">
-        <span>A little wall of hellos from everyone who's passed through.</span>
-        <button type="button" id="stRefresh" style="padding:4px 10px;border-radius:6px;border:1px solid rgba(0,0,0,0.18);background:#fff9df;font:600 11px inherit;cursor:pointer;">Refresh</button>
-      </div>
-      <div id="stWallGrid" style="padding:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;overflow:auto;max-height:60vh;background:#fff5a0;"></div>
-    </div>
-  </div>
-</div>
+/* ============ macOS-style menubar dropdowns ============ */
+#menubar .center { gap:2px; }
+.mb-menu { position:relative; }
+.mb-menu > .mb-trigger {
+  display:inline-flex; align-items:center; padding:3px 10px; border-radius:6px;
+  font-size:13px; font-weight:400; letter-spacing:0.01em; color:inherit;
+  background:transparent; border:0; cursor:pointer; font-family:inherit;
+  transition:background 0.12s;
+}
+.mb-menu > .mb-trigger:hover,
+.mb-menu.open > .mb-trigger { background:rgba(0,0,0,0.06); }
+body[data-theme="night"] .mb-menu > .mb-trigger:hover,
+body[data-theme="night"] .mb-menu.open > .mb-trigger { background:rgba(255,255,255,0.1); }
+.mb-dropdown {
+  position:absolute; top:calc(100% + 4px); left:0; min-width:230px;
+  background:rgba(245,247,252,0.94); backdrop-filter:blur(24px) saturate(180%);
+  border:1px solid rgba(0,0,0,0.1); border-radius:10px;
+  box-shadow:0 12px 32px rgba(20,30,60,0.22), 0 2px 6px rgba(0,0,0,0.08);
+  padding:5px; z-index:9999; display:none;
+  font-size:13px; color:#1a1a1f; letter-spacing:0;
+}
+.mb-menu.open .mb-dropdown { display:block; }
+.mb-dropdown a, .mb-dropdown button {
+  display:flex; align-items:center; gap:10px; width:100%;
+  padding:6px 10px; border-radius:5px; border:0; background:transparent;
+  color:inherit; text-decoration:none; font:inherit; text-align:left;
+  cursor:pointer; white-space:nowrap;
+}
+.mb-dropdown a:hover, .mb-dropdown button:hover { background:#3d7bff; color:#fff; }
+.mb-dropdown .mb-sep { height:1px; background:rgba(0,0,0,0.09); margin:5px 6px; }
+.mb-dropdown .mb-shortcut { margin-left:auto; opacity:0.55; font-size:11.5px; }
+body[data-theme="night"] .mb-dropdown { background:rgba(30,32,42,0.94); color:rgba(230,235,245,0.95); border-color:rgba(255,255,255,0.08); }
+body[data-theme="night"] .mb-dropdown .mb-sep { background:rgba(255,255,255,0.08); }
 
-<!-- ============ Synth (Programma 900) modal ============ -->
-<div id="synthModal" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6450;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.62);backdrop-filter:blur(10px);">
-  <div class="synth-card" style="width:min(920px,94vw);max-height:92vh;background:linear-gradient(180deg,#141419 0%, #0d0d12 100%);border-radius:20px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.65),0 0 0 1px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.06);font-family:'SF Mono','JetBrains Mono',ui-monospace,monospace;color:#1a1a24;">
-    <div class="synth-titlebar" style="height:34px;background:linear-gradient(180deg,#242429,#16161c);border-bottom:1px solid rgba(0,0,0,0.6);display:flex;align-items:center;padding:0 12px;gap:8px;position:relative;">
-      <button type="button" id="synthClose" aria-label="Close" style="width:16px;height:16px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.22);padding:0;cursor:pointer;"></button>
-      <span style="width:12px;height:12px;border-radius:50%;background:#febc2e;border:1px solid rgba(0,0,0,0.15);"></span>
-      <span style="width:12px;height:12px;border-radius:50%;background:#28c840;border:1px solid rgba(0,0,0,0.15);"></span>
-      <span style="position:absolute;left:0;right:0;text-align:center;font-size:10px;letter-spacing:0.28em;color:#8a8478;font-weight:600;pointer-events:none;text-transform:uppercase;">programma 900 · sonic plates</span>
-    </div>
-    <div style="padding:14px 16px 16px;overflow:auto;max-height:calc(92vh - 34px);color:#e8e4d8;">
-      <!-- Memory preset strip -->
-      <div class="p900-memory">
-        <div class="p900-mem-label"><span style="opacity:0.55;">MEMORY</span><br><span style="letter-spacing:0.32em;">SONIC PLATES</span></div>
-        <button class="p900-preset active" data-preset="kiln"><span class="p900-preset-tag" style="background:#e85d3a;"></span><div><div class="pn">KILN BASS</div><div class="ps">warm · dark · immediate</div></div></button>
-        <button class="p900-preset" data-preset="frost"><span class="p900-preset-tag" style="background:#5aa0c8;"></span><div><div class="pn">FROSTLINE</div><div class="ps">wide · glass · suspended</div></div></button>
-        <button class="p900-preset" data-preset="brass"><span class="p900-preset-tag" style="background:#c9a84c;"></span><div><div class="pn">BRASS DUST</div><div class="ps">heavy · tactile · slow</div></div></button>
-        <button class="p900-preset" data-preset="night"><span class="p900-preset-tag" style="background:#c9c4b8;"></span><div><div class="pn">NIGHT TRANSIT</div><div class="ps">narrow · pulsed · restless</div></div></button>
-      </div>
-      <div class="p900-rowmarks"><span>SOURCE</span><span>SHAPE</span><span>SPACE</span><span>OUTPUT</span></div>
+/* Brand item — same color as siblings, just bold */
+.brand-menu { display:inline-flex; align-items:center; }
+.brand-menu > .brand-trigger {
+  padding:3px 10px; gap:8px; font-weight:700;
+  margin-right:6px;
+}
+.brand-menu .brand-logo { width:16px; height:16px; opacity:0.9; }
+.brand-menu > .brand-lock {
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:3px 6px; border-radius:6px; background:transparent; border:0;
+  cursor:pointer; font-family:inherit; color:inherit;
+  transition:background 0.12s;
+}
+.brand-menu > .brand-lock:hover { background:rgba(0,0,0,0.06); }
+body[data-theme="night"] .brand-menu > .brand-lock:hover { background:rgba(255,255,255,0.1); }
+.brand-menu > .brand-trigger { margin-left:-2px; }
 
-      <!-- Panels grid -->
-      <div style="display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:8px;">
-        <!-- OSC panel -->
-        <div class="p900-panel">
-          <div class="p900-panel-head"><span class="p900-panel-num">01</span><span class="p900-label">OSCILLATOR</span><span class="p900-panel-tag">VCO-1</span></div>
-          <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-              <div class="p900-knob" data-param="detune" data-min="-50" data-max="50" data-value="0"><div class="p900-knob-dot"></div></div>
-              <div class="p900-sub">DETUNE</div>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:5px;">
-              <button class="p900-wave selected" data-wave="sine" title="Sine"><svg viewBox="0 0 24 8"><path d="M1 4 Q 6 -3, 12 4 T 23 4" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg></button>
-              <button class="p900-wave" data-wave="square" title="Square"><svg viewBox="0 0 24 8"><path d="M1 6 L1 2 L7 2 L7 6 L13 6 L13 2 L19 2 L19 6 L23 6" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg></button>
-              <button class="p900-wave" data-wave="sawtooth" title="Saw"><svg viewBox="0 0 24 8"><path d="M1 6 L7 2 L7 6 L13 2 L13 6 L19 2 L19 6" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg></button>
-              <button class="p900-wave" data-wave="triangle" title="Triangle"><svg viewBox="0 0 24 8"><path d="M1 6 L5 2 L9 6 L13 2 L17 6 L21 2 L23 4" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg></button>
-            </div>
-          </div>
-        </div>
-        <!-- TRACE MONITOR panel -->
-        <div class="p900-panel">
-          <div class="p900-panel-head"><span class="p900-panel-num">02</span><span class="p900-label">TRACE MONITOR</span><span class="p900-panel-tag" style="color:#7fd88f;">● LIVE INPUT</span></div>
-          <div class="p900-scope"><canvas id="p900Scope" width="480" height="120"></canvas></div>
-          <div class="p900-scope-foot"><span>NO VOICE</span><span id="p900ScopeName">KILN BASS</span></div>
-        </div>
-        <!-- FILTER panel -->
-        <div class="p900-panel">
-          <div class="p900-panel-head"><span class="p900-panel-num">03</span><span class="p900-label">FILTER</span><span class="p900-panel-tag">VCF-24</span></div>
-          <div style="display:flex;gap:12px;justify-content:space-around;">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-              <div class="p900-knob" data-param="cutoff" data-min="80" data-max="8000" data-value="2400" data-curve="log"><div class="p900-knob-dot"></div></div>
-              <div class="p900-sub">CUTOFF</div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-              <div class="p900-knob" data-param="resonance" data-min="0.5" data-max="18" data-value="2"><div class="p900-knob-dot"></div></div>
-              <div class="p900-sub">RESO</div>
-            </div>
-          </div>
-        </div>
-      </div>
+/* ============ Cursor style picker ============ */
+#cursor-picker {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  z-index:9999; display:none;
+  background:rgba(248,249,252,0.98); backdrop-filter:blur(24px) saturate(160%);
+  border:1px solid rgba(0,0,0,0.1); border-radius:14px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.28); padding:16px 18px 14px;
+  width:280px; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;
+}
+#cursor-picker.show { display:block; }
+#cursor-picker h4 { margin:0 0 12px; font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#4a4a55; }
+#cursor-picker .close-x { position:absolute; top:8px; right:10px; border:0; background:transparent; font-size:18px; color:#888; line-height:1; }
+.cursor-picker-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:8px;
+  max-height:min(50vh, 360px); overflow-y:auto; padding-right:2px;
+}
+.cursor-option {
+  display:flex; flex-direction:column; align-items:center; gap:7px;
+  background:rgba(0,0,0,0.04); border:2px solid transparent;
+  border-radius:10px; padding:10px 6px 8px; transition:border-color 0.15s, background 0.15s;
+}
+.cursor-option:hover { background:rgba(60,120,220,0.08); border-color:rgba(60,120,220,0.3); }
+.cursor-option.active { border-color:#3a78e8; background:rgba(58,120,232,0.1); }
+.cursor-preview {
+  width:56px; height:56px; display:flex; align-items:center; justify-content:center;
+  border-radius:6px; background:rgba(255,255,255,0.7);
+  box-shadow:0 1px 4px rgba(0,0,0,0.1);
+}
+.cursor-preview svg { display:block; }
+.cursor-preview img { max-width:40px; max-height:40px; display:block; }
+.cursor-option-label {
+  font-size:10px; letter-spacing:0.04em; text-transform:uppercase; color:#6a6a75; font-weight:600;
+  text-align:center; line-height:1.25; word-break:break-word;
+}
+.cursor-picker-hint { margin-top:10px; font-size:10px; color:#9a9aaa; text-align:center; }
+body[data-theme="night"] #cursor-picker { background:rgba(28,30,38,0.98); color:#e6ebf5; border-color:rgba(255,255,255,0.08); }
+body[data-theme="night"] #cursor-picker h4 { color:#b0b5c2; }
+body[data-theme="night"] .cursor-option { background:rgba(255,255,255,0.05); }
+body[data-theme="night"] .cursor-option:hover { background:rgba(100,160,255,0.1); }
+body[data-theme="night"] .cursor-preview { background:rgba(255,255,255,0.08); }
+body[data-theme="night"] .cursor-option-label { color:#8a8a9a; }
 
-      <!-- Second row: Envelope / Modulation / Effects / Master (orange) -->
-      <div style="display:grid;grid-template-columns:0.9fr 0.9fr 1.1fr 0.85fr;gap:8px;margin-top:8px;">
-        <!-- ENVELOPE panel -->
-        <div class="p900-panel">
-          <div class="p900-panel-head"><span class="p900-panel-num">04</span><span class="p900-label">ENVELOPE</span><span class="p900-panel-tag">ADSR</span></div>
-          <div style="display:flex;gap:8px;justify-content:space-around;padding-top:2px;">
-            <div class="p900-slider-col"><input type="range" class="p900-slider" data-param="attack" min="1" max="1500" value="15"><div class="p900-sub">A</div></div>
-            <div class="p900-slider-col"><input type="range" class="p900-slider" data-param="decay" min="10" max="1500" value="180"><div class="p900-sub">D</div></div>
-            <div class="p900-slider-col"><input type="range" class="p900-slider" data-param="sustain" min="0" max="100" value="60"><div class="p900-sub">S</div></div>
-            <div class="p900-slider-col"><input type="range" class="p900-slider" data-param="release" min="20" max="2500" value="420"><div class="p900-sub">R</div></div>
-          </div>
-        </div>
-        <!-- MODULATION panel (LFO) -->
-        <div class="p900-panel">
-          <div class="p900-panel-head"><span class="p900-panel-num">05</span><span class="p900-label">MODULATION</span><span class="p900-panel-tag">LFO</span></div>
-          <div style="display:flex;justify-content:space-around;align-items:center;">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-              <div class="p900-knob small" data-param="lfoRate" data-min="0.1" data-max="12" data-value="4"><div class="p900-knob-dot"></div></div>
-              <div class="p900-sub">RATE</div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-              <div class="p900-knob small" data-param="lfoDepth" data-min="0" data-max="1200" data-value="0"><div class="p900-knob-dot"></div></div>
-              <div class="p900-sub">DEPTH</div>
-            </div>
-          </div>
-        </div>
-        <!-- EFFECTS panel: Delay + Reverb combined -->
-        <div class="p900-panel">
-          <div class="p900-panel-head"><span class="p900-panel-num">06</span><span class="p900-label">EFFECTS</span><span class="p900-panel-tag">TAPE / ROOM</span></div>
-          <div style="display:flex;justify-content:space-around;align-items:center;gap:6px;">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-              <div class="p900-knob small" data-param="delayTime" data-min="0.02" data-max="0.9" data-value="0.28"><div class="p900-knob-dot"></div></div>
-              <div class="p900-sub">TIME</div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-              <div class="p900-knob small" data-param="delayFb" data-min="0" data-max="0.85" data-value="0.35"><div class="p900-knob-dot"></div></div>
-              <div class="p900-sub">REPEAT</div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-              <div class="p900-knob small" data-param="reverb" data-min="0" data-max="0.85" data-value="0.22"><div class="p900-knob-dot"></div></div>
-              <div class="p900-sub">SPACE</div>
-            </div>
-          </div>
-        </div>
-        <!-- MASTER panel (orange highlight) -->
-        <div class="p900-panel p900-panel-accent">
-          <div class="p900-panel-head"><span class="p900-panel-num" style="color:rgba(255,255,255,0.5);">07</span><span class="p900-label" style="color:#fff;">MASTER</span><span class="p900-panel-tag" style="color:rgba(255,255,255,0.55);">0 / 0</span></div>
-          <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-              <div class="p900-knob" data-param="volume" data-min="0" data-max="1" data-value="0.6"><div class="p900-knob-dot"></div></div>
-              <div class="p900-sub" style="color:rgba(255,255,255,0.7);">LEVEL</div>
-            </div>
-            <div class="p900-vu"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-            <div class="p900-sub" style="color:rgba(255,255,255,0.55);">OUTPUT ARMED</div>
-          </div>
-        </div>
-      </div>
+/* Floating stuck emojis */
+.stuck-emoji {
+  position:fixed; z-index:150; font-size:34px; cursor:grab;
+  user-select:none; pointer-events:auto;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,0.25));
+  animation:emojiPop 0.4s cubic-bezier(.2,.9,.3,1.4);
+}
+@keyframes emojiPop { from { transform:scale(0.2) rotate(-30deg); opacity:0; } to { transform:scale(1) rotate(0); opacity:1; } }
+.stuck-emoji:active { cursor:grabbing; }
 
-      <!-- 8-STEP SEQUENCER -->
-      <div class="p900-seq">
-        <div class="p900-seq-head">
-          <div class="p900-panel-head" style="margin-bottom:0;"><span class="p900-panel-num">07</span><span class="p900-label">8-STEP SEQUENCER</span><span class="p900-panel-tag" style="background:#1a1a20;color:#c9a84c;padding:2px 8px;border-radius:2px;">ROOT C4</span></div>
-          <button type="button" id="p900SeqRun" class="p900-seq-run">▶ RUN</button>
-        </div>
-        <div class="p900-seq-grid" id="p900SeqGrid"></div>
-      </div>
+@media (max-width:760px) {
+  .mb-menu > .mb-trigger { font-size:11px; padding:3px 7px; }
+  .mb-dropdown { min-width:200px; font-size:12px; }
+  #cursor-picker { width:min(280px, calc(100vw - 24px)); }
+}
 
-      <!-- LED strip / OLED -->
-      <div id="p900-leds" style="display:flex;gap:6px;justify-content:center;align-items:center;margin:16px 0 10px;padding:10px 14px;background:linear-gradient(180deg,#0a0a12,#1a1a24);border-radius:10px;box-shadow:inset 0 2px 8px rgba(0,0,0,0.8),0 1px 0 rgba(255,255,255,0.6);border:1px solid rgba(0,0,0,0.3);">
-        <span class="p900-led" data-hue="0"></span>
-        <span class="p900-led" data-hue="18"></span>
-        <span class="p900-led" data-hue="30"></span>
-        <span class="p900-led" data-hue="45"></span>
-        <span class="p900-led" data-hue="60"></span>
-        <span class="p900-led" data-hue="120"></span>
-        <span class="p900-led" data-hue="180"></span>
-        <span class="p900-led" data-hue="200"></span>
-        <span class="p900-led" data-hue="220"></span>
-        <span class="p900-led" data-hue="260"></span>
-        <span class="p900-led" data-hue="300"></span>
-        <span class="p900-led" data-hue="340"></span>
-      </div>
+.theme-toggle {
+  display:flex; align-items:center; gap:7px; cursor:pointer;
+  padding:4px 10px; border-radius:20px; border:1px solid rgba(0,0,0,0.15);
+  background:rgba(255,255,255,0.6); font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+  transition:background 0.2s;
+}
+body[data-theme="night"] .theme-toggle { border-color:rgba(255,255,255,0.2); background:rgba(255,255,255,0.08); }
+.theme-toggle:hover { filter:brightness(1.08); }
+.theme-toggle .swatch { width:10px; height:10px; border-radius:50%; transition:background 0.5s; }
 
-      <div style="font-size:8px;letter-spacing:0.28em;color:#8a8478;font-weight:600;text-transform:uppercase;margin-bottom:6px;padding-left:2px;">08 · PRESSURE KEYBED</div>
-      <!-- Keyboard -->
-      <div id="p900-keyboard" style="position:relative;height:150px;background:linear-gradient(180deg,#2a2a34,#0a0a12);border-radius:10px;padding:8px;box-shadow:inset 0 2px 10px rgba(0,0,0,0.8),0 1px 0 rgba(255,255,255,0.6);border:1px solid rgba(0,0,0,0.3);"></div>
+/* ============ BLUEPRINT CHROME — constant across every theme ============ */
+.bp-line { position:absolute; height:1px; left:0; right:0; background:rgba(74,111,160,0.22); z-index:1; pointer-events:none; transition:background 0.6s; }
+body[data-theme="night"] .bp-line { background:rgba(120,180,255,0.14); }
+.bp-line.v { height:auto; width:1px; top:0; bottom:0; left:auto; right:auto; }
+.crosshair { position:absolute; width:18px; height:18px; z-index:3; pointer-events:none; }
+.crosshair::before, .crosshair::after { content:''; position:absolute; background:rgba(74,111,160,0.55); }
+body[data-theme="night"] .crosshair::before,
+body[data-theme="night"] .crosshair::after { background:rgba(140,200,255,0.5); }
+.crosshair::before { left:50%; top:0; width:1px; height:100%; transform:translateX(-50%); }
+.crosshair::after  { top:50%; left:0; height:1px; width:100%; transform:translateY(-50%); }
+.dot-cluster { position:absolute; z-index:3; pointer-events:none; display:grid; grid-template-columns:repeat(4,5px); grid-auto-rows:5px; gap:5px; }
+.dot-cluster span { width:2px; height:2px; border-radius:50%; background:rgba(74,111,160,0.5); }
+.coord { position:absolute; z-index:3; pointer-events:none; font-size:10px; letter-spacing:0.08em; color:rgba(51,77,110,0.65); line-height:1.6; }
+body[data-theme="night"] .coord { color:rgba(210,220,235,0.7); }
 
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:10px;letter-spacing:0.12em;color:#8a8478;">
-        <span style="text-transform:uppercase;">keys · a s d f g h j k l ;   ·   sharps · w e t y u o p</span>
-        <span style="text-transform:uppercase;">oct · z ↓  x ↑</span>
-      </div>
-    </div>
-  </div>
-</div>
+.bp-tagline {
+  position:absolute; left:70px; bottom:130px; z-index:3;
+  font-size:11px; letter-spacing:0.12em; color:rgba(51,77,110,0.8);
+  text-transform:uppercase; display:flex; flex-direction:column; gap:6px;
+}
+body[data-theme="night"] .bp-tagline { color:rgba(220,228,240,0.85); }
+.bp-tagline .row1 { display:flex; align-items:center; gap:18px; }
+.bp-tagline .div { width:1px; height:14px; background:currentColor; opacity:0.4; }
+.bp-tagline .tags { display:flex; gap:10px; opacity:0.75; }
+.bp-tagline .sub { font-size:9px; letter-spacing:0.06em; text-transform:none; opacity:0.6; font-style:italic; }
+
+.callout { position:absolute; z-index:6; pointer-events:none; }
+.callout svg { position:absolute; top:0; left:0; overflow:visible; }
+.callout-marker { position:absolute; width:7px; height:7px; border:1.3px solid rgba(74,111,160,0.75); transform:translate(-50%,-50%); background:rgba(223,233,245,0.6); }
+.callout-label { position:absolute; font-size:8px; letter-spacing:0.1em; color:rgba(74,111,160,0.85); white-space:nowrap; text-transform:uppercase; }
+body[data-theme="night"] .callout-marker { background:rgba(20,26,38,0.7); border-color:rgba(210,220,235,0.6); }
+body[data-theme="night"] .callout-label { color:rgba(210,220,235,0.8); }
+
+/* ============ ROCK / SPECIMEN CENTERPIECE ============ */
+.rock-hub-wrap {
+  position:absolute; left:1100px; top:650px; width:640px; height:580px;
+  transform:translate(-50%,-50%); z-index:5; pointer-events:none;
+  display:flex; align-items:center; justify-content:center;
+}
+.rock-hub-wrap::before {
+  content:''; display:none;
+}
+.rock-hub {
+  position:relative; z-index:1; width:100%; height:100%; object-fit:contain;
+  filter:url(desktop.html#knockoutLight) drop-shadow(0 34px 44px rgba(30,50,80,0.28));
+  animation:none;
+  transform-origin:center center;
+  transition:opacity 0.5s;
+  mix-blend-mode:normal;
+}
+.rock-hub:not([src]) { opacity:0; }
+body[data-theme="night"] .rock-hub {
+  mix-blend-mode:normal;
+  filter:url(desktop.html#knockoutDark) drop-shadow(0 0 40px rgba(255,255,255,0.18));
+  -webkit-mask-image:none;
+          mask-image:none;
+}
+@keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+.rock-glow {
+  position:absolute; left:1100px; top:670px; width:460px; height:460px;
+  transform:translate(-50%,-50%); z-index:4; pointer-events:none;
+  transition:background 1s;
+}
+
+/* ============ SHARED NODE CHROME — identical across themes ============ */
+.node { position:absolute; display:flex; flex-direction:column; align-items:center; z-index:10; cursor:pointer; transform:rotate(var(--rot,0deg)); }
+.node:hover { transform:rotate(var(--rot,0deg)); z-index:50; }
+.node-label {
+  margin-top:4px; font-size:13px; letter-spacing:0.01em; text-transform:none; font-weight:500;
+  color:rgba(35,55,85,0.92); text-align:center; white-space:nowrap;
+  padding:2px 7px; border-radius:2px; transition:color 0.3s, background 0.15s;
+}
+body[data-theme="night"] .node-label { color:rgba(220,228,240,0.75); }
+.node-sub { display:none !important; }
+
+.folder {
+  position:relative; width:120px; height:96px;
+  filter:drop-shadow(0 6px 10px rgba(30,50,80,0.28));
+}
+/* flat — no hover scale on desktop icons */
+.folder .tab {
+  position:absolute; top:0; left:0; width:42%; height:14px;
+  background:linear-gradient(180deg,#5aa4f2 0%,#3689df 100%);
+  border-radius:2px 8px 0 0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.5), 0 1px 0 rgba(20,60,120,0.18);
+}
+/* Paper sliver peeking between tab and front body */
+.folder::before {
+  content:''; position:absolute; left:4px; right:6px; top:10px; height:6px; z-index:1;
+  background:linear-gradient(180deg,#fdfdfd 0%,#e8ecf1 100%);
+  border-radius:2px 2px 0 0;
+  box-shadow:0 1px 0 rgba(0,0,0,0.1);
+}
+.folder .body {
+  position:absolute; top:11px; left:0; right:0; bottom:0; z-index:2;
+  background:linear-gradient(180deg,#7fb8fb 0%,#3d8be3 55%,#3583dc 100%);
+  border-radius:3px 10px 10px 10px;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255,255,255,0.75),
+    inset 0 -1px 0 rgba(0,0,0,0.15),
+    inset 0 -18px 30px rgba(20,60,120,0.15);
+}
+.folder .body::after { display:none; }
+/* Selection: soft gray rounded backdrop like Finder icon-view */
+.node.folder-node.selected .folder,
+.node.selected .folder { filter:drop-shadow(0 6px 10px rgba(30,50,80,0.28)); }
+.folder-glyph {
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-size:34px; filter:drop-shadow(0 1px 1px rgba(0,0,0,0.25));
+  pointer-events:none;
+}
+/* Icon-sized tiles — Bookshelf, Watchlist, Notes match dock-icon scale */
+.icon-tile {
+  width:92px; height:92px; padding:6px; box-sizing:border-box;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(180deg,#ffffff,#eef1f5);
+  border:1px solid rgba(0,0,0,0.14);
+  border-radius:16px;
+  box-shadow:0 6px 14px rgba(20,30,50,0.28), inset 0 1px 0 rgba(255,255,255,0.9);
+  transition: transform .18s ease;
+}
+.icon-tile > img, .icon-tile > svg { width:100%; height:100%; object-fit:contain; display:block; }
+body[data-theme="night"] .icon-tile { background:linear-gradient(180deg,#2a2a30,#161619); border-color:rgba(255,255,255,0.18); }
+/* App-specific tile colors — soft pastel/neumorphic on-brand gradients */
+/* Soft, airy, on-brand tile backgrounds. Barely tinted whites so app glyphs pop. */
+#n-synth .icon-tile     { background:linear-gradient(160deg,#fafafd 0%,#ece7f5 55%,#d9d0ea 100%); border-color:rgba(150,140,180,0.28); box-shadow:0 8px 18px rgba(120,110,160,0.18), inset 0 1.5px 0 rgba(255,255,255,0.95), inset 0 -6px 14px rgba(150,135,190,0.10); }
+#n-bookshelf .icon-tile { background:linear-gradient(160deg,#fffaf2 0%,#fbecd6 55%,#f2d6ae 100%); border-color:rgba(200,160,110,0.32); box-shadow:0 8px 18px rgba(200,155,105,0.18), inset 0 1.5px 0 rgba(255,255,255,0.95), inset 0 -6px 14px rgba(210,165,115,0.12); }
+#n-watchlist .icon-tile { background:linear-gradient(160deg,#fffafa 0%,#fbe4e1 55%,#f2c6c1 100%); border-color:rgba(215,170,165,0.32); box-shadow:0 8px 18px rgba(215,165,160,0.18), inset 0 1.5px 0 rgba(255,255,255,0.95), inset 0 -6px 14px rgba(215,160,155,0.10); }
+#n-photos .icon-tile    { padding:0; background:#ffffff; border-color:rgba(0,0,0,0.08); overflow:hidden; }
+#n-photos .photos-flower { width:76%; height:76%; display:block; margin:auto; }
+/* Subtle app-icon lift to distinguish apps from files/folders on desktop */
+#n-synth, #n-bookshelf, #n-watchlist, #n-stickies, #n-artboard { filter:drop-shadow(0 4px 8px rgba(20,30,50,0.18)); }
+.node.icon-node.selected .icon-tile { transform: scale(1.06); }
+.note-thumb {
+  width:72px; height:78px; border-radius:14px; overflow:hidden;
+  background:linear-gradient(160deg,#fffdf6 0%,#fbf5df 55%,#f5ead0 100%);
+  border:1px solid rgba(200,180,120,0.35);
+  box-shadow:0 8px 18px rgba(200,180,120,0.22), inset 0 1.5px 0 rgba(255,255,255,0.95), inset 0 -6px 14px rgba(220,195,140,0.12);
+  position:relative; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;
+}
+.note-thumb::before { content:''; position:absolute; left:6px; right:6px; top:6px; height:8px; background:linear-gradient(180deg,#f8de7e,#efc85a); border-radius:3px; box-shadow:0 1px 2px rgba(160,120,20,0.15); }
+.note-thumb::after { content:''; position:absolute; left:12px; right:10px; top:22px; height:34px; background:repeating-linear-gradient(180deg, rgba(120,95,30,0.22) 0 1px, transparent 1px 9px); opacity:0.7; }
+.note-thumb span { display:none; }
+.lovable-mark { width:100%; height:100%; border-radius:12px; overflow:hidden; display:grid; place-items:center; background:transparent; }
+.lovable-mark img { width:100%; height:100%; object-fit:cover; display:block; border-radius:12px; }
+/* ============ Collection modal (Bookshelf + Watchlist) ============ */
+#collectionModal { position:fixed; inset:0; z-index:6000; display:none; align-items:center; justify-content:center; background:rgba(10,14,22,0.6); backdrop-filter:blur(8px); }
+#collectionModal.open { display:flex; }
+#collectionModal .cm-card {
+  width:min(900px, 94vw); max-height:90vh; background:#f2f2f2; border-radius:16px; overflow:hidden;
+  box-shadow:0 40px 100px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.15);
+  display:flex; flex-direction:column; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;
+}
+#collectionModal .cm-head {
+  height:38px; background:linear-gradient(#ececef,#dcdce0); border-bottom:1px solid rgba(0,0,0,0.12);
+  display:flex; align-items:center; padding:0 14px; gap:8px; position:relative;
+}
+#collectionModal .cm-head .dot.close {
+  position:relative; z-index:2;
+  width:20px; height:20px; border-radius:50%;
+  background:#ff5f57; border:1px solid rgba(0,0,0,0.18);
+  cursor:pointer; padding:0; display:inline-flex; align-items:center; justify-content:center;
+  color:transparent; transition: color .12s ease;
+}
+#collectionModal .cm-head .dot.close:hover { color:rgba(0,0,0,0.55); }
+#collectionModal .cm-head .dot.close svg { display:block; pointer-events:none; }
+#collectionModal .cm-head .cm-title { position:absolute; left:0; right:0; text-align:center; font-size:13px; color:#333; font-weight:600; letter-spacing:0.01em; pointer-events:none; }
+#collectionModal .cm-body { overflow-y:auto; padding:22px 26px 28px; }
+
+/* Bookshelf: wood shelves with book cover images */
+.bookshelf {
+  --shelf: #7a4a24;
+  display:flex; flex-direction:column; gap:0;
+  background:
+    radial-gradient(ellipse at top, rgba(122,74,36,0.05), transparent 60%),
+    linear-gradient(180deg, #f4ead7 0%, #ecdfc4 100%);
+  padding:20px 22px 8px; border-radius:10px;
+  box-shadow:inset 0 0 0 1px rgba(122,74,36,0.15);
+}
+.bookshelf .shelf-row {
+  display:flex; align-items:flex-end; justify-content:flex-start; gap:12px;
+  padding:4px 6px 0; min-height:170px; flex-wrap:nowrap; overflow-x:auto;
+  scrollbar-width:thin;
+}
+.bookshelf .shelf-plank {
+  height:14px; margin:0 -6px 22px; border-radius:2px;
+  background:linear-gradient(180deg, #8a5a30 0%, #6b3f1d 50%, #4d2c14 100%);
+  box-shadow:0 6px 10px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.bookshelf .book {
+  position:relative; flex:0 0 auto; height:160px; width:auto;
+  transition:transform 0.18s ease, box-shadow 0.18s ease;
+  cursor:pointer; border-radius:2px;
+  box-shadow:0 6px 10px rgba(0,0,0,0.28), 0 1px 2px rgba(0,0,0,0.22);
+  background:#ddd;
+}
+.bookshelf .book img { display:block; height:160px; width:auto; border-radius:2px; }
+.bookshelf .book:hover { transform:translateY(-6px) rotate(-1deg); box-shadow:0 14px 22px rgba(0,0,0,0.35); }
+.bookshelf .book .caption {
+  position:absolute; left:50%; bottom:calc(100% + 8px); transform:translateX(-50%);
+  background:rgba(20,20,24,0.92); color:#fff; font-size:11px; letter-spacing:0.02em;
+  padding:6px 10px; border-radius:6px; white-space:nowrap; opacity:0; pointer-events:none;
+  transition:opacity 0.15s; max-width:220px; overflow:hidden; text-overflow:ellipsis;
+}
+.bookshelf .book:hover .caption { opacity:1; }
+
+/* Watchlist: poster grid */
+.posters { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:20px; }
+.poster-card {
+  background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 10px 24px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.05);
+  transition:transform 0.2s ease, box-shadow 0.2s ease; cursor:pointer;
+}
+.poster-card:hover { transform:translateY(-4px); box-shadow:0 18px 34px rgba(0,0,0,0.28); }
+.poster-card .poster-img { width:100%; aspect-ratio:2/3; background:#222; overflow:hidden; }
+.poster-card .poster-img img { width:100%; height:100%; object-fit:cover; display:block; }
+.poster-card .poster-meta { padding:10px 12px 12px; }
+.poster-card .poster-title { font-size:14px; font-weight:600; color:#111; letter-spacing:-0.005em; }
+.poster-card .poster-sub { font-size:11px; color:#6a6a70; margin-top:2px; }
+
+/* iOS Photos "Library" view */
+.ios-photos { position:relative; }
+.ios-photos-head { padding:2px 2px 14px; }
+.ios-photos-title { font-size:32px; font-weight:800; letter-spacing:-0.01em; color:#111; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif; }
+.ios-photos-sub { font-size:12px; color:rgba(0,0,0,0.5); margin-top:2px; letter-spacing:0.02em; }
+body[data-theme="night"] .ios-photos-title { color:#f2f4f8; }
+body[data-theme="night"] .ios-photos-sub { color:rgba(255,255,255,0.55); }
+.ios-photos-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:2px; border-radius:6px; overflow:hidden; }
+.ios-photo { position:relative; aspect-ratio:1/1; background:#0a0a0a; overflow:hidden; }
+.ios-photo img { width:100%; height:100%; object-fit:cover; display:block; }
+.ios-photos-tabs {
+  display:flex; align-items:center; justify-content:space-around;
+  margin:18px auto 2px; padding:10px 14px; max-width:340px;
+  background:rgba(240,240,245,0.85); backdrop-filter:blur(20px);
+  border-radius:999px; color:rgba(0,0,0,0.55);
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif; font-size:11px; letter-spacing:0.02em;
+  box-shadow:0 8px 24px rgba(0,0,0,0.08);
+}
+body[data-theme="night"] .ios-photos-tabs { background:rgba(30,32,38,0.75); color:rgba(255,255,255,0.6); }
+.ios-photos-tabs .ios-tab { display:flex; flex-direction:column; align-items:center; gap:2px; padding:2px 8px; }
+.ios-photos-tabs .ios-tab svg { width:20px; height:20px; }
+.ios-photos-tabs .ios-tab.active { color:#1877e6; font-weight:600; }
+@media (max-width:560px) { .ios-photos-title { font-size:26px; } }
+
+/* Photo carousel/lightbox — iOS-style full screen viewer */
+.ios-lightbox {
+  position:fixed; inset:0; z-index:1200; background:#000;
+  display:none; flex-direction:column;
+  animation:iosLbIn 0.18s ease-out;
+}
+.ios-lightbox.open { display:flex; }
+@keyframes iosLbIn { from { opacity:0; transform:scale(0.98); } to { opacity:1; transform:scale(1); } }
+.ios-lb-top {
+  position:absolute; top:0; left:0; right:0; z-index:2;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 18px; color:#fff;
+  background:linear-gradient(180deg, rgba(0,0,0,0.55), transparent);
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif; font-size:14px;
+}
+.ios-lb-top .ios-lb-close { background:transparent; border:0; color:#fff; font-size:16px; cursor:pointer; padding:6px 10px; }
+.ios-lb-count { font-variant-numeric:tabular-nums; letter-spacing:0.02em; }
+.ios-lb-stage {
+  flex:1; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory;
+  display:flex; scrollbar-width:none;
+}
+.ios-lb-stage::-webkit-scrollbar { display:none; }
+.ios-lb-slide {
+  flex:0 0 100%; scroll-snap-align:center;
+  display:flex; align-items:center; justify-content:center; padding:44px 8px;
+}
+.ios-lb-slide img { max-width:100%; max-height:100%; object-fit:contain; user-select:none; -webkit-user-drag:none; }
+.ios-lb-strip {
+  display:flex; gap:4px; overflow-x:auto; padding:10px 12px 14px;
+  background:rgba(0,0,0,0.85); scrollbar-width:none;
+}
+.ios-lb-strip::-webkit-scrollbar { display:none; }
+.ios-lb-thumb {
+  flex:0 0 44px; height:44px; border-radius:4px; overflow:hidden;
+  opacity:0.5; transition:opacity 0.15s, transform 0.15s; cursor:pointer;
+  border:2px solid transparent;
+}
+.ios-lb-thumb.active { opacity:1; border-color:#fff; transform:scale(1.05); }
+.ios-lb-thumb img { width:100%; height:100%; object-fit:cover; }
+.ios-photo { cursor:pointer; }
+.ios-photo:active { opacity:0.85; }
+
+.photo-node .thumb {
+  position:relative; width:var(--pw,140px); height:var(--ph,140px); border:none; background:transparent; padding:0;
+  border-radius:3px; overflow:hidden;
+  box-shadow:0 10px 22px rgba(20,30,50,0.32), 0 3px 6px rgba(20,30,50,0.18), 0 1px 0 rgba(255,255,255,0.15) inset;
+}
+/* smaller, icon-scale photos so they don't compete with app icons */
+.photo-node .thumb { width:calc(var(--pw,140px) * 0.6); height:calc(var(--ph,140px) * 0.6); }
+/* flat — no hover lift on desktop photos */
+.photo-node .thumb img { display:block; width:100%; height:100%; object-fit:cover; -webkit-user-drag:none; user-drag:none; user-select:none; pointer-events:none; }
+.node, .node * { -webkit-user-drag:none; }
+/* Finder-style selection: soft gray rounded backdrop + blue label pill */
+.node .selection-ring { position:absolute; inset:-8px -10px -6px -10px; border-radius:10px; background:rgba(120,130,145,0.32); backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px); opacity:0; pointer-events:none; transition:opacity 0.08s; z-index:-1; }
+.node.selected .selection-ring { opacity:1; }
+body[data-theme="night"] .node .selection-ring { background:rgba(180,190,205,0.28); }
+.photo-node .thumb::after { display:none; }
+.node.selected .node-label { background:#1877e6; color:#fff; border-radius:6px; padding:2px 9px; text-shadow:none; }
+.node.selected .node-sub { color:rgba(255,255,255,0.9); background:#1877e6; border-radius:6px; padding:1px 7px; }
+.node.trashed { display:none !important; }
+@media (max-width:560px) {
+  #previewModal { padding:6px; }
+  #previewModal.resume-preview > div { width:min(94vw, 360px) !important; max-height:92dvh !important; border-radius:10px !important; }
+  #previewModal.resume-preview #pvScroll { overflow:hidden !important; }
+  #previewModal.resume-preview #pvScroll > div:first-child { padding:8px !important; }
+  #previewModal.resume-preview #pvImg { width:auto !important; max-width:100% !important; max-height:66dvh !important; object-fit:contain !important; }
+  #previewModal.resume-preview #pvScroll > div:nth-child(3) { display:none !important; }
+  #previewModal.resume-preview #pvTitle { font-size:18px !important; }
+  #previewModal.resume-preview #pvSub { font-size:11px !important; }
+  #previewModal.resume-preview #pvScroll > div:nth-child(2) { padding:8px 16px 12px !important; }
+}
+
+/* ============ Case study modal refinements ============ */
+.cs-card, #caseModal2 .cs-card, #caseModal3 .cs-card { width:min(980px,94vw); max-height:92vh; border-radius:16px; overflow:hidden; box-shadow:0 40px 100px rgba(0,0,0,0.55),0 0 0 1px rgba(0,0,0,0.15); display:flex; flex-direction:column; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif; }
+/* All case studies — unified neutral #fafafa / detail boxes #f0f0f0 */
+.cs-card, #caseModal2 .cs-card, #caseModal3 .cs-card, #caseModal4 .cs-card { background:#fafafa; }
+.cs-tag, #caseModal2 .cs-tag, #caseModal3 .cs-tag, #caseModal4 .cs-tag { background:#f0f0f0; color:#3a3a3a; }
+.cs-metric, #caseModal2 .cs-metric, #caseModal3 .cs-metric, #caseModal4 .cs-metric { background:#f0f0f0; }
+.cs-artifact, #caseModal2 .cs-artifact, #caseModal3 .cs-artifact, #caseModal4 .cs-artifact { background:#f0f0f0; }
+.cs-artifact.contain img, .cs-artifact.contain video,
+#caseModal2 .cs-artifact.contain img, #caseModal2 .cs-artifact.contain video,
+#caseModal3 .cs-artifact.contain img, #caseModal3 .cs-artifact.contain video,
+#caseModal4 .cs-artifact.contain img, #caseModal4 .cs-artifact.contain video { background:#f0f0f0; }
+.cs-scroll { overflow-y:auto; padding:0; }
+.cs-banner { position:relative; background:#f0f0f0; box-shadow:inset 0 -1px 0 rgba(0,0,0,0.06); }
+.cs-banner img.cs-banner-img { width:100%; height:clamp(320px,52vh,520px); object-fit:cover; display:block; }
+.cs-banner video.cs-banner-video { width:100%; height:clamp(320px,52vh,520px); object-fit:cover; display:block; background:#f0f0f0; }
+/* Footer demo — video shares row with a bigger findings sidecar (findings dominant) */
+.cs-footer-row { margin:18px 26px 26px; display:grid; grid-template-columns:1fr 1.2fr; gap:14px; align-items:stretch; }
+.cs-footer-video { border-radius:12px; overflow:hidden; background:#f0f0f0; box-shadow:0 8px 20px rgba(0,0,0,0.08); display:flex; flex-direction:column; }
+.cs-footer-video video { width:100%; display:block; max-height:260px; object-fit:contain; background:#f0f0f0; flex:1; }
+.cs-footer-video .cs-section-title { padding:10px 14px; background:#f0f0f0; color:#303033; }
+.cs-findings { background:#f0f0f0; border-radius:12px; padding:16px 18px; display:flex; flex-direction:column; gap:10px; }
+.cs-findings .cs-section-title { padding:0 0 4px; color:#8a8380; }
+.cs-finding { display:flex; gap:10px; align-items:flex-start; font-size:12.5px; line-height:1.45; color:#2a2a2e; }
+.cs-finding .num { flex:0 0 auto; font-weight:700; font-size:16px; color:#111; min-width:44px; text-align:left; letter-spacing:-0.01em; }
+.cs-finding .lbl { font-weight:600; }
+.cs-finding .txt { color:#555; font-size:11.5px; margin-top:1px; display:block; }
+@media (max-width:760px) { .cs-footer-row { grid-template-columns:1fr; } }
+.cs-hero-copy { position:absolute; left:0; right:0; bottom:0; padding:22px 30px; color:#fff; background:linear-gradient(180deg,transparent,rgba(0,0,0,0.55)); }
+.cs-kicker, .cs-section-title { font-size:11px; letter-spacing:0.18em; text-transform:uppercase; opacity:0.75; }
+.cs-title { font-size:30px; font-weight:700; letter-spacing:0; margin-top:2px; }
+.cs-subtitle { font-size:13px; opacity:0.85; margin-top:2px; }
+.cs-tags { padding:18px 26px 6px; display:flex; flex-wrap:wrap; gap:6px; }
+.cs-tag { font-size:11px; letter-spacing:0.08em; padding:5px 10px; border-radius:999px; background:#f0f0f0; color:#3a3a3a; }
+.cs-copy { padding:12px 30px 4px; font-size:15.5px; line-height:1.65; color:#2a2a2e; max-width:840px; }
+.cs-copy p + p { margin-top:10px; }
+.cs-metrics { padding:16px 26px 6px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.cs-metric { text-align:center; padding:12px 8px; background:#f0f0f0; border-radius:12px; }
+.cs-metric strong { display:block; font-size:20px; color:#111; }
+.cs-metric span { display:block; font-size:11.5px; color:#555; margin-top:3px; letter-spacing:0.04em; }
+.cs-artifacts { padding:18px 30px 28px; display:grid; grid-template-columns:1.9fr 1fr; gap:16px; align-items:stretch; }
+.cs-artifacts.triple { grid-template-columns:1.9fr 1fr; }
+/* Case 01 LAIC — balanced pairing, both align to bottom */
+#caseModal .cs-artifacts.paired { grid-template-columns:1.15fr 1fr; align-items:stretch; }
+#caseModal .cs-artifacts.paired .cs-artifact { min-height:460px; }
+#caseModal .cs-artifacts.paired .cs-artifact img,
+#caseModal .cs-artifacts.paired .cs-artifact video { max-height:none; height:100%; }
+.cs-artifact { background:#f0f0f0; border-radius:14px; padding:0; border:1px solid rgba(0,0,0,0.08); box-shadow:0 6px 16px rgba(0,0,0,0.06); display:flex; flex-direction:column; overflow:hidden; position:relative; }
+.cs-section-title { color:#8a8380; margin:0; padding:10px 14px 6px; font-size:10.5px; }
+.cs-artifact img, .cs-artifact video { width:100%; flex:1; min-height:0; height:100%; object-fit:contain; display:block; background:transparent; }
+.cs-artifact.contain img, .cs-artifact.contain video { object-fit:contain; background:#f0f0f0; padding:10px; }
+.cs-artifact.tall { grid-row:span 2; min-height:560px; }
+.cs-artifact.tall img, .cs-artifact.tall video { object-fit:contain; padding:14px; }
+.cs-artifacts .cs-artifact:not(.tall) { min-height:270px; }
+.cs-artifacts .cs-artifact:not(.tall) video { max-height:280px; padding:10px; background:#f0f0f0; }
+.cs-placeholder { min-height:240px; padding:24px; display:grid; place-items:center; text-align:center; color:#49453f; font-size:13px; line-height:1.5; background:repeating-linear-gradient(135deg,rgba(255,255,255,0.42) 0 10px,rgba(255,255,255,0.18) 10px 20px); }
+.note-doc { color:#2b2722; }
+.note-doc h2 { font-size:22px; margin:0 0 10px; letter-spacing:0; }
+.note-doc p { margin:0 0 10px; font-size:14px; line-height:1.55; }
+.note-doc ul { margin:8px 0 0 18px; font-size:13px; line-height:1.6; }
+@media (max-width:760px) {
+  .cs-card { width:94vw; max-height:88vh; }
+  .cs-artifacts, .cs-metrics { grid-template-columns:1fr; }
+  .cs-title { font-size:24px; }
+}
+
+@keyframes drift { 0%,100% { transform:translateY(0px); } 50% { transform:translateY(-4px); } }
+
+#lineSvg { position:absolute; inset:0; width:2200px; height:1300px; z-index:3; pointer-events:none; overflow:visible; }
+
+/* ============ DOCK ============ */
+.dock-wrap { position:fixed; bottom:0; left:0; right:0; z-index:300; display:flex; flex-direction:column; align-items:center; padding-bottom:14px; pointer-events:none; }
+.dock-section-label { font-size:8px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(51,77,110,0.55); margin-bottom:6px; transition:color 0.5s; }
+body[data-theme="night"] .dock-section-label { color:rgba(210,220,235,0.5); }
+.dock {
+  pointer-events:auto; display:flex; align-items:flex-end; gap:8px;
+  background:rgba(223,233,245,0.55); backdrop-filter:blur(22px) saturate(160%);
+  border:1px solid rgba(255,255,255,0.5); border-radius:16px; padding:9px 14px;
+  box-shadow:0 10px 34px rgba(30,50,80,0.18), inset 0 1px 0 rgba(255,255,255,0.6);
+  transition:background 0.5s;
+}
+body[data-theme="night"] .dock { background:rgba(20,26,40,0.6); border-color:rgba(255,255,255,0.12); }
+.di { display:flex; flex-direction:column; align-items:center; position:relative; cursor:pointer; transform-origin:bottom center; }
+.di-lbl {
+  position:absolute; bottom:calc(100% + 22px); left:50%; transform:translateX(-50%) translateY(6px);
+  background:rgba(20,25,35,0.95); color:#fff; font-size:11px; letter-spacing:0.05em; font-weight:500;
+  padding:6px 12px; border-radius:6px; white-space:nowrap; opacity:0; z-index:400;
+  transition:opacity 0.15s, transform 0.15s; pointer-events:none;
+  box-shadow:0 4px 16px rgba(0,0,0,0.35);
+}
+.di-lbl::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:4px solid transparent; border-top-color:rgba(30,50,80,0.9); }
+.di:hover .di-lbl { opacity:1; transform:translateX(-50%) translateY(0); }
+.di-icon {
+  width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+  background:transparent; box-shadow:0 3px 10px rgba(30,50,80,0.22);
+  transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1); transform-origin:bottom center;
+  overflow:hidden;
+}
+.di:hover .di-icon { transform:translateY(-10px) scale(1.18); box-shadow:0 8px 18px rgba(30,50,80,0.28); }
+body[data-theme="night"] .di-icon { background:transparent; }
+.di-icon svg { width:60%; height:60%; }
+.di-icon img { width:100%; height:100%; object-fit:cover; border-radius:12px; display:block; }
+.di-dot { width:3px; height:3px; border-radius:50%; background:rgba(74,111,160,0.6); margin-top:4px; opacity:0; transition:opacity 0.15s; }
+.di.active .di-dot { opacity:1; }
+.ddiv { width:1px; height:30px; background:rgba(74,111,160,0.25); margin:0 3px; align-self:center; }
+
+/* NIGHT: monochrome white details on pure black */
+body[data-theme="night"] { background:#000; }
+body[data-theme="night"] .bp-line { background:rgba(255,255,255,0.13); }
+body[data-theme="night"] .crosshair::before,
+body[data-theme="night"] .crosshair::after { background:rgba(255,255,255,0.55); }
+body[data-theme="night"] .coord { color:rgba(255,255,255,0.7); }
+body[data-theme="night"] .dot-cluster span { background:rgba(255,255,255,0.55); }
+body[data-theme="night"] .node-label { color:rgba(255,255,255,0.85); }
+body[data-theme="night"] .node-sub { color:rgba(255,255,255,0.5); }
+body[data-theme="night"] .folder .tab { background:rgba(255,255,255,0.85) !important; }
+body[data-theme="night"] .folder .tab { background:#ffffff !important; }
+body[data-theme="night"] .folder .body { background:linear-gradient(180deg,#ffffff 0%,#e8e8e8 100%); border-color:rgba(255,255,255,0.9); }
+body[data-theme="night"] .folder .body::after { border-color:rgba(0,0,0,0.15); }
+body[data-theme="night"] .dock-section-label { color:rgba(255,255,255,0.55); }
+body[data-theme="night"] .dock { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.15); }
+body[data-theme="night"]  { --accent:#ffffff; --accent-soft:rgba(255,255,255,0.55); --accent-glow:rgba(255,255,255,0.3); }
+body[data-theme="night"] .tech-grid { opacity:0.42; }
+
+/* FOREST: dark scrim behind text so labels stay legible over green hills */
+body[data-theme="forest"] .node-label,
+body[data-theme="forest"] .node-sub {
+  color:#ffffff;
+  text-shadow:0 1px 3px rgba(0,0,0,0.75), 0 0 8px rgba(0,0,0,0.55);
+}
+body[data-theme="forest"] .bp-tagline,
+body[data-theme="forest"] #brand-stack,
+body[data-theme="forest"] #copyright {
+  color:#ffffff;
+  text-shadow:0 1px 2px rgba(0,0,0,0.6);
+}
+body[data-theme="forest"] #copyright { color:rgba(255,255,255,0.92); }
+
+/* SKY: bright wallpaper — force white copy with soft shadow for legibility */
+body[data-theme="sky"] .node-label,
+body[data-theme="sky"] .node-sub {
+  color:#ffffff;
+  text-shadow:0 1px 3px rgba(30,50,80,0.6), 0 0 10px rgba(30,50,80,0.35);
+}
+body[data-theme="sky"] #brand-stack,
+body[data-theme="sky"] .bp-tagline,
+body[data-theme="sky"] #copyright {
+  color:#ffffff;
+  text-shadow:0 1px 3px rgba(30,50,80,0.5);
+}
+body[data-theme="sky"] #brand-stack .avail { color:#ffffff; }
+
+/* Tech Stack dock label — brighten on colorful wallpapers */
+body[data-theme="sky"] .dock-section-label,
+body[data-theme="forest"] .dock-section-label,
+body[data-theme="desert"] .dock-section-label {
+  color:rgba(255,255,255,0.9);
+  text-shadow:0 1px 3px rgba(30,40,60,0.45);
+}
+
+/* ============ Per-theme folder colors ============ */
+body[data-theme="sky"] .folder .tab   { background:linear-gradient(180deg,#5aa7ff,#3d8fe8); }
+body[data-theme="sky"] .folder .body  { background:linear-gradient(180deg,#7ab8ff 0%,#4a95e8 100%); }
+body[data-theme="forest"] .folder .tab  { background:linear-gradient(180deg,#94b47a,#6c8e55); }
+body[data-theme="forest"] .folder .body { background:linear-gradient(180deg,#a9c58a 0%,#6e8e57 100%); }
+body[data-theme="desert"] .folder .tab  { background:linear-gradient(180deg,#e9a58c,#c9765f); }
+body[data-theme="desert"] .folder .body { background:linear-gradient(180deg,#f0b79f 0%,#c97a63 100%); }
+
+@media (max-width: 760px) {
+  #menubar { height:42px; padding:0 10px; gap:8px; font-size:9px; }
+  #menubar .brand { font-size:11px !important; gap:6px; }
+  #menubar .brand-logo { width:18px; height:18px; }
+  #menubar .tagline-inline, #menubar .status-dot, #menubar .right > span:nth-of-type(1) { display:none; }
+  #menubar .right { gap:8px; flex:0 1 auto; }
+  #layer-wrap { top:42px; bottom:0; }
+  .di-icon { width:56px; height:56px; border-radius:14px; }
+  .di-icon img { border-radius:14px; }
+  .dock { gap:5px; padding:8px 10px; max-width:calc(100vw - 18px); }
+}
+
+/* Mobile: compact wallpaper pill; keep hero copy clear of right-edge overlays;
+   widget rail is centered/stacked below the hero (see later override). */
+@media (max-width: 760px) {
+  #wallpaper-picker {
+    top:50px; right:10px; width:auto; padding:5px 8px; gap:6px;
+    box-shadow:0 6px 16px rgba(30,50,80,0.18);
+  }
+  #wallpaper-picker .wp-title { display:none; }
+  #wallpaper-picker .wp-grid { gap:5px; }
+  .wp-swatch { width:22px; height:22px; }
+  .wp-swatch svg { width:12px; height:12px; }
+  #brand-stack {
+    top:56px; left:12px;
+    max-width:calc(100vw - 160px);
+  }
+  #brand-stack .hero-lede {
+    max-width:calc(100vw - 160px);
+    font-size:9px; line-height:1.4;
+  }
+  #brand-stack .avail { font-size:9px; letter-spacing:0.12em; }
+}
+
+/* ============ Wallpaper picker (aligned to widget rail width) ============ */
+#wallpaper-picker {
+  position:fixed; top:48px; right:14px; z-index:210; width:300px; box-sizing:border-box;
+  background:rgba(255,255,255,0.55); backdrop-filter:blur(18px) saturate(160%);
+  border:1px solid rgba(0,0,0,0.08); border-radius:14px; padding:8px 12px;
+  box-shadow:0 10px 30px rgba(30,50,80,0.14);
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  font-family:"Courier New",monospace;
+  transition:background 0.4s, color 0.4s, border-color 0.4s;
+}
+body[data-theme="night"] #wallpaper-picker { background:rgba(0,0,0,0.55); border-color:rgba(255,255,255,0.14); color:#fff; }
+#wallpaper-picker .wp-title {
+  font-size:9px; letter-spacing:0.16em; text-transform:uppercase;
+  color:rgba(40,40,40,0.7); flex:0 0 auto;
+}
+body[data-theme="night"] #wallpaper-picker .wp-title { color:rgba(220,228,240,0.8); }
+#wallpaper-picker .wp-grid { display:flex; gap:6px; }
+.wp-swatch {
+  width:26px; height:26px; border-radius:50%; cursor:pointer; padding:0; overflow:hidden;
+  border:1.5px solid rgba(255,255,255,0.85); position:relative;
+  display:inline-flex; align-items:center; justify-content:center;
+  color:rgba(60,60,70,0.9);
+  box-shadow:0 1px 4px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.35);
+  transition:filter 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+body[data-theme="night"] .wp-swatch { color:rgba(230,235,245,0.95); }
+.wp-swatch:hover { filter:brightness(1.08); box-shadow:0 2px 6px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.5); }
+.wp-swatch.active { border-color:#ffffff; box-shadow:0 0 0 2px rgba(255,255,255,0.9), 0 2px 8px rgba(0,0,0,0.2); }
+.wp-swatch svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+/* pastel-colored icon tint per swatch — soft, scene-matched */
+.wp-swatch[data-theme="sky"]    { color:#f2b45c; }   /* soft sun */
+.wp-swatch[data-theme="forest"] { color:#6fae7a; }   /* fern */
+.wp-swatch[data-theme="desert"] { color:#d47a86; }   /* dusty rose */
+.wp-swatch[data-theme="night"]  { color:#eef1f8; }   /* crescent moon on dark */
+.wp-swatch[data-theme="night"] { border-color:rgba(255,255,255,0.4); }
+
+/* ============ Right-side widget rail ============ */
+#widget-rail { position:fixed; top:104px; right:14px; z-index:200; display:flex; flex-direction:column; gap:10px; width:300px; max-height:calc(100vh - 120px); }
+.widget {
+  background:rgba(255,255,255,0.55); backdrop-filter:blur(18px) saturate(160%);
+  border:1px solid rgba(0,0,0,0.08); border-radius:14px; padding:10px;
+  box-shadow:0 10px 30px rgba(30,50,80,0.14);
+  font-family:"Courier New",monospace; color:rgba(30,40,60,0.9);
+  transition:background 0.4s, color 0.4s, border-color 0.4s;
+}
+body[data-theme="night"] .widget { background:rgba(0,0,0,0.55); border-color:rgba(255,255,255,0.14); color:#fff; }
+.widget .w-title { font-size:9px; letter-spacing:0.14em; text-transform:uppercase; opacity:0.65; margin-bottom:6px; }
+#music-widget { padding:12px 12px 14px; display:grid; grid-template-columns:56px 1fr; grid-template-rows:auto auto; gap:6px 12px; align-items:center; }
+#music-widget .w-title { grid-column:1 / -1; }
+.mp-cover { grid-row:2 / span 2; width:56px; height:56px; border-radius:50%; background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.35), rgba(0,0,0,0) 55%), var(--accent, #4A6FA0); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.25); overflow:hidden; }
+.mp-disc { width:100%; height:100%; border-radius:50%; background:repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08) 0 2px, transparent 2px 4px), #1a1a1e; display:flex; align-items:center; justify-content:center; animation:mpspin 8s linear infinite paused; }
+#music-widget.playing .mp-disc { animation-play-state:running; }
+.mp-hole { width:12px; height:12px; border-radius:50%; background:var(--accent, #4A6FA0); box-shadow:0 0 0 2px rgba(0,0,0,0.4); }
+@keyframes mpspin { to { transform:rotate(360deg); } }
+.mp-meta { min-width:0; }
+.mp-track { font-size:12px; font-weight:600; letter-spacing:0.03em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.mp-artist { font-size:10px; opacity:0.65; letter-spacing:0.08em; text-transform:uppercase; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.mp-controls { display:flex; align-items:center; gap:8px; }
+.mp-btn { width:26px; height:26px; border-radius:50%; border:1px solid rgba(0,0,0,0.12); background:rgba(255,255,255,0.55); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; color:inherit; padding:0; transition:transform .12s, background .15s; }
+.mp-btn:hover { transform:scale(1.06); background:rgba(255,255,255,0.85); }
+.mp-btn.mp-play { width:32px; height:32px; background:var(--accent,#4A6FA0); color:#fff; border-color:transparent; }
+.mp-btn.mp-play:hover { background:var(--accent,#4A6FA0); filter:brightness(1.08); }
+body[data-theme="night"] .mp-btn { background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.18); color:#fff; }
+body[data-theme="night"] .mp-btn.mp-play { background:#fff; color:#000; }
+/* Bricks game widget (monochrome brick breaker) */
+#snake-widget { padding:10px; }
+#snake-widget .brick-wrap { position:relative; border-radius:10px; overflow:hidden; background:#fafaf8; border:1px solid rgba(0,0,0,0.08); touch-action:none; user-select:none; }
+body[data-theme="night"] #snake-widget .brick-wrap { background:#0b0c0f; border-color:rgba(255,255,255,0.08); }
+#snake-widget canvas { display:block; width:100%; height:auto; cursor:crosshair; touch-action:none; user-select:none; }
+#snake-widget .brick-overlay {
+  position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:4px; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; opacity:0.85;
+  background:rgba(250,250,248,0.6); backdrop-filter:blur(2px); pointer-events:none; transition:opacity 0.2s;
+}
+body[data-theme="night"] #snake-widget .brick-overlay { background:rgba(11,12,15,0.55); color:#eaeaea; }
+#snake-widget .brick-overlay .k { font-size:18px; letter-spacing:0; }
+#snake-widget.playing .brick-overlay { opacity:0; }
+#snake-widget .game-meta { display:flex; justify-content:space-between; margin-top:8px; font-size:9px; letter-spacing:0.14em; text-transform:uppercase; opacity:0.7; }
+#snake-widget .game-expand { cursor:pointer; opacity:0.7; }
+#snake-widget .game-expand:hover { opacity:1; }
+/* Bricks fullscreen modal */
+#snakeModal { position:fixed; inset:0; z-index:1000; display:none; align-items:center; justify-content:center; background:rgba(20,20,20,0.55); backdrop-filter:blur(12px); }
+#snakeModal.open { display:flex; }
+#snakeModal .sm-card { background:#fafaf8; color:#111; border:1px solid rgba(0,0,0,0.08); border-radius:18px; padding:22px; box-shadow:0 30px 80px rgba(0,0,0,0.35); max-width:min(560px,94vw); width:100%; }
+body[data-theme="night"] #snakeModal .sm-card { background:#0b0c0f; color:#eaeaea; border-color:rgba(255,255,255,0.1); }
+#snakeModal .sm-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; font-family:"SF Pro Text",-apple-system,sans-serif; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; opacity:0.75; gap:12px; }
+#snakeModal .sm-close { cursor:pointer; opacity:0.7; background:none; border:none; color:inherit; font-size:18px; }
+#snakeModal .sm-close:hover { opacity:1; }
+#snakeModal .brick-wrap.large { position:relative; border-radius:14px; overflow:hidden; background:#fafaf8; border:1px solid rgba(0,0,0,0.08); touch-action:none; user-select:none; }
+body[data-theme="night"] #snakeModal .brick-wrap.large { background:#0b0c0f; border-color:rgba(255,255,255,0.08); }
+#snakeModal canvas { display:block; width:100%; height:auto; cursor:crosshair; touch-action:none; user-select:none; }
+#snakeModal .brick-overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; opacity:0.9; background:rgba(250,250,248,0.55); backdrop-filter:blur(2px); pointer-events:none; transition:opacity 0.2s; }
+body[data-theme="night"] #snakeModal .brick-overlay { background:rgba(11,12,15,0.5); color:#eaeaea; }
+#snakeModal .brick-overlay .k { font-size:26px; letter-spacing:0; }
+#snakeModal.playing .brick-overlay { opacity:0; }
+#snakeModal .gm-reset { background:none; border:1px solid currentColor; color:inherit; font:inherit; padding:4px 10px; border-radius:999px; cursor:pointer; opacity:0.7; letter-spacing:0.14em; text-transform:uppercase; font-size:10px; }
+#snakeModal .gm-reset:hover { opacity:1; }
+/* prevent hover-repaint glitches around the right rail */
+#widget-rail, #wallpaper-picker { contain:layout paint; isolation:isolate; will-change:transform; }
+#widget-rail .widget { transform:translateZ(0); isolation:isolate; }
+/* Awards widget */
+#awards-widget .w-title { display:flex; justify-content:space-between; align-items:center; }
+#awards-widget .w-title .aw-count { opacity:0.55; letter-spacing:0.14em; }
+#awards-widget .aw-grid { display:flex; gap:12px; margin-top:6px; align-items:center; justify-content:flex-start; }
+.aw-badge { position:relative; display:block; width:58px; height:58px; border-radius:50%; overflow:hidden; transition:transform 0.18s ease, box-shadow 0.18s ease; flex:0 0 auto; }
+.aw-badge:hover { transform:translateY(-2px) scale(1.08); box-shadow:0 8px 18px rgba(0,0,0,0.25); }
+.aw-badge img { width:100%; height:100%; display:block; }
+.aw-badge .aw-day { display:block; }
+.aw-badge .aw-night { display:none; }
+body[data-theme="night"] .aw-badge .aw-day { display:none; }
+body[data-theme="night"] .aw-badge .aw-night { display:block; }
+.aw-caption { font-size:9px; opacity:0.6; letter-spacing:0.06em; margin-top:8px; text-align:left; }
+/* Hide broken-image icon for locked assets before signed URLs load */
+img[data-locked][src=""] { visibility:hidden; }
+.photo-node[data-kind="resume"] .thumb {
+  background:
+    linear-gradient(180deg, #fdfcf7 0%, #f2ede0 100%);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.12);
+  position:relative;
+}
+.photo-node[data-kind="resume"] .thumb::before {
+  content:"";
+  position:absolute; inset:14% 18%;
+  background:
+    linear-gradient(#c8c0aa, #c8c0aa) top/100% 8% no-repeat,
+    repeating-linear-gradient(180deg, transparent 0 6px, rgba(60,50,30,0.18) 6px 7px);
+  opacity:0.55;
+  pointer-events:none;
+}
+body[data-theme="night"] .photo-node[data-kind="resume"] .thumb {
+  background:linear-gradient(180deg, #2b2b30 0%, #1e1e22 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.08), 0 4px 10px rgba(0,0,0,0.4);
+}
+
+/* Mobile drawer is hidden on desktop/tablet */
+#mobile-drawer { display:none; }
+
+/* ============ Recycle bin + hedgehog ============ */
+.trash-di .di-icon { background:rgba(255,255,255,0.32); }
+.trash-di.drag-over .di-icon { transform:translateY(-12px) scale(1.22) !important; box-shadow:0 0 0 2px rgba(47,123,255,0.65), 0 12px 24px rgba(30,50,80,0.28); }
+#trashModal { position:fixed; inset:0; z-index:6200; display:none; align-items:center; justify-content:center; background:rgba(10,14,22,0.54); backdrop-filter:blur(8px); }
+#trashModal.open { display:flex; }
+#trashModal .trash-card { width:min(520px,92vw); max-height:78vh; background:#f6f3ee; border-radius:16px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(0,0,0,0.12); font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif; }
+#trashModal .trash-head { height:38px; background:linear-gradient(#ececef,#dcdce0); border-bottom:1px solid rgba(0,0,0,0.12); display:flex; align-items:center; padding:0 14px; gap:8px; position:relative; }
+#trashModal .trash-close { width:20px; height:20px; border-radius:50%; background:#ff5f57; border:1px solid rgba(0,0,0,0.18); padding:0; }
+#trashModal .trash-title { position:absolute; left:0; right:0; text-align:center; font-size:13px; color:#333; font-weight:600; pointer-events:none; }
+#trashModal .trash-body { padding:16px; overflow:auto; max-height:calc(78vh - 38px); }
+.trash-empty { padding:34px 16px; text-align:center; color:#777; font-size:13px; }
+.trash-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 12px; border-radius:10px; background:#fff; box-shadow:0 1px 0 rgba(0,0,0,0.06); margin-bottom:8px; }
+.trash-row-name { font-size:13px; color:#222; }
+.restore-btn { border:0; border-radius:999px; padding:6px 10px; background:#111; color:#fff; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; }
+#hedgehog { position:fixed; left:16px; right:auto; top:auto; bottom:36px; z-index:260; width:58px; height:58px; display:flex; align-items:center; justify-content:center; pointer-events:auto; filter:drop-shadow(0 10px 18px rgba(0,0,0,0.28)); touch-action:none; user-select:none; }
+@media (max-width:900px) { #hedgehog { left:16px; right:auto; top:auto; bottom:120px; } }
+#hedgehog .critter { width:52px; height:52px; overflow:visible; animation:critterBob 3.4s ease-in-out infinite; transition:transform .12s; }
+#hedgehog.dragging { filter:drop-shadow(0 18px 26px rgba(0,0,0,0.35)); }
+#hedgehog.dragging .critter { animation:none; transform:scale(1.08); }
+#hedgehog .critter .body { fill: var(--sprout-body, #f6c9a8); transition:fill .6s ease; }
+#hedgehog .critter .foot { fill: var(--sprout-foot, #e8a983); transition:fill .6s ease; }
+#hedgehog .critter .cheek { fill: var(--sprout-cheek, #f2a68f); transition:fill .6s ease; }
+#hedgehog .critter .leaf1 { fill: var(--sprout-leaf1, #7bbf7a); transition:fill .6s ease; }
+#hedgehog .critter .leaf2 { fill: var(--sprout-leaf2, #8fd18e); transition:fill .6s ease; }
+body[data-theme="sky"]    { --sprout-body:#dbeaf7; --sprout-foot:#afc8df; --sprout-cheek:#8fb7d9; --sprout-leaf1:#6895bd; --sprout-leaf2:#93b9d8; }
+body[data-theme="forest"] { --sprout-body:#d7e6cf; --sprout-foot:#a9c199; --sprout-cheek:#c4a068; --sprout-leaf1:#7fa663; --sprout-leaf2:#a0c47f; }
+body[data-theme="desert"] { --sprout-body:#efd4b4; --sprout-foot:#c99c74; --sprout-cheek:#d98266; --sprout-leaf1:#a05e3a; --sprout-leaf2:#c58a5a; }
+body[data-theme="night"]  { --sprout-body:#2e3450; --sprout-foot:#20263e; --sprout-cheek:#5a4a78; --sprout-leaf1:#8a9bd0; --sprout-leaf2:#b8c4e6; }
+#hedgehog .hedge-bubble { position:absolute; left:52px; right:auto; top:-8px; bottom:auto; min-width:150px; background:rgba(255,250,242,0.96); color:#2b2320; border:1px solid rgba(0,0,0,0.08); border-radius:12px; padding:8px 11px; font:11px/1.3 -apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif; box-shadow:0 10px 24px rgba(0,0,0,0.18); opacity:0; transform:translateY(6px); transition:opacity .2s, transform .2s; pointer-events:none; white-space:nowrap; }
+#hedgehog.say .hedge-bubble, #hedgehog:hover .hedge-bubble { opacity:1; transform:translateY(0); }
+body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94); color:#fff7ec; border-color:rgba(255,255,255,0.12); }
+@keyframes critterBob { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-3px); } }
+@keyframes critterBlink { 0%,92%,100%{ transform:scaleY(1); } 95%{ transform:scaleY(0.1); } }
+#hedgehog .eye { transform-origin:center; animation:critterBlink 4.2s ease-in-out infinite; }
+@media (max-width: 760px) {
+  /* --------- MOBILE LAYOUT (final) ---------
+     Bottom is a drag-up drawer. When closed, only a slim handle peeks
+     above the dock. Drag/tap the handle to reveal music /
+     wallpaper / snake. Sprout sits above the drawer on the left. */
+
+  /* Mobile: uniform 72px rounded-square tiles (iPhone home-screen rhythm).
+     All specifics live below inside #layer overrides so folders, photos,
+     notes, and icon tiles share the same footprint. */
+  .node .cs-lock-badge { width:26px; height:26px; }
+  .node .cs-lock-badge svg { width:13px; height:13px; }
+
+  /* Mobile desktop: use a real scrollable grid instead of squeezing the
+     2200px desktop canvas into the phone. The old scaled canvas was what
+     created the hard horizontal clipping band where icons seemed to vanish. */
+  #stage { overflow:hidden; }
+  #layer-wrap {
+    top:42px !important; bottom:0 !important;
+    overflow:hidden !important;
+    /* extra top padding so first icon row clears the hero copy */
+    padding:130px 8px 130px;
+  }
+  #layer {
+    position:relative !important;
+    left:auto !important; top:auto !important;
+    width:100% !important; height:100% !important;
+    padding:0 !important;
+    transform:none !important; transform-origin:top left !important; will-change:auto;
+    display:grid; grid-template-columns:repeat(4, minmax(0, 1fr));
+    column-gap:6px; row-gap:14px; align-items:start; align-content:start; justify-items:center;
+    grid-auto-rows:max-content;
+  }
+  #lineSvg, .bp-line, .crosshair, .dot-cluster, .coord { display:none !important; }
+  #layer .node {
+    position:relative !important; left:auto !important; top:auto !important;
+    width:76px; justify-self:center;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+    transform:none !important;
+    min-height:88px;
+  }
+  #layer .node:hover { transform:none !important; }
+  #layer .node-label {
+    font-size:10.5px !important; line-height:1.2 !important;
+    margin-top:5px !important; width:76px; text-align:center;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  #layer .node-sub {
+    display:none !important;
+  }
+  /* iPhone home-screen rhythm: every tile is a uniform 60px rounded square */
+  #layer .folder,
+  #layer .photo-node .thumb,
+  #layer .note-thumb,
+  #layer .icon-tile {
+    width:60px !important;
+    height:60px !important;
+    border-radius:14px !important;
+    box-sizing:border-box;
+  }
+  #layer .icon-tile { padding:6px !important; }
+  /* Photos: rainbow glyph fills the tile edge-to-edge like other apps */
+  #layer #n-photos .icon-tile {
+    padding:0 !important; background:#ffffff !important;
+    display:flex !important; align-items:center !important; justify-content:center !important;
+  }
+  #layer #n-photos .photos-flower {
+    width:78% !important; height:78% !important;
+    display:block !important; margin:0 !important;
+    object-fit:contain;
+  }
+  /* Case-study "folders" on mobile become flat app-style rounded blue tiles */
+  #layer [id^="n-case"] .folder {
+    width:60px !important; height:60px !important; margin-top:0 !important;
+    background:linear-gradient(160deg,#5ea8ff 0%,#2f7ce6 55%,#1966d1 100%);
+    border-radius:14px !important;
+    box-shadow:0 8px 18px rgba(30,80,160,0.28), inset 0 1.5px 0 rgba(255,255,255,0.35);
+    position:relative;
+  }
+  #layer [id^="n-case"] .folder .tab,
+  #layer [id^="n-case"] .folder::before { display:none !important; }
+  #layer [id^="n-case"] .folder .body {
+    position:absolute !important; inset:0 !important;
+    background:transparent !important; border:0 !important; border-radius:14px !important;
+    display:flex !important; align-items:center !important; justify-content:center !important;
+    top:0 !important;
+  }
+  #layer [id^="n-case"] .cs-lock-badge {
+    position:static !important; transform:none !important;
+    width:auto !important; height:auto !important;
+    background:transparent !important; box-shadow:none !important;
+    z-index:6;
+  }
+  #layer [id^="n-case"] .cs-lock-badge svg {
+    width:26px; height:26px; color:#ffffff;
+  }
+  /* Case-study tiles: white label on the blue tile */
+  #layer [id^="n-case"] .node-label {
+    color:#ffffff !important;
+    text-shadow:0 1px 2px rgba(0,0,0,0.22);
+  }
+  #layer [id^="n-case"].selected .node-label,
+  #layer [id^="n-case"] .node-label { background:transparent !important; }
+  /* Note-thumb: hide desktop paper-line decorations at this small size */
+  #layer .note-thumb::before { left:4px; right:4px; top:4px; height:5px; border-radius:2px; }
+  #layer .note-thumb::after { display:none; }
+  /* Photo thumbs: square, filling the tile */
+  #layer .photo-node .thumb { border-radius:14px; }
+  #layer .photo-node[data-kind="resume"] .thumb { border-radius:14px; }
+  /* case study folders sit in the same uniform square footprint as other tiles */
+  /* order: utility icons first, case studies drop to bottom rows */
+  #layer .node { order: 5; }
+  #layer #n-photos    { order: 1; }
+  #layer #n-stickies  { order: 2; }
+  #layer #n-artboard  { order: 3; }
+  #layer #n-bookshelf { order: 4; }
+  #layer #n-watchlist { order: 5; }
+  #layer #n-synth     { order: 6; }
+  #layer #n-resume    { order: 7; }
+  #layer #n-case1 { order: 10; }
+  #layer #n-case2 { order: 11; }
+  #layer #n-case3 { order: 12; }
+  #layer #n-case4 { order: 13; }
+  /* Hide individual photos on mobile — replaced by aggregated Photos folder. Keep resume (a PDF). */
+  #layer .photo-node:not(#n-resume) { display:none !important; }
+  #layer .photos-mobile { display:flex !important; }
+
+  /* Dock — bottom, above copyright, sitting on the drawer handle */
+  .dock-wrap {
+    position:fixed; top:auto; left:0; right:0;
+    bottom:78px; z-index:210; padding-bottom:0;
+  }
+  .dock-section-label { display:none; }
+  .dock {
+    gap:5px; padding:6px 9px; border-radius:16px;
+    max-width:calc(100vw - 16px); overflow:visible;
+    flex-wrap:nowrap;
+  }
+  .dock::-webkit-scrollbar { display:none; }
+  .di { position:relative; }
+  .di-icon { width:30px; height:30px; border-radius:8px; }
+  .di-icon img { border-radius:8px; }
+  .di:hover .di-icon, .di:active .di-icon { transform:translateY(-6px) scale(1.15); z-index:5; }
+  .di-lbl { font-size:10px; padding:4px 8px; bottom:calc(100% + 10px); z-index:20; }
+
+  /* ------- Bottom Drawer (mobile only) ------- */
+  #mobile-drawer {
+    display:flex; flex-direction:column;
+    position:fixed; left:0; right:0; bottom:0; z-index:180;
+    height:calc(100vh - 44px); padding:0 10px 10px;
+    background:rgba(255,255,255,0.72);
+    backdrop-filter:blur(22px) saturate(1.2);
+    -webkit-backdrop-filter:blur(22px) saturate(1.2);
+    border-top:1px solid rgba(255,255,255,0.5);
+    border-radius:22px 22px 0 0;
+    box-shadow:0 -12px 30px rgba(0,0,0,0.14);
+    transform:translateY(calc(100% - 46px));
+    transition:transform .32s cubic-bezier(.4,.14,.3,1);
+    touch-action:none;
+  }
+  body[data-theme="night"] #mobile-drawer {
+    background:rgba(20,22,28,0.78); border-top-color:rgba(255,255,255,0.08);
+  }
+  #mobile-drawer.open { transform:translateY(0); z-index:350; }
+  /* When drawer is open, hide everything behind it */
+  body.drawer-open .dock-wrap,
+  body.drawer-open #hedgehog,
+  body.drawer-open #copyright,
+  body.drawer-open #stage,
+  body.drawer-open #wallpaper-picker-desktop { visibility:hidden; }
+  #mobile-drawer .md-handle {
+    height:46px; display:flex; align-items:center; justify-content:center;
+    cursor:grab; flex-shrink:0;
+  }
+  #mobile-drawer .md-handle:active { cursor:grabbing; }
+  #mobile-drawer .md-grip {
+    width:44px; height:5px; border-radius:3px;
+    background:rgba(0,0,0,0.28);
+  }
+  body[data-theme="night"] #mobile-drawer .md-grip { background:rgba(255,255,255,0.4); }
+  #mobile-drawer .md-body {
+    flex:1; min-height:0; overflow:hidden;
+    display:grid; grid-template-columns:1fr 1fr; grid-template-rows:auto auto auto;
+    gap:8px; padding:2px 4px 6px;
+  }
+
+  /* Reset the widgets so they flow inside the drawer grid */
+  #widget-rail {
+    position:static !important; top:auto; right:auto; left:auto; bottom:auto;
+    display:contents; width:auto; max-width:none; max-height:none;
+    padding:0; contain:none; will-change:auto; pointer-events:auto;
+  }
+  #widget-rail .widget { transform:none !important; pointer-events:auto; }
+  #music-widget {
+    position:static !important; width:auto; min-width:0;
+    grid-column:1 / 2; grid-row:2;
+    grid-template-columns:36px 1fr; gap:4px 8px; padding:8px 10px;
+  }
+  .mp-cover { width:36px; height:36px; }
+  .mp-hole { width:9px; height:9px; }
+  .mp-track { font-size:11px; }
+  .mp-artist { font-size:9px; }
+  .mp-controls { gap:6px; }
+  .mp-btn { width:22px; height:22px; }
+  .mp-btn.mp-play { width:26px; height:26px; }
+  #music-widget .w-title { font-size:8px; margin-bottom:3px; }
+
+  #wallpaper-picker {
+    position:static !important; top:auto !important; right:auto !important;
+    left:auto !important; bottom:auto !important; margin:0;
+    grid-column:2 / 3; grid-row:2;
+    width:auto; padding:8px 10px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+  }
+  #wallpaper-picker .wp-title { display:none; }
+  #wallpaper-picker .wp-grid {
+    display:grid; grid-template-columns:repeat(2, auto); gap:6px;
+  }
+  .wp-swatch { width:26px; height:26px; }
+  .wp-swatch svg { width:13px; height:13px; }
+
+  #snake-widget {
+    display:block; position:static !important;
+    grid-column:1 / -1; grid-row:3;
+    width:auto; padding:10px 12px 14px;
+  }
+  #snake-widget .game-board { grid-template-columns:repeat(4,1fr); }
+
+  #awards-widget {
+    position:static !important;
+    grid-column:1 / -1;
+    width:auto; padding:10px 12px;
+  }
+  #awards-widget .aw-grid { justify-content:flex-start; gap:16px; }
+
+  /* Sprout — perched above the drawer on the LEFT */
+  #hedgehog {
+    left:12px !important; right:auto !important; top:auto !important;
+    bottom:130px !important;
+  }
+
+  /* Copyright: bottom-center, above the drawer handle */
+  #copyright { left:0; right:0; bottom:56px; text-align:center; z-index:181; }
+}
+
+/* ------- Tablet: lift the dock so copyright is visible ------- */
+@media (min-width:761px) and (max-width:1024px) {
+  .dock-wrap { padding-bottom:34px; }
+  #copyright { bottom:12px; }
+}
 
 
 
-<!-- ============ Artboard (Marbling Atelier) modal ============ -->
-<div id="artboardModal" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6460;display:none;align-items:center;justify-content:center;background:rgba(20,16,10,0.55);backdrop-filter:blur(10px);">
-  <div class="mb-card">
-    <div class="mb-titlebar">
-      <button type="button" id="artboardClose" aria-label="Close" style="width:14px;height:14px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.2);padding:0;cursor:pointer;"></button>
-      <span class="mb-title-serif">Suminagashi Studio</span>
-      <span class="mb-crumbs">Floating ink · slow water</span>
-      <div class="mb-titlebar-right">
-        <button type="button" class="mb-icon-btn" id="mbUndo" title="Undo">↶</button>
-        <button type="button" class="mb-icon-btn" id="mbRedo" title="Redo" disabled="">↷</button>
-        <button type="button" class="mb-icon-btn" id="mbClear" title="Clear water">⟲</button>
-        <span class="mb-titlebar-sep"></span>
-        <button type="button" class="mb-icon-btn" id="mbSave" title="Save water">◱ SAVE WATER</button>
-      </div>
-    </div>
+.p900-panel { background:linear-gradient(180deg,#f2efe6,#e2ded1); border-radius:6px; padding:8px 10px 12px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08), 0 1px 0 rgba(255,255,255,0.5), 0 2px 4px rgba(0,0,0,0.35); position:relative; min-height:118px; }
+.p900-panel-accent { background:linear-gradient(180deg,#f27a35,#c94a1a); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.5); }
+.p900-panel-accent .p900-knob { border-color:rgba(0,0,0,0.35); }
+.p900-panel-head { display:flex; align-items:center; gap:6px; margin-bottom:8px; font-size:7px; letter-spacing:0.22em; text-transform:uppercase; color:#8a8478; font-weight:600; }
+.p900-panel-num { color:#c9a84c; opacity:0.9; }
+.p900-panel-tag { margin-left:auto; color:#8a8478; }
+.p900-label { font-size:8px; letter-spacing:0.28em; color:#3a3a44; font-weight:700; text-transform:uppercase; }
+.p900-sub { font-size:8px; letter-spacing:0.22em; color:#a8a294; font-weight:600; text-align:center; margin-top:4px; text-transform:uppercase; }
 
-    <div class="mb-body">
-      <!-- Left rail: instruments -->
-      <aside class="mb-rail mb-rail-left">
-        <div class="mb-rail-head">Instruments</div>
-        <button class="mb-tool active" data-tool="dropper"><span class="mb-tool-ico">◉</span><div><div class="mb-tool-name">Dropper</div></div><span class="mb-tool-num">1</span></button>
-        <button class="mb-tool" data-tool="stylus"><span class="mb-tool-ico">╱</span><div><div class="mb-tool-name">Stylus</div></div><span class="mb-tool-num">2</span></button>
-        <button class="mb-tool" data-tool="comb"><span class="mb-tool-ico">▦</span><div><div class="mb-tool-name">Comb</div></div><span class="mb-tool-num">3</span></button>
-        <button class="mb-tool" data-tool="rake"><span class="mb-tool-ico">☰</span><div><div class="mb-tool-name">Rake</div></div><span class="mb-tool-num">4</span></button>
-        <button class="mb-tool" data-tool="breath"><span class="mb-tool-ico">〜</span><div><div class="mb-tool-name">Breath</div></div><span class="mb-tool-num">5</span></button>
+/* Memory preset strip */
+.p900-memory { display:grid; grid-template-columns:auto repeat(4,1fr); gap:0; align-items:stretch; background:linear-gradient(180deg,#1a1a20,#0e0e14); border:1px solid rgba(0,0,0,0.5); border-radius:6px; margin-bottom:6px; overflow:hidden; }
+.p900-mem-label { padding:8px 12px; font-size:8px; color:#8a8478; letter-spacing:0.18em; text-transform:uppercase; font-weight:700; line-height:1.35; border-right:1px solid rgba(255,255,255,0.06); background:#0a0a10; display:flex; flex-direction:column; justify-content:center; min-width:110px; }
+.p900-preset { display:flex; align-items:stretch; gap:8px; background:transparent; border:0; border-right:1px solid rgba(255,255,255,0.06); padding:6px 10px 6px 0; color:#e8e4d8; text-align:left; cursor:pointer; font-family:inherit; }
+.p900-preset:last-child { border-right:0; }
+.p900-preset-tag { width:3px; align-self:stretch; background:#3a3a44; border-radius:0; margin-right:6px; opacity:0.35; }
+.p900-preset.active .p900-preset-tag { opacity:1; box-shadow:0 0 8px currentColor; }
+.p900-preset .pn { font-size:10px; letter-spacing:0.14em; font-weight:700; text-transform:uppercase; color:#f2efe6; }
+.p900-preset:not(.active) .pn { color:#8a8478; }
+.p900-preset .ps { font-size:8px; letter-spacing:0.08em; color:#5a5a60; text-transform:lowercase; margin-top:2px; }
+.p900-rowmarks { display:flex; justify-content:space-between; font-size:7px; letter-spacing:0.32em; color:#5a5a60; text-transform:uppercase; padding:0 4px 6px; }
 
-        <div class="mb-rail-sep"></div>
-        <div class="mb-slider-label"><span>DROP SIZE</span><span id="mbSizeVal">62</span></div>
-        <input type="range" id="mbSize" class="mb-slider-h" min="10" max="120" value="62">
-        <p class="mb-tool-hint" id="mbToolHint">Place a controlled bloom of color.</p>
-      </aside>
+/* Trace monitor scope */
+.p900-scope { background:#0d0f0a; border:1px solid rgba(0,0,0,0.4); border-radius:3px; padding:6px; height:78px; box-shadow:inset 0 0 12px rgba(0,0,0,0.6); }
+.p900-scope canvas { display:block; width:100%; height:100%; }
+.p900-scope-foot { display:flex; justify-content:space-between; font-size:7px; letter-spacing:0.22em; color:#8a8478; text-transform:uppercase; margin-top:4px; padding:0 2px; }
 
-      <!-- Center: canvas surface -->
-      <div class="mb-center">
-        <div class="mb-caption"><span class="mb-caption-num">No. 01</span> <span id="mbCaption">The water is clear and still.</span></div>
-        <div class="mb-canvas-wrap">
-          <canvas id="mbCanvas" width="820" height="500"></canvas>
-          <div class="mb-brush"></div>
-        </div>
-        <div class="mb-impressions">
-          <div class="mb-impressions-label">Impressions</div>
-          <div class="mb-impressions-sub">Your prints will rest here</div>
-          <div class="mb-impressions-strip" id="mbImpressions">
-            <div class="mb-impression-slot"></div>
-          </div>
-        </div>
-      </div>
+/* VU meter for master */
+.p900-vu { display:flex; gap:2px; padding:3px 4px; background:rgba(0,0,0,0.35); border-radius:2px; }
+.p900-vu span { width:6px; height:5px; background:rgba(255,255,255,0.15); border-radius:1px; }
+.p900-vu span.on { background:#ffdca8; box-shadow:0 0 4px #ffb08a; }
 
-      <!-- Right rail: pigments -->
-      <aside class="mb-rail mb-rail-right">
-        <div class="mb-rail-head">PIGMENT COMPOSITION</div>
-        <div class="mb-pigment-heading">Mineral <span style="opacity:0.4;">▾</span></div>
-        <p class="mb-pigment-desc">Ground stone hues with a measured, open bloom.</p>
-        <div class="mb-swatches">
-          <button class="mb-swatch active" data-color="#2b1a4a" data-name="Iris" style="background:#2b1a4a;"></button>
-          <button class="mb-swatch" data-color="#7a1f2b" data-name="Oxblood" style="background:#7a1f2b;"></button>
-          <button class="mb-swatch" data-color="#3a6b52" data-name="Moss" style="background:#3a6b52;"></button>
-          <button class="mb-swatch" data-color="#c98a3a" data-name="Amber" style="background:#c98a3a;"></button>
-          <button class="mb-swatch" data-color="#141018" data-name="Sumi" style="background:#141018;"></button>
-        </div>
-        <div class="mb-swatch-names">
-          <span>Iris</span><span>Oxblood</span><span>Moss</span><span>Amber</span><span>Sumi</span>
-        </div>
+/* 8-step sequencer */
+.p900-seq { margin-top:8px; padding:10px 12px 12px; background:linear-gradient(180deg,#141419,#0e0e14); border-radius:6px; border:1px solid rgba(0,0,0,0.5); }
+.p900-seq-head { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+.p900-seq-run { background:#e85d3a; color:#fff; border:0; padding:6px 16px; font:700 10px 'SF Mono',ui-monospace,monospace; letter-spacing:0.22em; border-radius:2px; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.4); }
+.p900-seq-run.running { background:#3a3a44; color:#e85d3a; }
+.p900-seq-grid { display:grid; grid-template-columns:repeat(8,1fr); gap:4px; }
+.p900-step { background:#1a1a20; border:1px solid rgba(0,0,0,0.5); border-radius:3px; padding:12px 4px 6px; text-align:center; font-family:inherit; color:#8a8478; cursor:pointer; position:relative; box-shadow:inset 0 0 8px rgba(0,0,0,0.5); }
+.p900-step-num { position:absolute; top:3px; left:4px; font-size:7px; letter-spacing:0.14em; color:#5a5a60; }
+.p900-step-dot { width:8px; height:8px; border-radius:50%; background:#2a2a30; margin:8px auto 8px; box-shadow:inset 0 0 3px rgba(0,0,0,0.7); }
+.p900-step.on .p900-step-dot { background:#e85d3a; box-shadow:0 0 8px #e85d3a, inset 0 0 3px rgba(255,255,255,0.3); }
+.p900-step.playing { border-color:#c9a84c; }
+.p900-step-val { font-size:9px; letter-spacing:0.14em; color:#a8a294; }
+.p900-step.on .p900-step-val { color:#e8e4d8; }
 
-        <div class="mb-rail-sep"></div>
-        <div class="mb-paper-row">
-          <div class="mb-paper-swatch"></div>
-          <div>
-            <div class="mb-paper-label">PAPER TONE</div>
-            <div class="mb-paper-sub">Warm cotton · 300 gsm</div>
-          </div>
-        </div>
-
-        <div class="mb-rail-sep"></div>
-        <div class="mb-guided">GUIDED STARTS <span style="opacity:0.4;">▾</span></div>
-      </aside>
-    </div>
-
-    <div class="mb-footer">
-      <span>DRAG DIRECTLY ACROSS THE WATER</span>
-      <span class="mb-footer-mid">1–5 TOOLS · F FULL SCREEN · C CLEAN VIEW · ⌘Z UNDO</span>
-      <button type="button" class="mb-print-btn" id="mbMakePrint">Make print <span style="letter-spacing:0.4em;">↘</span></button>
-    </div>
-  </div>
-</div>
-
-
-
-<div id="collectionModal" role="dialog" aria-modal="true">
-  <div class="cm-card">
-    <div class="cm-head">
-      <button type="button" class="dot close" id="cmClose" title="Close" aria-label="Close">
-        <svg viewBox="0 0 10 10" width="8" height="8" aria-hidden="true"><path d="M2 2 L8 8 M8 2 L2 8" stroke="rgba(0,0,0,0.55)" stroke-width="1.4" stroke-linecap="round"></path></svg>
-      </button>
-      <span class="cm-title" id="cmTitle">Bookshelf</span>
-    </div>
-    <div class="cm-body" id="cmBody"></div>
-  </div>
-</div>
-<div id="menubar">
-  <div class="left">
-    <div class="mb-menu brand-menu" data-menu="brand">
-      <button class="brand-lock" type="button" title="Lock desktop" aria-label="Lock desktop">
-        <img src="images/spiral2.png" alt="Shadow personal brand mark" class="brand-logo">
-      </button>
-      <button class="mb-trigger brand-trigger" type="button">
-        <span>Shadow</span>
-      </button>
-      <div class="mb-dropdown">
-        <button type="button" data-action="about">About Shadow</button>
-        <div class="mb-sep"></div>
-        <a href="#" data-action="contact">Say hi<span class="mb-shortcut">↗</span></a>
-      </div>
-    </div>
-    <div class="mb-menu" data-menu="shop">
-      <button class="mb-trigger" type="button">Shop</button>
-      <div class="mb-dropdown">
-        <a href="https://stock.adobe.com/contributor/213420721/Parinaz" target="_blank" rel="noopener noreferrer">Stock Images<span class="mb-shortcut">↗</span></a>
-      </div>
-    </div>
-    <div class="mb-menu" data-menu="edit">
-      <button class="mb-trigger" type="button">Edit</button>
-      <div class="mb-dropdown">
-        <button type="button" data-action="cursor-style">Cursor Style<span class="mb-shortcut" id="cursorStyleCurrent">Default</span></button>
-        <div class="mb-sep"></div>
-        <button type="button" data-action="reset-cursor">Reset Cursor</button>
-      </div>
-    </div>
-    <div class="mb-menu" data-menu="help">
-      <button class="mb-trigger" type="button">Help</button>
-      <div class="mb-dropdown">
-        <a href="#" data-action="contact">Contact Shadow<span class="mb-shortcut">↗</span></a>
-      </div>
-    </div>
-  </div>
-  <div class="center"></div>
-  <div class="right">
-    <span id="datebox">—</span>
-    <span id="clock">--:--</span>
-  </div>
-</div>
-
-<!-- Cursor style picker (Edit > Cursor Style) -->
-<div id="cursor-picker" role="dialog" aria-label="Cursor style">
-  <button type="button" class="close-x" id="cursorPickerClose" aria-label="Close">×</button>
-  <h4>Cursor Style</h4>
-  <div class="cursor-picker-grid" id="cursorPickerGrid"></div>
-  <div class="cursor-picker-hint">Your choice is remembered on this device.</div>
-</div>
+.p900-knob { width:54px; height:54px; border-radius:50%; background:radial-gradient(circle at 32% 28%, #f8f6f0, #d8d3c6 55%, #b8b2a3 100%); position:relative; cursor:ns-resize; box-shadow:0 4px 10px rgba(0,0,0,0.18), 0 1px 0 rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.15), inset 0 2px 3px rgba(255,255,255,0.7); border:1px solid rgba(0,0,0,0.08); }
+.p900-knob::after { content:""; position:absolute; inset:8px; border-radius:50%; background:inherit; box-shadow:inset 0 1px 2px rgba(255,255,255,0.6), inset 0 -2px 4px rgba(0,0,0,0.15); pointer-events:none; }
+.p900-knob.small { width:42px; height:42px; }
+.p900-knob.small::after { inset:6px; }
+/* OP-1 style colored jewel knobs */
+.p900-knob[data-param="detune"]    { background:radial-gradient(circle at 32% 28%, #6ba8e0, #2c6ab8 55%, #123f7a 100%); border-color:rgba(0,0,0,0.25); }
+.p900-knob[data-param="cutoff"]    { background:radial-gradient(circle at 32% 28%, #ffffff, #e6e3d8 55%, #b8b2a3 100%); }
+.p900-knob[data-param="resonance"] { background:radial-gradient(circle at 32% 28%, #7fd88f, #2f9a4a 55%, #145a2a 100%); border-color:rgba(0,0,0,0.25); }
+.p900-knob[data-param="reverb"]    { background:radial-gradient(circle at 32% 28%, #ffb08a, #e85d3a 55%, #8a2a15 100%); border-color:rgba(0,0,0,0.25); }
+.p900-knob[data-param="volume"]    { background:radial-gradient(circle at 32% 28%, #3a3a44, #14141c 70%); border-color:rgba(0,0,0,0.4); }
+.p900-knob-dot { position:absolute; left:50%; top:3px; width:3px; height:10px; background:#1a1a24; border-radius:2px; transform:translateX(-50%); z-index:2; box-shadow:0 0 2px rgba(0,0,0,0.3); }
+.p900-knob[data-param="detune"] .p900-knob-dot,
+.p900-knob[data-param="resonance"] .p900-knob-dot,
+.p900-knob[data-param="reverb"] .p900-knob-dot,
+.p900-knob[data-param="volume"] .p900-knob-dot { background:#f6f4ee; }
+.p900-knob.small .p900-knob-dot { top:3px; height:8px; }
+.p900-wave { width:34px; height:16px; background:#f6f4ee; border:1px solid rgba(0,0,0,0.15); border-radius:4px; color:#8a8478; display:flex; align-items:center; justify-content:center; padding:0; cursor:pointer; transition:all .15s; }
+.p900-wave svg { width:22px; height:8px; }
+.p900-wave.selected { background:#e85d3a; color:#f6f4ee; border-color:rgba(0,0,0,0.25); box-shadow:0 0 6px rgba(232,93,58,0.5), inset 0 1px 0 rgba(255,255,255,0.3); }
+.p900-slider-col { display:flex; flex-direction:column; align-items:center; gap:4px; }
+.p900-slider { -webkit-appearance:none; appearance:none; width:16px; height:74px; writing-mode:vertical-lr; direction:rtl; background:transparent; cursor:pointer; }
+.p900-slider::-webkit-slider-runnable-track { width:4px; height:74px; background:linear-gradient(180deg,#1a1a24,#3a3a52); border-radius:2px; }
+.p900-slider::-moz-range-track { width:4px; height:74px; background:linear-gradient(180deg,#1a1a24,#3a3a52); border-radius:2px; }
+.p900-slider::-webkit-slider-thumb { -webkit-appearance:none; width:22px; height:14px; background:linear-gradient(180deg,#4a4a62,#1a1a24); border:1px solid rgba(0,0,0,0.5); border-radius:3px; box-shadow:0 1px 3px rgba(0,0,0,0.5); margin-left:-9px; }
+.p900-slider::-moz-range-thumb { width:22px; height:14px; background:linear-gradient(180deg,#4a4a62,#1a1a24); border:1px solid rgba(0,0,0,0.5); border-radius:3px; box-shadow:0 1px 3px rgba(0,0,0,0.5); }
+.p900-led { width:12px; height:12px; border-radius:50%; background:#1a1a24; box-shadow:inset 0 1px 2px rgba(0,0,0,0.8); transition:background .12s, box-shadow .12s; }
+.p900-led.on { background:hsl(var(--h),95%,60%); box-shadow:0 0 10px hsl(var(--h),95%,60%), 0 0 20px hsl(var(--h),95%,55%), inset 0 0 3px rgba(255,255,255,0.6); }
+.p900-key { position:absolute; top:8px; bottom:8px; background:linear-gradient(180deg,#f8f6f0 0%, #ece9de 60%, #d4cfbe 100%); border:1px solid rgba(0,0,0,0.35); border-radius:2px 2px 4px 4px; cursor:pointer; box-shadow:inset 0 -6px 8px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9), 0 2px 3px rgba(0,0,0,0.3); transition:background .06s, transform .04s; user-select:none; }
+.p900-key.black { background:linear-gradient(180deg,#2a2a34 0%, #14141c 60%, #050508 100%); height:62%; z-index:2; border-color:#000; box-shadow:inset 0 -5px 8px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.15), 0 3px 4px rgba(0,0,0,0.6); border-radius:1px 1px 3px 3px; }
+.p900-key.active { background:linear-gradient(180deg,#ffb08a,#e85d3a); box-shadow:inset 0 -4px 8px rgba(0,0,0,0.2), 0 0 10px rgba(232,93,58,0.7); transform:translateY(1px); }
+.p900-key.black.active { background:linear-gradient(180deg,#e85d3a,#7a2a15); }
+.p900-key-label { position:absolute; bottom:6px; left:0; right:0; text-align:center; font-size:9px; color:#a8a294; font-weight:600; letter-spacing:0.05em; pointer-events:none; text-transform:uppercase; }
+.p900-key.black .p900-key-label { color:rgba(255,255,255,0.5); bottom:4px; }
+@media (max-width: 720px) {
+  .synth-card { font-size:13px; }
+  .p900-panel { padding:8px 8px 10px; }
+  .p900-knob { width:42px; height:42px; }
+  .p900-knob.small { width:34px; height:34px; }
+}
+@media (max-width: 560px) {
+  #synthModal { padding:6px; align-items:center; }
+  #synthModal .synth-card { width:min(96vw, 390px) !important; max-height:none !important; border-radius:12px !important; font-size:9px; }
+  #synthModal .synth-titlebar { height:28px !important; padding:0 9px !important; }
+  #synthModal .synth-titlebar span[style*="position:absolute"] { font-size:8px !important; letter-spacing:0.14em !important; }
+  #synthModal .synth-card > div[style*="padding:14px 16px 16px"] { padding:6px !important; max-height:none !important; overflow:hidden !important; }
+  .p900-memory { grid-template-columns:repeat(4, minmax(0,1fr)) !important; gap:3px !important; padding:5px !important; margin-bottom:5px !important; }
+  .p900-memory .p900-mem-label { display:none; }
+  #synthModal .p900-preset { min-width:0; padding:4px 3px !important; gap:3px !important; }
+  #synthModal .p900-preset-tag { width:5px !important; height:16px !important; }
+  #synthModal .p900-preset .pn { font-size:6.5px !important; letter-spacing:0.06em !important; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .p900-rowmarks { display:none !important; }
+  #synthModal div[style*="grid-template-columns:1fr 1.35fr 1fr"] {
+    grid-template-columns:repeat(3, minmax(0,1fr)) !important; gap:4px !important;
+  }
+  #synthModal div[style*="grid-template-columns:0.9fr 0.9fr 1.1fr 0.85fr"] {
+    grid-template-columns:repeat(4, minmax(0,1fr)) !important; gap:4px !important; margin-top:4px !important;
+  }
+  .p900-panel { min-height:58px; padding:4px 5px 5px; }
+  .p900-panel-head { margin-bottom:3px; gap:3px; font-size:5.5px; letter-spacing:0.1em; }
+  .p900-panel-tag { display:none; }
+  #synthModal .p900-panel > div[style*="display:flex"] { gap:3px !important; }
+  #synthModal .p900-panel div[style*="flex-direction:column"] { gap:2px !important; }
+  .p900-sub { font-size:5.5px; letter-spacing:0.08em; }
+  .p900-scope { height:42px; padding:3px; }
+  .p900-scope canvas { width:100%; height:auto; }
+  .p900-scope-foot { display:none; }
+  .p900-knob { width:26px; height:26px; }
+  .p900-knob::after { inset:4px; }
+  .p900-knob.small { width:22px; height:22px; }
+  .p900-knob.small::after { inset:3px; }
+  .p900-knob-dot { top:2px; width:2px; height:6px; }
+  .p900-knob.small .p900-knob-dot { top:2px; height:5px; }
+  .p900-wave { width:25px; height:11px; }
+  .p900-wave svg { width:18px; height:6px; }
+  .p900-slider { width:12px; height:38px; }
+  .p900-slider::-webkit-slider-runnable-track,
+  .p900-slider::-moz-range-track { height:38px; }
+  .p900-slider::-webkit-slider-thumb { width:16px; height:10px; margin-left:-6px; }
+  .p900-slider::-moz-range-thumb { width:16px; height:10px; }
+  .p900-seq, #p900-leds, #p900-keyboard + div, #synthModal div[style*="font-size:8px;letter-spacing:0.28em"] { display:none !important; }
+  #p900-keyboard { height:82px !important; margin-top:4px; border-radius:6px !important; padding:5px !important; }
+  .p900-key { top:5px; bottom:5px; }
+  .p900-key-label { display:none; }
+  #synthModal .p900-preset .ps { display:none; }
+}
 
 
 
-<!-- Wallpaper picker: top-right under the clock/date -->
-<div id="wallpaper-picker" aria-label="Choose wallpaper">
-  <div class="wp-title">Wallpaper</div>
-  <div class="wp-grid">
-    <button class="wp-swatch" data-theme="sky" style="background:linear-gradient(135deg,#fef4d6,#cfe4f5);" title="Sky" aria-label="Sky">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
-    </button>
-    <button class="wp-swatch" data-theme="forest" style="background:linear-gradient(135deg,#e4efd6,#bcd6a8);" title="Forest" aria-label="Forest">
-      <svg viewBox="0 0 24 24"><path d="M12 3c-3.5 2.6-5.5 5.4-5.5 8.5 0 3 2 5 5.5 5s5.5-2 5.5-5c0-3.1-2-5.9-5.5-8.5z"></path><path d="M12 9v13"></path></svg>
-    </button>
-    <button class="wp-swatch" data-theme="desert" style="background:linear-gradient(135deg,#fde3d9,#f4bcc0);" title="Desert" aria-label="Desert">
-      <svg viewBox="0 0 24 24"><path d="M12 4c-.9 0-1.5.7-1.5 1.5V20h3V5.5C13.5 4.7 12.9 4 12 4z"></path><path d="M8 9c-.9 0-1.5.7-1.5 1.5V20h3v-9.5C9.5 9.7 8.9 9 8 9z"></path><path d="M16 11c-.9 0-1.5.7-1.5 1.5V20h3v-7.5c0-.8-.6-1.5-1.5-1.5z"></path></svg>
-    </button>
-    <button class="wp-swatch" data-theme="night" style="background:linear-gradient(135deg,#1a1d2b,#05070d);" title="Night" aria-label="Night">
-      <svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path></svg>
-    </button>
-  </div>
-</div>
+.mb-card { width:min(1120px,96vw); max-height:94vh; background:#e7ddc8; border-radius:14px; overflow:hidden; box-shadow:0 40px 100px rgba(60,40,15,0.55), 0 0 0 1px rgba(0,0,0,0.14); font-family:'Inter','Helvetica Neue',sans-serif; color:#3a2e1e; display:flex; flex-direction:column; }
+.mb-titlebar { display:flex; align-items:center; gap:10px; height:38px; padding:0 14px; background:linear-gradient(180deg,#ecdfc6,#dccfb4); border-bottom:1px solid rgba(0,0,0,0.1); }
+.mb-crumbs { font-size:9px; letter-spacing:0.28em; text-transform:uppercase; color:#8a7a54; font-weight:600; }
+.mb-title-serif { font-family:'Instrument Serif','Playfair Display',Georgia,serif; font-size:20px; font-weight:400; font-style:italic; color:#2e2314; margin-left:14px; }
+.mb-titlebar-right { margin-left:auto; display:flex; align-items:center; gap:8px; }
+.mb-icon-btn { background:transparent; border:0; padding:4px 6px; font:600 10px 'Inter',sans-serif; letter-spacing:0.14em; color:#5a4a2a; cursor:pointer; border-radius:4px; }
+.mb-icon-btn:hover { background:rgba(60,40,10,0.06); }
+.mb-icon-btn[disabled] { opacity:0.3; cursor:not-allowed; }
+.mb-titlebar-sep { width:1px; height:16px; background:rgba(0,0,0,0.12); margin:0 4px; }
 
-<!-- Right-side widget rail -->
-<div id="widget-rail">
-  <div class="widget" id="music-widget">
-    <div class="w-title">Now Playing</div>
-    <div class="mp-cover" id="mpCover" aria-hidden="true">
-      <div class="mp-disc"><div class="mp-hole"></div></div>
-    </div>
-    <div class="mp-meta">
-      <div class="mp-track" id="mpTrack">Golden Hour</div>
-      <div class="mp-artist" id="mpArtist">Lofi · Sky</div>
-    </div>
-    <div class="mp-controls">
-      <button class="mp-btn" id="mpPrev" aria-label="Previous">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"></path></svg>
-      </button>
-      <button class="mp-btn mp-play" id="mpPlay" aria-label="Play/Pause">
-        <svg id="mpPlayIcon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
-        <svg id="mpPauseIcon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="display:none;"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
-      </button>
-      <button class="mp-btn" id="mpNext" aria-label="Next">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"></path></svg>
-      </button>
-    </div>
-    <audio id="mpAudio" loop="" preload="none"></audio>
-  </div>
-  <div class="widget" id="snake-widget">
-    <div class="w-title" style="display:flex;justify-content:space-between;align-items:center;">
-      <span>Bricks</span>
-      <span class="game-expand" id="snakeExpand" title="Expand">⛶</span>
-    </div>
-    <div class="brick-wrap"><canvas id="brickCanvas" width="240" height="180"></canvas>
-      <div class="brick-overlay" id="brickOverlay"><div class="k">▶</div><div>Click to play</div></div>
-    </div>
-    <div class="game-meta"><span>Score <span id="gameMoves">0</span></span><span>Best <span id="gameBest">0</span></span></div>
-  </div>
-</div>
+.mb-body { flex:1; display:grid; grid-template-columns:200px 1fr 220px; gap:0; min-height:0; }
+.mb-rail { padding:16px 18px 18px; background:transparent; overflow:auto; min-width:0; }
+.mb-rail-left { border-right:1px solid rgba(0,0,0,0.05); }
+.mb-rail-right { border-left:1px solid rgba(0,0,0,0.05); }
+.mb-rail-head { font-size:9px; letter-spacing:0.24em; text-transform:uppercase; color:#8a7a54; font-weight:700; margin-bottom:12px; }
+.mb-rail-sep { height:1px; background:rgba(0,0,0,0.08); margin:16px 0; }
 
-<!-- Bricks fullscreen modal -->
-<div id="snakeModal" role="dialog" aria-modal="true">
-  <div class="sm-card">
-    <div class="sm-head">
-      <span>Bricks · Move to aim · Click to launch</span>
-      <button class="sm-close" id="snakeModalClose" aria-label="Close">✕</button>
-    </div>
-    <div class="brick-wrap large"><canvas id="brickCanvasBig" width="480" height="360"></canvas>
-      <div class="brick-overlay" id="brickOverlayBig"><div class="k">▶</div><div>Click / tap to launch</div></div>
-    </div>
-    <div class="sm-head" style="margin:14px 0 0;">
-      <span>Score <span id="gameMovesBig">0</span></span>
-      <span>Best <span id="gameBestBig">0</span></span>
-      <button type="button" class="gm-reset" id="gameResetBig">New game</button>
-    </div>
-  </div>
-</div>
+.mb-tool { display:flex; align-items:center; gap:10px; width:100%; background:transparent; border:0; padding:5px 4px; color:#5a4a2a; font:500 12px 'Inter',sans-serif; cursor:pointer; border-radius:4px; text-align:left; font-family:'Instrument Serif',Georgia,serif; }
+.mb-tool .mb-tool-ico { width:20px; text-align:center; font-size:14px; color:#8a7a54; font-family:'Inter',sans-serif; }
+.mb-tool .mb-tool-name { font-size:13px; line-height:1.15; }
+.mb-tool .mb-tool-num { margin-left:auto; font:500 10px 'Inter',sans-serif; color:#a89773; }
+.mb-tool.active { color:#2e2314; }
+.mb-tool.active .mb-tool-ico { color:#2e2314; }
+.mb-tool.active { border-left:2px solid #2e2314; padding-left:2px; }
 
-<!-- Recycle bin modal -->
-<div id="trashModal" role="dialog" aria-modal="true">
-  <div class="trash-card">
-    <div class="trash-head">
-      <button class="trash-close" id="trashClose" aria-label="Close"></button>
-      <span class="trash-title">Recycle Bin</span>
-    </div>
-    <div class="trash-body" id="trashBody"></div>
-  </div>
-</div>
+.mb-slider-label { display:flex; justify-content:space-between; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:#8a7a54; font-weight:600; margin-bottom:4px; }
+.mb-slider-h { -webkit-appearance:none; appearance:none; width:100%; height:2px; background:rgba(60,40,10,0.2); outline:none; }
+.mb-slider-h::-webkit-slider-thumb { -webkit-appearance:none; width:10px; height:10px; border-radius:50%; background:#2e2314; cursor:grab; border:2px solid #e7ddc8; box-shadow:0 0 0 1px rgba(0,0,0,0.15); }
+.mb-slider-h::-moz-range-thumb { width:10px; height:10px; border-radius:50%; background:#2e2314; cursor:grab; border:2px solid #e7ddc8; }
+.mb-tool-hint { font-family:'Instrument Serif',Georgia,serif; font-style:italic; font-size:12px; color:#7a6a44; margin-top:12px; line-height:1.4; }
 
-<div id="brand-stack">
-  <span class="avail"><span class="dot"></span>Available for work</span>
-<p class="hero-lede">Designing products from concept to launch with clarity, systems thinking, and visual craft.</p>
-</div>
+.mb-center { padding:14px 20px; display:flex; flex-direction:column; gap:12px; min-width:0; }
+.mb-caption { font-family:'Instrument Serif',Georgia,serif; font-size:13px; color:#7a6a44; font-style:italic; letter-spacing:0.01em; }
+.mb-caption-num { font-family:'Inter',sans-serif; font-size:9px; letter-spacing:0.24em; text-transform:uppercase; color:#a89773; font-style:normal; font-weight:600; margin-right:8px; }
+.mb-canvas-wrap { position:relative; background:#f6f0dc; border-radius:8px; box-shadow:inset 0 2px 8px rgba(0,0,0,0.08), 0 12px 30px rgba(60,40,15,0.15); overflow:hidden; aspect-ratio:820/500; }
+#mbCanvas { display:block; width:100%; height:100%; touch-action:none; cursor:crosshair; }
 
-<div id="copyright">© 2026 Shadow</div>
+.mb-impressions { display:flex; align-items:center; gap:12px; padding:6px 4px; }
+.mb-impressions-label { font-family:'Instrument Serif',Georgia,serif; font-style:italic; font-size:13px; color:#5a4a2a; }
+.mb-impressions-sub { font-size:10px; color:#a89773; letter-spacing:0.06em; }
+.mb-impressions-strip { display:flex; gap:6px; margin-left:auto; }
+.mb-impression-slot { width:44px; height:32px; background:#f0e7cf; border:1px dashed rgba(60,40,10,0.15); border-radius:3px; }
+.mb-impression-slot img { width:100%; height:100%; object-fit:cover; border-radius:2px; }
 
-<!-- Mobile iOS-style status bar + hamburger (visible only <=760px) -->
-<div id="mobile-statusbar" aria-hidden="false">
-  <span class="ms-clock" id="msClock">--:--</span>
-  <img class="ms-logo" src="images/spiral2.png" alt="">
-  <div class="ms-right">
-    <svg class="ms-ic ms-signal" viewBox="0 0 17 11" aria-hidden="true"><rect x="0" y="7" width="3" height="4" rx="0.8"></rect><rect x="4.5" y="5" width="3" height="6" rx="0.8"></rect><rect x="9" y="2.5" width="3" height="8.5" rx="0.8"></rect><rect x="13.5" y="0" width="3" height="11" rx="0.8"></rect></svg>
-    <svg class="ms-ic ms-wifi" viewBox="0 0 16 12" aria-hidden="true"><path d="M8 2.2 C4.6 2.2 1.9 3.5 0 5.1 l1.6 1.6 C3.3 5.3 5.5 4.4 8 4.4 s4.7 0.9 6.4 2.3 L16 5.1 C14.1 3.5 11.4 2.2 8 2.2 z"></path><path d="M8 5.9 C5.9 5.9 4.1 6.7 2.8 7.9 l1.6 1.6 c1 -0.9 2.2 -1.4 3.6 -1.4 s2.6 0.5 3.6 1.4 l1.6 -1.6 C11.9 6.7 10.1 5.9 8 5.9 z"></path><circle cx="8" cy="10.2" r="1.4"></circle></svg>
-    <svg class="ms-ic ms-bat" viewBox="0 0 26 12" aria-hidden="true"><rect x="0.5" y="0.5" width="22" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1"></rect><rect x="2.5" y="2.5" width="17" height="7" rx="1.4" fill="currentColor"></rect><rect x="23.2" y="4" width="1.8" height="4" rx="0.6" fill="currentColor"></rect></svg>
-    <button type="button" class="ms-hamburger" id="msHamburger" aria-label="Menu" aria-expanded="false">
-      <span></span><span></span><span></span><span></span>
-    </button>
-  </div>
-</div>
+.mb-pigment-heading { font-family:'Instrument Serif',Georgia,serif; font-size:16px; color:#2e2314; margin-bottom:4px; }
+.mb-pigment-desc { font-family:'Instrument Serif',Georgia,serif; font-style:italic; font-size:11px; color:#7a6a44; line-height:1.4; margin-bottom:12px; }
+.mb-swatches { display:flex; gap:6px; margin-bottom:6px; }
+.mb-swatch { width:22px; height:22px; border-radius:50%; border:2px solid #e7ddc8; box-shadow:0 0 0 1px rgba(0,0,0,0.15); padding:0; cursor:pointer; transition:transform .12s; }
+.mb-swatch.active { transform:scale(1.15); box-shadow:0 0 0 1px rgba(0,0,0,0.4), 0 0 0 4px rgba(0,0,0,0.05); }
+.mb-swatch-names { display:flex; gap:6px; font-size:7px; letter-spacing:0.02em; color:#8a7a54; }
+.mb-swatch-names span { width:22px; text-align:center; line-height:1.1; }
 
-<!-- Mobile hamburger sheet -->
-<div id="mobile-sheet" role="dialog" aria-label="Menu" aria-hidden="true">
-  <div class="msh-scrim" id="mshScrim"></div>
-  <div class="msh-panel">
-    <div class="msh-head">
-      <div class="msh-brand">
-        <img src="images/spiral2.png" alt="" class="msh-logo">
-        <div>
-          <div class="msh-name">Shadow</div>
-          <div class="msh-role">Product Designer</div>
-        </div>
-      </div>
-      <button type="button" class="msh-close" id="mshClose" aria-label="Close">×</button>
-    </div>
-    <nav class="msh-nav">
-      <button type="button" data-sheet="about">About Shadow</button>
-      <button type="button" data-sheet="cursor-style">Cursor Style</button>
-      <div class="msh-sep"></div>
-      <a href="https://stock.adobe.com/contributor/213420721/Parinaz" target="_blank" rel="noopener noreferrer">Stock Images <span>↗</span></a>
-      <div class="msh-sep"></div>
-      <a href="#" data-action="contact">Say hi <span>✉</span></a>
-    </nav>
-    <div class="msh-social">
-    </div>
-  </div>
-</div>
+.mb-paper-row { display:flex; align-items:center; gap:10px; }
+.mb-paper-swatch { width:26px; height:20px; background:#f2ead1; border:1px solid rgba(60,40,10,0.15); border-radius:2px; }
+.mb-paper-label { font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:#8a7a54; font-weight:700; }
+.mb-paper-sub { font-family:'Instrument Serif',Georgia,serif; font-style:italic; font-size:11px; color:#7a6a44; }
+.mb-guided { font-size:9px; letter-spacing:0.24em; text-transform:uppercase; color:#8a7a54; font-weight:700; }
 
-<!-- Mobile-only bottom drawer (widgets slide in here on <=760px) -->
-<div id="mobile-drawer" aria-label="Widgets drawer">
-  <div class="md-handle" id="mdHandle"><div class="md-grip"></div></div>
-  <div class="md-body" id="mdBody"></div>
-</div>
+.mb-footer { display:flex; align-items:center; justify-content:space-between; padding:8px 16px; background:linear-gradient(180deg,#dccfb4,#c8b998); border-top:1px solid rgba(0,0,0,0.08); font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:#5a4a2a; font-weight:600; }
+.mb-footer-mid { color:#8a7a54; letter-spacing:0.16em; }
+.mb-print-btn { background:linear-gradient(180deg,#a88656,#8a6a44); color:#f6f0dc; border:0; padding:8px 16px; border-radius:3px; font:600 11px 'Inter',sans-serif; letter-spacing:0.16em; cursor:pointer; box-shadow:0 2px 6px rgba(60,40,10,0.3); }
 
-<div id="stage">
-  <svg class="grain" width="100%" height="100%">
-    <filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"></feTurbulence><feColorMatrix type="saturate" values="0"></feColorMatrix></filter>
-    <rect width="100%" height="100%" filter="url(#noise)"></rect>
-  </svg>
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <defs>
-      <filter id="knockoutLight" x="0" y="0" width="1" height="1">
-        <feColorMatrix type="matrix" values="
-          1 0 0 0 0
-          0 1 0 0 0
-          0 0 1 0 0
-          -1.15 -1.15 -1.15 0 1.05"></feColorMatrix>
-      </filter>
-      <filter id="knockoutDark" x="0" y="0" width="1" height="1">
-        <feColorMatrix type="matrix" values="
-          1 0 0 0 0
-          0 1 0 0 0
-          0 0 1 0 0
-          1.2 1.2 1.2 0 -0.15"></feColorMatrix>
-      </filter>
-    </defs>
-  </svg>
-  <div class="tech-grid"></div>
+.artboard-thumb {
+  background:#efe8d8 !important;
+  border-radius:8px !important;
+  padding:0 !important;
+}
+.artboard-thumb::before, .artboard-thumb::after { display:none !important; }
+.artboard-thumb > svg { width:100%; height:100%; display:block; }
 
-  <div id="layer-wrap">
-  <div id="layer">
-
-    <!-- ===== constant grid / blueprint chrome ===== -->
-    <div class="bp-line" style="top:80px;"></div>
-    <div class="bp-line" style="top:220px;"></div>
-    <div class="bp-line" style="top:360px;"></div>
-    <div class="bp-line" style="top:500px;"></div>
-    <div class="bp-line" style="top:640px;"></div>
-    <div class="bp-line" style="top:780px;"></div>
-    <div class="bp-line" style="top:920px;"></div>
-    <div class="bp-line" style="top:1060px;"></div>
-    <div class="bp-line" style="top:1200px;"></div>
-    <div class="bp-line v" style="left:80px;"></div>
-    <div class="bp-line v" style="left:340px;"></div>
-    <div class="bp-line v" style="left:600px;"></div>
-    <div class="bp-line v" style="left:860px;"></div>
-    <div class="bp-line v" style="left:1100px;"></div>
-    <div class="bp-line v" style="left:1340px;"></div>
-    <div class="bp-line v" style="left:1600px;"></div>
-    <div class="bp-line v" style="left:1860px;"></div>
-    <div class="bp-line v" style="left:2120px;"></div>
-
-    <div class="crosshair" style="left:71px; top:71px;"></div>
-    <div class="crosshair" style="left:2111px; top:71px;"></div>
-    <div class="crosshair" style="left:71px; top:1191px;"></div>
-    <div class="crosshair" style="left:2111px; top:1191px;"></div>
-    <div class="crosshair" style="left:1091px; top:71px;"></div>
-    <div class="crosshair" style="left:1091px; top:1191px;"></div>
-
-    <div class="dot-cluster" style="left:96px; top:254px;">
-      <span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span>
-    </div>
-    <div class="dot-cluster" style="left:1200px; top:504px;">
-      <span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span>
-    </div>
-
-    <div class="coord" id="coordText" style="left:56px; bottom:190px;">36.7783° N<br>119.4179° W</div>
-
-    
-
-    <svg id="lineSvg" xmlns="http://www.w3.org/2000/svg"></svg>
-
-    <!-- centerpiece removed; landscape lives in stage background -->
-
-     <!-- ===== case studies: folders ===== -->
-     <div class="node" id="n-case1" style="left:860px; top:170px; --rot:0deg;">
-       <div class="cs-lock-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></div>
-       <div class="folder"><div class="tab"></div><div class="body"></div></div>
-        <div class="node-label">case_study_01</div>
-       <div class="node-sub">AI Chatbot</div>
-     </div>
-      <div class="node" id="n-case2" style="left:1060px; top:780px; --rot:0deg;">
-       <div class="cs-lock-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></div>
-       <div class="folder"><div class="tab"></div><div class="body"></div></div>
-         <div class="node-label">case_study_02</div>
-        <div class="node-sub">New Product Launch</div>
-     </div>
-      <div class="node" id="n-case3" style="left:440px; top:820px; --rot:0deg;">
-       <div class="cs-lock-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></div>
-       <div class="folder"><div class="tab"></div><div class="body"></div></div>
-         <div class="node-label">case_study_03</div>
-        <div class="node-sub">Client Work</div>
-     </div>
-      <div class="node" id="n-case4" style="left:1360px; top:780px; --rot:0deg;">
-       <div class="cs-lock-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></div>
-       <div class="folder"><div class="tab"></div><div class="body"></div></div>
-         <div class="node-label">case_study_04</div>
-        <div class="node-sub">Branding</div>
-     </div>
-
-     <!-- ===== new empty folders ===== -->
-     <div class="node" id="n-folder5" style="left:1700px; top:150px; --rot:0deg;">
-       <div class="folder"><div class="tab"></div><div class="body"></div></div>
-       <div class="node-label">new_folder_01</div>
-       <div class="node-sub">Empty</div>
-     </div>
-     <div class="node" id="n-folder6" style="left:1900px; top:350px; --rot:0deg;">
-       <div class="folder"><div class="tab"></div><div class="body"></div></div>
-       <div class="node-label">new_folder_02</div>
-       <div class="node-sub">Empty</div>
-     </div>
-     <div class="node" id="n-folder7" style="left:1700px; top:550px; --rot:0deg;">
-       <div class="folder"><div class="tab"></div><div class="body"></div></div>
-       <div class="node-label">new_folder_03</div>
-       <div class="node-sub">Empty</div>
-     </div>
-     <div class="node" id="n-folder8" style="left:1900px; top:750px; --rot:0deg;">
-       <div class="folder"><div class="tab"></div><div class="body"></div></div>
-       <div class="node-label">new_folder_04</div>
-       <div class="node-sub">Empty</div>
-     </div>
-     <div class="node" id="n-folder9" style="left:1700px; top:950px; --rot:0deg;">
-       <div class="folder"><div class="tab"></div><div class="body"></div></div>
-       <div class="node-label">new_folder_05</div>
-       <div class="node-sub">Empty</div>
-     </div>
-
-    <div class="node icon-node collection-node" id="n-bookshelf" data-collection="books" style="left:700px; top:940px; --rot:0deg;">
-      <div class="icon-tile">
-        <img src="images/icon-books.png" alt="Bookshelf" style="width:100%;height:100%;object-fit:contain;">
-      </div>
-      <div class="node-label">bookshelf</div><div class="node-sub">7 titles</div>
-    </div>
-    <div class="node icon-node" id="n-synth" style="left:220px; top:930px; --rot:0deg;">
-      <div class="icon-tile">
-        <img src="images/icon-synth.png" alt="Programma 900 synthesizer app icon" style="width:100%;height:100%;object-fit:contain;">
-      </div>
-      <div class="node-label">programma_900</div><div class="node-sub">Synth</div>
-    </div>
-    <div class="node icon-node collection-node" id="n-watchlist" data-collection="films" style="left:870px; top:940px; --rot:0deg;">
-      <div class="icon-tile">
-        <img src="images/icon-films-v2.png" alt="Watchlist" style="width:100%;height:100%;object-fit:contain;">
-      </div>
-      <div class="node-label">watchlist</div><div class="node-sub">6 titles</div>
-    </div>
-    <!-- Mobile-only: aggregated Photos icon -->
-    <div class="node icon-node collection-node photos-mobile" id="n-photos" data-collection="photos" style="--rot:0deg;">
-      <div class="icon-tile photos-tile" aria-label="Photos">
-        <svg class="photos-flower" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <g style="mix-blend-mode:multiply;">
-            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#ff9a3c" opacity="0.78" transform="rotate(0 50 50)"></ellipse>
-            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#f2d64a" opacity="0.78" transform="rotate(45 50 50)"></ellipse>
-            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#8ccb52" opacity="0.78" transform="rotate(90 50 50)"></ellipse>
-            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#5aa8d6" opacity="0.78" transform="rotate(135 50 50)"></ellipse>
-            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#7f8ed1" opacity="0.78" transform="rotate(180 50 50)"></ellipse>
-            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#b782c9" opacity="0.78" transform="rotate(225 50 50)"></ellipse>
-            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#e57ea3" opacity="0.78" transform="rotate(270 50 50)"></ellipse>
-            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#ef6f6f" opacity="0.78" transform="rotate(315 50 50)"></ellipse>
-          </g>
-        </svg>
-      </div>
-      <div class="node-label">photos</div><div class="node-sub">Library</div>
-    </div>
-    <div class="node" id="n-stickies" style="left:540px; top:150px; --rot:0deg;">
-      <div class="note-thumb" style="background:linear-gradient(160deg,#fff6c9 0%,#ffe89a 55%,#f5d270 100%); box-shadow:0 8px 16px rgba(180,150,60,0.25), inset 0 1.5px 0 rgba(255,255,255,0.8), inset 0 -4px 10px rgba(180,140,50,0.15);"><span>✏️</span></div>
-      <div class="node-label">stickies</div><div class="node-sub">Draw a note</div>
-    </div>
-    <div class="node" id="n-artboard" style="left:340px; top:640px; --rot:-2deg;">
-      <div class="note-thumb artboard-thumb" aria-hidden="true">
-        <svg viewBox="0 0 100 108" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="16" cy="30" rx="7" ry="11" fill="#e9c9c1"></ellipse>
-          <circle cx="16" cy="26" r="1.6" fill="#d9aaa0"></circle>
-          <circle cx="16" cy="34" r="1.6" fill="#d9aaa0"></circle>
-          <rect x="30" y="22" width="4" height="22" rx="1.4" fill="#f0e6d2" stroke="#c9beA6" stroke-width="0.4"></rect>
-          <g transform="translate(52 42)">
-            <path d="M-14 6 A14 14 0 0 1 14 6 Z" fill="#f4efe2" stroke="#b7ac93" stroke-width="0.5"></path>
-            <path d="M-11 6 L-8 -6 M-6 6 L-4 -8 M-2 6 L-1 -9 M2 6 L1 -9 M6 6 L4 -8 M11 6 L8 -6" stroke="#b7ac93" stroke-width="0.5" fill="none"></path>
-          </g>
-          <circle cx="62" cy="30" r="3.2" fill="#3d7fb8"></circle>
-          <ellipse cx="22" cy="60" rx="10" ry="8" fill="#c8c2b3"></ellipse>
-          <ellipse cx="20" cy="58" rx="4" ry="2" fill="#dcd6c6" opacity="0.7"></ellipse>
-          <path d="M42 52 l14 4 -2 20 -14 -3 z" fill="#b98f5c"></path>
-          <rect x="74" y="34" width="12" height="34" rx="1.6" fill="#a9c1b1" stroke="#7d998a" stroke-width="0.5"></rect>
-          <path d="M74 40 L86 40 M74 50 L86 50 M74 60 L86 60" stroke="#7d998a" stroke-width="0.4" opacity="0.5"></path>
-          <circle cx="62" cy="82" r="7" fill="#b0a992"></circle>
-          <circle cx="74" cy="88" r="4.5" fill="#928a76"></circle>
-          <rect x="8" y="86" width="16" height="3" rx="1.5" fill="#c9522f"></rect>
-          <rect x="30" y="90" width="14" height="3" rx="1.5" fill="#5a5245"></rect>
-        </svg>
-      </div>
-      <div class="node-label">suminagashi</div><div class="node-sub">Floating ink studio</div>
-    </div>
-
-    <!-- ===== placeholder photos ===== -->
-    <div class="node photo-node" id="n-placeholder1" style="left:1000px; top:450px; --pw:120px; --ph:120px; --rot:0deg;">
-      <div class="thumb"><img src="images/placeholder-1.png" alt="Placeholder"></div>
-      <div class="node-label">placeholder_01</div><div class="node-sub">Add a photo</div>
-    </div>
-    <div class="node photo-node" id="n-placeholder2" style="left:1150px; top:600px; --pw:120px; --ph:120px; --rot:0deg;">
-      <div class="thumb"><img src="images/placeholder-2.png" alt="Placeholder"></div>
-      <div class="node-label">placeholder_02</div><div class="node-sub">Add a photo</div>
-    </div>
-  </div>
-  </div>
-</div>
-
-<!-- ============ DOCK — tech stack ============ -->
-<div class="dock-wrap">
-  <div class="dock-section-label">Tech Stack</div>
-  <div class="dock" id="dock">
-    <div class="di" data-name="Figma">
-      <div class="di-lbl">Figma</div>
-      <!-- preview modal injected below via JS-friendly marker -->
-      <div class="di-icon">
-        <img src="https://www.google.com/s2/favicons?sz=128&domain=figma.com" alt="Figma">
-      </div>
-      <div class="di-dot"></div>
-    </div>
-    <div class="di" data-name="Framer">
-      <div class="di-lbl">Framer</div>
-      <div class="di-icon">
-        <img src="https://www.google.com/s2/favicons?sz=128&domain=framer.com" alt="Framer">
-      </div>
-      <div class="di-dot"></div>
-    </div>
-    <div class="di" data-name="Claude">
-      <div class="di-lbl">Claude</div>
-      <div class="di-icon">
-        <img src="https://www.google.com/s2/favicons?sz=128&domain=claude.ai" alt="Claude">
-      </div>
-      <div class="di-dot"></div>
-    </div>
-    <div class="di" data-name="OpenAI">
-      <div class="di-lbl">OpenAI</div>
-      <div class="di-icon">
-        <img src="https://www.google.com/s2/favicons?sz=128&domain=openai.com" alt="OpenAI">
-      </div>
-      <div class="di-dot"></div>
-    </div>
-    <div class="di" data-name="Lovable">
-      <div class="di-lbl">Lovable</div>
-      <div class="di-icon">
-        <div class="lovable-mark" aria-label="Lovable">
-          <img src="images/lovable-heart.jpeg" alt="Lovable">
-        </div>
-      </div>
-      <div class="di-dot"></div>
-    </div>
-    <div class="di" data-name="Cursor">
-      <div class="di-lbl">Cursor</div>
-      <div class="di-icon">
-        <img src="https://www.google.com/s2/favicons?sz=128&domain=cursor.com" alt="Cursor">
-      </div>
-      <div class="di-dot"></div>
-    </div>
-    <div class="di" data-name="Notion">
-      <div class="di-lbl">Notion</div>
-      <div class="di-icon">
-        <img src="https://www.google.com/s2/favicons?sz=128&domain=notion.so" alt="Notion">
-      </div>
-      <div class="di-dot"></div>
-    </div>
-    <div class="di" data-name="Midjourney">
-      <div class="di-lbl">Midjourney</div>
-      <div class="di-icon">
-        <img src="https://www.google.com/s2/favicons?sz=128&domain=midjourney.com" alt="Midjourney">
-      </div>
-      <div class="di-dot"></div>
-    </div>
-    <div class="ddiv"></div>
-    <div class="di trash-di" id="trashDock" data-name="Recycle Bin">
-      <div class="di-lbl">Recycle Bin</div>
-      <div class="di-icon">
-        <svg viewBox="0 0 64 64" aria-hidden="true">
-          <defs>
-            <linearGradient id="binBody" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#f6f7f9"></stop>
-              <stop offset="55%" stop-color="#dfe3ea"></stop>
-              <stop offset="100%" stop-color="#a8b0bd"></stop>
-            </linearGradient>
-            <linearGradient id="binLid" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#eef1f6"></stop>
-              <stop offset="100%" stop-color="#b7bdc9"></stop>
-            </linearGradient>
-          </defs>
-          <!-- lid -->
-          <rect x="10" y="14" width="44" height="7" rx="3" fill="url(#binLid)" stroke="#8892a2" stroke-width="0.8"></rect>
-          <rect x="27" y="10" width="10" height="5" rx="2" fill="#c9cfd9" stroke="#8892a2" stroke-width="0.8"></rect>
-          <!-- body -->
-          <path d="M14 22 L50 22 L46 56 Q45.4 59 42.4 59 L21.6 59 Q18.6 59 18 56 Z" fill="url(#binBody)" stroke="#8892a2" stroke-width="0.8" stroke-linejoin="round"></path>
-          <!-- vertical ribs -->
-          <path d="M24 26 L23 55 M32 26 L32 55 M40 26 L41 55" stroke="rgba(255,255,255,0.7)" stroke-width="1.2" fill="none"></path>
-          <path d="M24 26 L23 55 M32 26 L32 55 M40 26 L41 55" stroke="rgba(0,0,0,0.18)" stroke-width="0.6" fill="none" transform="translate(1,0)"></path>
-          <!-- inner shadow -->
-          <ellipse cx="32" cy="23.5" rx="17" ry="2.3" fill="rgba(0,0,0,0.28)"></ellipse>
-        </svg>
-      </div>
-      <div class="di-dot"></div>
-    </div>
-  </div>
-</div>
-<script src="app.js"></script>
-</body></html>
+@media (max-width: 820px) {
+  .mb-card { max-height:96vh; }
+  .mb-body { grid-template-columns:1fr; }
+  .mb-rail { max-height:180px; }
+  .mb-rail-left, .mb-rail-right { border:0; border-top:1px solid rgba(0,0,0,0.06); }
+  .mb-title-serif { font-size:16px; margin-left:8px; }
+  .mb-titlebar-right .mb-icon-btn { font-size:9px; padding:3px 4px; }
+}
+@media (max-width: 560px) {
+  #artboardModal { padding:6px; align-items:center; }
+  .mb-card { width:min(96vw, 390px); max-height:none; height:auto; border-radius:10px; }
+  .mb-titlebar { height:30px; padding:0 8px; gap:6px; }
+  .mb-title-serif { font-size:15px; margin-left:4px; white-space:nowrap; }
+  .mb-crumbs, .mb-titlebar-sep { display:none; }
+  .mb-titlebar-right { gap:3px; }
+  .mb-titlebar-right .mb-icon-btn { width:23px; height:23px; padding:0; overflow:hidden; font-size:12px; letter-spacing:0; display:inline-flex; align-items:center; justify-content:center; }
+  #mbSave { color:transparent; position:relative; }
+  #mbSave::before { content:'◱'; color:#5a4a2a; position:absolute; inset:0; display:grid; place-items:center; }
+  .mb-body { display:flex; flex-direction:column; min-height:0; }
+  .mb-rail { padding:7px 9px; max-height:none; overflow:hidden; }
+  .mb-rail-left { order:1; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:4px; border:0; border-bottom:1px solid rgba(0,0,0,0.06); }
+  .mb-rail-head, .mb-rail-sep, .mb-tool-hint, .mb-tool-num, .mb-slider-label, .mb-slider-h { display:none !important; }
+  .mb-tool { justify-content:center; padding:5px 2px; gap:0; }
+  .mb-tool .mb-tool-ico { width:auto; font-size:14px; }
+  .mb-tool .mb-tool-name { font-size:0; }
+  .mb-tool.active { border-left:0; border-bottom:2px solid #2e2314; padding-left:2px; }
+  .mb-center { order:2; padding:8px 10px; gap:6px; }
+  .mb-caption { font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .mb-caption-num { font-size:7px; letter-spacing:0.14em; margin-right:4px; }
+  .mb-canvas-wrap { border-radius:6px; aspect-ratio:820/500; }
+  .mb-impressions { display:none; }
+  .mb-rail-right { order:3; display:flex; align-items:center; gap:8px; border:0; border-top:1px solid rgba(0,0,0,0.06); }
+  .mb-pigment-heading { font-size:13px; margin:0; flex:0 0 auto; }
+  .mb-pigment-desc, .mb-swatch-names, .mb-paper-row, .mb-guided { display:none !important; }
+  .mb-swatches { margin:0; gap:7px; }
+  .mb-swatch { width:20px; height:20px; }
+  .mb-footer { padding:6px 8px; font-size:7px; letter-spacing:0.08em; gap:8px; }
+  .mb-footer-mid, .mb-footer > span:first-child { display:none; }
+  .mb-print-btn { margin-left:auto; padding:6px 9px; font-size:9px; letter-spacing:0.08em; white-space:nowrap; }
+}
