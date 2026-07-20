@@ -19,183 +19,88 @@
   document.addEventListener('click', () => closeAll(null));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(null); });
 
-  // ---- SVG Cursor Picker ----
-  // Three built-in SVG cursors
-  const CURSOR_SVGS = {
-    // Paper: rounded, torn-edge scrap of aged parchment
-    paper: {
-      label: '✦',
-      // default arrow (hotspot 3,2)
-      normal: `<svg xmlns='http://www.w3.org/2000/svg' width='28' height='32' viewBox='0 0 28 32'><defs><linearGradient id='ppA' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23faf3dc'/><stop offset='45%' stop-color='%23e8d2a0'/><stop offset='100%' stop-color='%23c7a468'/></linearGradient><radialGradient id='ppB' cx='75%' cy='18%' r='70%'><stop offset='0%' stop-color='%23a97c3f' stop-opacity='0.5'/><stop offset='100%' stop-color='%23a97c3f' stop-opacity='0'/></radialGradient><radialGradient id='ppC' cx='22%' cy='88%' r='55%'><stop offset='0%' stop-color='%238a5f2c' stop-opacity='0.35'/><stop offset='100%' stop-color='%238a5f2c' stop-opacity='0'/></radialGradient></defs><path d='M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z' fill='url(#ppA)' stroke='%237a5a30' stroke-width='0.8' stroke-linejoin='round'/><path d='M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z' fill='url(#ppB)'/><path d='M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z' fill='url(#ppC)'/><path d='M13.3 15.4 C14.3 14.2 16.2 14.5 17.8 13.9' fill='none' stroke='%236b4d26' stroke-width='0.5' opacity='0.5'/></svg>`,
-      // pointer hand variant
-      pointer: `<svg xmlns='http://www.w3.org/2000/svg' width='28' height='32' viewBox='0 0 28 32'><defs><linearGradient id='ppA2' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23fdf7e6'/><stop offset='45%' stop-color='%23eeddb0'/><stop offset='100%' stop-color='%23d1af78'/></linearGradient><radialGradient id='ppB2' cx='75%' cy='18%' r='70%'><stop offset='0%' stop-color='%23a97c3f' stop-opacity='0.45'/><stop offset='100%' stop-color='%23a97c3f' stop-opacity='0'/></radialGradient><radialGradient id='ppC2' cx='22%' cy='88%' r='55%'><stop offset='0%' stop-color='%238a5f2c' stop-opacity='0.3'/><stop offset='100%' stop-color='%238a5f2c' stop-opacity='0'/></radialGradient></defs><path d='M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z' fill='url(#ppA2)' stroke='%237a5a30' stroke-width='0.8' stroke-linejoin='round'/><path d='M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z' fill='url(#ppB2)'/><path d='M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z' fill='url(#ppC2)'/></svg>`,
-      hotspot: '3 2',
-    },
-    // macOS: smooth rounded white arrow
-    macos: {
-      label: '⬡',
-      normal: `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='28' viewBox='0 0 24 28'><path d='M3 2 L3 22 L8 17.5 L12 26 L14.5 24.8 L10.5 16 L17 16 Z' fill='white' stroke='rgba(0,0,0,0.45)' stroke-width='1.4' stroke-linejoin='round' paint-order='stroke'/></svg>`,
-      pointer: `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='28' viewBox='0 0 24 28'><path d='M3 2 L3 22 L8 17.5 L12 26 L14.5 24.8 L10.5 16 L17 16 Z' fill='white' stroke='rgba(0,0,0,0.45)' stroke-width='1.4' stroke-linejoin='round' paint-order='stroke'/></svg>`,
-      hotspot: '3 2',
-    },
-  };
+  // ---- Cursor Style Picker (file-based cursor themes) ----
+  // Each theme is a folder under ./cursors containing Arrow.gif (normal/pointer)
+  // and Working.gif (hand cursor used on interactive elements).
+  const CURSOR_THEMES = ['Anime', 'Cute', 'MacOS', 'Minecraft', 'Minecraft2', 'Normal Black', 'Normal White -soft', 'RGB'];
+  const CURSOR_BASE_PATH = 'cursors';
 
-  // Render preview SVGs into the picker
-  function renderCursorPreviews() {
-    const paperEl = document.getElementById('cursorPreviewPaper');
-    const macosEl = document.getElementById('cursorPreviewMacos');
-    if (paperEl) paperEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="36" viewBox="0 0 28 32"><defs><linearGradient id="ppPrevA" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#faf3dc"/><stop offset="45%" stop-color="#e8d2a0"/><stop offset="100%" stop-color="#c7a468"/></linearGradient><radialGradient id="ppPrevB" cx="75%" cy="18%" r="70%"><stop offset="0%" stop-color="#a97c3f" stop-opacity="0.5"/><stop offset="100%" stop-color="#a97c3f" stop-opacity="0"/></radialGradient><radialGradient id="ppPrevC" cx="22%" cy="88%" r="55%"><stop offset="0%" stop-color="#8a5f2c" stop-opacity="0.35"/><stop offset="100%" stop-color="#8a5f2c" stop-opacity="0"/></radialGradient></defs><path d="M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z" fill="url(#ppPrevA)" stroke="#7a5a30" stroke-width="0.8" stroke-linejoin="round"/><path d="M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z" fill="url(#ppPrevB)"/><path d="M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z" fill="url(#ppPrevC)"/><path d="M13.3 15.4 C14.3 14.2 16.2 14.5 17.8 13.9" fill="none" stroke="#6b4d26" stroke-width="0.5" opacity="0.5"/></svg>`;
-    if (macosEl) macosEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="34" viewBox="0 0 24 28"><path d="M3 2 L3 22 L8 17.5 L12 26 L14.5 24.8 L10.5 16 L17 16 Z" fill="white" stroke="rgba(0,0,0,0.45)" stroke-width="1.4" stroke-linejoin="round" paint-order="stroke"/></svg>`;
+  function cursorFilePath(theme, file) {
+    return `${CURSOR_BASE_PATH}/${theme}/${file}`;
   }
-  renderCursorPreviews();
 
-  // Apply a built-in cursor type
   const cursorStyleTag = document.createElement('style');
   cursorStyleTag.id = 'custom-cursor-style';
   document.head.appendChild(cursorStyleTag);
 
-  function buildCursorURL(svgStr, hotspot) {
-    return `url("data:image/svg+xml;utf8,${encodeURIComponent(svgStr)}") ${hotspot}`;
-  }
-
-  function applyBuiltinCursor(type) {
-    const def = CURSOR_SVGS[type];
-    if (!def) { cursorStyleTag.textContent = ''; return; }
-    const normal  = buildCursorURL(def.normal,  def.hotspot);
-    const pointer = buildCursorURL(def.pointer, def.hotspot);
+  function applyCursorTheme(theme) {
+    if (!CURSOR_THEMES.includes(theme)) { cursorStyleTag.textContent = ''; return; }
+    const arrow = `url("${cursorFilePath(theme, 'Arrow.gif')}"), auto`;
+    const hand  = `url("${cursorFilePath(theme, 'Working.gif')}"), pointer`;
     cursorStyleTag.textContent = `
-      html, body, #stage, .node, .folder, .photo-node, .thumb { cursor: ${normal}, auto !important; }
-      a, button, .di, .wp-swatch, .mp-btn, .node, .folder, .photo-node .thumb, .book, .poster-card, .snake-expand, .sm-close, .restore-btn { cursor: ${pointer}, pointer !important; }
+      html, body, #stage, .node, .folder, .photo-node, .thumb { cursor: ${arrow} !important; }
+      a, button, .di, .wp-swatch, .mp-btn, .node, .folder, .photo-node .thumb, .book, .poster-card, .snake-expand, .sm-close, .restore-btn { cursor: ${hand} !important; }
     `;
     const label = document.getElementById('cursorStyleCurrent');
-    if (label) label.textContent = def.label;
-    try { localStorage.setItem('cursorTypeV2', type); } catch(_){}
-  }
-
-  function applyCustomCursor(dataURL) {
-    const normal  = `url("${dataURL}") 0 0`;
-    cursorStyleTag.textContent = `
-      html, body, #stage, .node, .folder, .photo-node, .thumb { cursor: ${normal}, auto !important; }
-      a, button, .di, .wp-swatch, .mp-btn, .node, .folder, .photo-node .thumb, .book, .poster-card, .snake-expand, .sm-close, .restore-btn { cursor: ${normal}, pointer !important; }
-    `;
-    const label = document.getElementById('cursorStyleCurrent');
-    if (label) label.textContent = '✏';
-    // custom draws don't persist (noted in UI)
+    if (label) label.textContent = theme;
+    try { localStorage.setItem('cursorThemeV1', theme); } catch(_){}
+    updateActiveOption(theme);
   }
 
   function resetCursorStyle() {
     cursorStyleTag.textContent = '';
-    try { localStorage.removeItem('cursorTypeV2'); } catch(_){}
+    try { localStorage.removeItem('cursorThemeV1'); } catch(_){}
     const label = document.getElementById('cursorStyleCurrent');
-    if (label) label.textContent = '✦';
+    if (label) label.textContent = 'Default';
     updateActiveOption(null);
   }
 
-  // Load saved cursor on start (only built-in types persist)
+  // Load saved cursor theme on start
   try {
-    const saved = localStorage.getItem('cursorTypeV2');
-    if (saved && CURSOR_SVGS[saved]) applyBuiltinCursor(saved);
+    const saved = localStorage.getItem('cursorThemeV1');
+    if (saved && CURSOR_THEMES.includes(saved)) applyCursorTheme(saved);
   } catch(_){}
 
   window.__resetCursor = resetCursorStyle;
 
   // ---- Cursor Picker dialog ----
   const cursorPicker = document.getElementById('cursor-picker');
-  const openCursorPicker = () => {
-    cursorPicker.classList.add('show');
-    // reset draw panel to hidden state each open
-    drawStarted = false;
-    const hint = document.getElementById('cursorDrawHint');
-    if (hint) hint.classList.remove('hidden');
-    document.getElementById('cursorDrawActions').style.display = 'none';
-    const drawOpt = cursorPicker.querySelector('[data-cursor="draw"]');
-    if (drawOpt) drawOpt.classList.remove('active');
-  };
+  const openCursorPicker = () => { cursorPicker.classList.add('show'); };
   const closeCursorPicker = () => cursorPicker.classList.remove('show');
   document.getElementById('cursorPickerClose').addEventListener('click', closeCursorPicker);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCursorPicker(); });
 
-  function updateActiveOption(type) {
+  function updateActiveOption(theme) {
     cursorPicker.querySelectorAll('.cursor-option').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.cursor === type);
+      btn.classList.toggle('active', btn.dataset.cursor === theme);
     });
   }
 
-  cursorPicker.querySelectorAll('.cursor-option[data-cursor="paper"], .cursor-option[data-cursor="macos"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const type = btn.dataset.cursor;
-      applyBuiltinCursor(type);
-      updateActiveOption(type);
-      // hide draw actions if they were showing
-      document.getElementById('cursorDrawActions').style.display = 'none';
-      setTimeout(closeCursorPicker, 260);
-    });
-  });
-
-  // ---- Draw-your-own cursor (canvas) ----
-  const drawCanvas = document.getElementById('cursorDrawCanvas');
-  const drawCtx = drawCanvas ? drawCanvas.getContext('2d') : null;
-  let drawPainting = false;
-  let drawStarted = false;
-
-  if (drawCtx) {
-    drawCtx.strokeStyle = '#111';
-    drawCtx.lineWidth = 2.5;
-    drawCtx.lineCap = 'round';
-    drawCtx.lineJoin = 'round';
-
-    const getPos = (e) => {
-      const r = drawCanvas.getBoundingClientRect();
-      const scaleX = drawCanvas.width / r.width;
-      const scaleY = drawCanvas.height / r.height;
-      const src = e.touches ? e.touches[0] : e;
-      return { x: (src.clientX - r.left) * scaleX, y: (src.clientY - r.top) * scaleY };
-    };
-
-    const startDraw = (e) => {
-      e.stopPropagation();
-      drawPainting = true;
-      if (!drawStarted) {
-        drawStarted = true;
-        const hint = document.getElementById('cursorDrawHint');
-        if (hint) hint.classList.add('hidden');
-        document.getElementById('cursorDrawActions').style.display = 'flex';
-        const drawOpt = cursorPicker.querySelector('[data-cursor="draw"]');
-        if (drawOpt) { updateActiveOption('draw'); }
-      }
-      const pos = getPos(e);
-      drawCtx.beginPath();
-      drawCtx.moveTo(pos.x, pos.y);
-    };
-    const draw = (e) => {
-      if (!drawPainting) return;
-      e.preventDefault();
-      const pos = getPos(e);
-      drawCtx.lineTo(pos.x, pos.y);
-      drawCtx.stroke();
-    };
-    const endDraw = () => { drawPainting = false; };
-
-    drawCanvas.addEventListener('mousedown', startDraw);
-    drawCanvas.addEventListener('mousemove', draw);
-    drawCanvas.addEventListener('mouseup', endDraw);
-    drawCanvas.addEventListener('touchstart', startDraw, { passive: false });
-    drawCanvas.addEventListener('touchmove', draw, { passive: false });
-    drawCanvas.addEventListener('touchend', endDraw);
-
-    document.getElementById('cursorDrawClear').addEventListener('click', () => {
-      drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-      drawStarted = false;
-      const hint = document.getElementById('cursorDrawHint');
-      if (hint) hint.classList.remove('hidden');
-      document.getElementById('cursorDrawActions').style.display = 'none';
-      updateActiveOption(null);
-    });
-
-    document.getElementById('cursorDrawApply').addEventListener('click', () => {
-      const dataURL = drawCanvas.toDataURL('image/png');
-      applyCustomCursor(dataURL);
-      closeCursorPicker();
+  // Build one option per theme folder, previewing the theme's Arrow.gif
+  const cursorPickerGrid = document.getElementById('cursorPickerGrid');
+  if (cursorPickerGrid) {
+    CURSOR_THEMES.forEach(theme => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cursor-option';
+      btn.dataset.cursor = theme;
+      const preview = document.createElement('div');
+      preview.className = 'cursor-preview';
+      const img = document.createElement('img');
+      img.src = cursorFilePath(theme, 'Arrow.gif');
+      img.alt = `${theme} cursor preview`;
+      img.loading = 'lazy';
+      preview.appendChild(img);
+      const label = document.createElement('div');
+      label.className = 'cursor-option-label';
+      label.textContent = theme;
+      btn.appendChild(preview);
+      btn.appendChild(label);
+      btn.addEventListener('click', () => {
+        applyCursorTheme(theme);
+        setTimeout(closeCursorPicker, 260);
+      });
+      cursorPickerGrid.appendChild(btn);
     });
   }
 
