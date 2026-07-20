@@ -2655,9 +2655,23 @@ window.__caseGate = (function(){
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
 
 function renderBookshelf() {
-  const perShelf = 3;
+
+  const rowSizes = [3, 4, 5]; 
   const rows = [];
-  for (let i = 0; i < BOOKS.length; i += perShelf) rows.push(BOOKS.slice(i, i + perShelf));
+  let currentIndex = 0;
+
+  for (let size of rowSizes) {
+    if (currentIndex >= BOOKS.length) break;
+    rows.push(BOOKS.slice(currentIndex, currentIndex + size));
+    currentIndex += size;
+  }
+  
+
+  while (currentIndex < BOOKS.length) {
+    rows.push(BOOKS.slice(currentIndex, currentIndex + 4)); 
+    currentIndex += 4;
+  }
+
   const html = `<div class="bookshelf">` + rows.map(row => `
     <div class="shelf-row">
       ${row.map(b => {
@@ -2671,6 +2685,7 @@ function renderBookshelf() {
     </div>
     <div class="shelf-plank"></div>
   `).join('') + `</div>`;
+  
   body.innerHTML = html;
 }
 
