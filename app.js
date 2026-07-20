@@ -2637,8 +2637,8 @@ window.__caseGate = (function(){
     { title:"Waiting in the Summer", sub:"2012 ‧ Romance ‧ 1 season", poster:"https://i.pinimg.com/736x/b2/a2/da/b2a2da49cc414979cdbd7a120a6738d7.jpg" },
     { title:"Charlotte", sub:"Pippa Ehrlich & James Reed · 2020", poster:"https://i.pinimg.com/736x/dc/4d/82/dc4d82df6ec7a78a9b39ab5a8466f699.jpg" },
     { title:"The Eminence in Shadow", sub:"Novel series", poster:"https://i.pinimg.com/736x/9a/06/c5/9a06c55f66c706fa0aa818fac24cfe09.jpg" },
-    { title:"Game of Thrones", sub:"HBO · 2011", poster:"https://image.tmdb.org/t/p/w500/1XS1oqL89opfnbLl8WnZY1O1uJx.jpg" },
-    { title:"The Welcome Table", sub:"Documentary · 2026", poster:"https://image.tmdb.org/t/p/w500/bDprEGBOo509wnq0iwb6OlmOiW0.jpg" },
+    { title:"Demon Lord 2099", sub:"Novel series", poster:"https://m.media-amazon.com/images/M/MV5BNzdiYjQ1OGYtYTJlNC00YjlkLTg1MzEtNWRiYzlhMTZlZjgwXkEyXkFqcGc@._V1_.jpg" },
+    { title:"Plastic Memories", sub:"2015 ‧ Sci-fi ‧ 1 season", poster:"https://i.pinimg.com/736x/78/27/af/7827af7c1055d6001e9e79fd8721d967.jpg" },
   ];
 
   const modal = document.getElementById('collectionModal');
