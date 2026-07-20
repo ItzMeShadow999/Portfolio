@@ -1,4 +1,3 @@
-
 * { margin:0; padding:0; box-sizing:border-box; }
 html,body { width:100%; height:100%; overflow:hidden; font-family:"Courier New",monospace; background:#0a0e14; }
 
@@ -1632,6 +1631,3 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
   .mb-footer-mid, .mb-footer > span:first-child { display:none; }
   .mb-print-btn { margin-left:auto; padding:6px 9px; font-size:9px; letter-spacing:0.08em; white-space:nowrap; }
 }
-
-
-@media (max-width: 760px){ #awwwards { display:none !important; } }
