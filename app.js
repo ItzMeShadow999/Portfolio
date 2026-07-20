@@ -2633,8 +2633,8 @@ window.__caseGate = (function(){
     { title:"The Glass Bead Game", sub:"Hermann Hesse · 1943", isbn:"0312278497" },
   ];
   const FILMS = [
-    { title:"The Odyssey", sub:"Christopher Nolan · 2026", poster:"https://image.tmdb.org/t/p/w500/5rhTDKUhPYvpdQIijFIs5VoWsON.jpg" },
-    { title:"The Florida Project", sub:"Sean Baker · 2017", poster:"https://image.tmdb.org/t/p/w500/5QnDxdJg1fi6uMSkSi4x8tHsltm.jpg" },
+    { title:"A Silent Voice", sub:"2016 ‧ Romance/Drama ‧ 2h 10m", poster:"https://www.imdb.com/title/tt5323662/mediaviewer/rm3392757504/?ref_=tt_ov_i" },
+    { title:"Waiting in the Summer", sub:"2012 ‧ Romance ‧ 1 season", poster:"https://www.imdb.com/title/tt2187287/mediaviewer/rm1356110594/?ref_=tt_ov_i" },
     { title:"My Octopus Teacher", sub:"Pippa Ehrlich & James Reed · 2020", poster:"https://image.tmdb.org/t/p/w500/hvTVZb7hBC8tZAGoEhH5eiMJu2B.jpg" },
     { title:"Planet Earth", sub:"BBC · 2006", poster:"https://image.tmdb.org/t/p/w500/bNcNxUtZ520d5de5s78onoiSiwQ.jpg" },
     { title:"Game of Thrones", sub:"HBO · 2011", poster:"https://image.tmdb.org/t/p/w500/1XS1oqL89opfnbLl8WnZY1O1uJx.jpg" },
