@@ -1,0 +1,1244 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Parinaz's Desktop Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="sky">
+
+<h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Parinaz Kassemi — Product Designer Portfolio</h1>
+
+<!-- ============ Lock screen (also acts as initial load screen) ============ -->
+<div id="loader" role="button" tabindex="0" aria-label="Click to unlock">
+  <div class="lock-clock" aria-hidden="true">
+    <div class="lock-date" id="lockDate">—</div>
+    <div class="lock-time" id="lockTime">—</div>
+  </div>
+  <img class="logo" src="images/spiral2.png" alt="Parinaz Kassemi">
+  <div class="lock-name">Parinaz Kassemi</div>
+  <div class="lock-role">Product Designer</div>
+  <div class="lock-cta">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+    Click to unlock
+  </div>
+  <div class="lock-slider" id="lockSlider">
+    <div class="lock-slider-track">
+      <div class="lock-slider-label">Slide to unlock</div>
+      <div class="lock-slider-knob" id="lockSliderKnob" role="button" aria-label="Slide to unlock">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+      </div>
+    </div>
+  </div>
+  <div class="lock-hint" id="lockHint">Preparing desktop…</div>
+</div>
+
+<!-- ============ Password gate for locked case studies ============ -->
+<div id="pwGate" role="dialog" aria-modal="true">
+  <form class="pw-card" id="pwForm" autocomplete="off">
+    <div class="pw-head">
+      <div class="pw-lock">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+      </div>
+      <div class="pw-title" id="pwTitle">Locked case study</div>
+      <div class="pw-sub">Enter the password to view this project.</div>
+      <div class="pw-sub" style="margin-top:8px; color:#4A6FA0; font-weight:600; letter-spacing:0.04em;">Password available upon request —<br><a href="mailto:pkassemi@gmail.com" style="color:#4A6FA0;">pkassemi@gmail.com</a></div>
+    </div>
+    <div class="pw-body">
+      <input type="password" id="pwInput" placeholder="Password" autocomplete="off" spellcheck="false">
+      <div class="pw-err" id="pwErr"></div>
+      <div class="pw-btns">
+        <button type="button" id="pwCancel">Cancel</button>
+        <button type="submit" class="primary">Unlock</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- ============ L·AI·C case study modal ============ -->
+<div id="caseModal" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6500;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.68);backdrop-filter:blur(10px);">
+  <div class="cs-card">
+    <div style="height:72px;background:linear-gradient(#ececef,#dcdce0);border-bottom:1px solid rgba(0,0,0,0.12);display:flex;align-items:center;padding:0 28px;gap:12px;position:relative;">
+      <button type="button" id="csClose" title="Close" aria-label="Close" style="width:20px;height:20px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.18);padding:0;display:inline-flex;align-items:center;justify-content:center;color:transparent;">
+        <svg viewBox="0 0 10 10" width="8" height="8" aria-hidden="true"><path d="M2 2 L8 8 M8 2 L2 8" stroke="rgba(0,0,0,0.55)" stroke-width="1.4" stroke-linecap="round"></path></svg>
+      </button>
+      <span style="position:absolute;left:0;right:0;text-align:center;font-size:13px;color:#333;font-weight:600;pointer-events:none;">Case 01 — L·AI·C</span>
+    </div>
+    <div class="cs-scroll">
+      <div class="cs-banner">
+        <img class="cs-banner-img" data-locked="laic-thumbnail.png" src="" alt="L·AI·C in hand">
+        <div class="cs-hero-copy">
+          <div class="cs-kicker">Case 01 · 2024</div>
+          <div class="cs-title">L·AI·C</div>
+          <div class="cs-subtitle">AI concierge for 800K+ Life Time members</div>
+        </div>
+      </div>
+      <div class="cs-tags">
+        <span class="cs-tag">UX Design</span>
+        <span class="cs-tag">Strategy</span>
+        <span class="cs-tag">Conversational Design</span>
+        <span class="cs-tag">2024</span>
+      </div>
+      <div class="cs-copy">
+        <p>L·AI·C was already being built when I joined. Engineering had moved fast — but no one had defined what the AI should say, how it should think, or why members would use it.</p>
+        <p>I went back to the beginning. Interviewed the concierge team, mapped the most repeated questions, and designed the full conversation routing — what L·AI·C could answer, what it couldn't, and where to send users when it hit its limit.</p>
+        <p style="font-style:italic;color:#555;">Every dead end became a pathway. Every question became a conversion opportunity.</p>
+      </div>
+      <div class="cs-metrics">
+        <div class="cs-metric">
+          <strong>↓</strong>
+          <span>Concierge load reduced</span>
+        </div>
+        <div class="cs-metric">
+          <strong>800K+</strong>
+          <span>Members served</span>
+        </div>
+        <div class="cs-metric">
+          <strong>Live</strong>
+          <span>in the LT app</span>
+        </div>
+      </div>
+      <div class="cs-artifacts paired">
+        <div class="cs-artifact contain">
+          <div class="cs-section-title">Conversation architecture</div>
+          <img data-locked="laic-diagram.png" src="" alt="LAIC conversation routing">
+        </div>
+        <div class="cs-artifact contain">
+          <div class="cs-section-title">Prototype flow</div>
+          <video autoplay="" muted="" loop="" playsinline="" data-locked="laic-wireframe.mp4" src=""></video>
+        </div>
+      </div>
+      <div class="cs-footer-row">
+        <div class="cs-footer-video">
+          <div class="cs-section-title">In-context demo</div>
+          <video autoplay="" muted="" loop="" playsinline="" data-locked="laic-video.mp4" src=""></video>
+        </div>
+        <div class="cs-findings">
+          <div class="cs-section-title">Findings</div>
+          <div class="cs-finding"><span class="num">↓</span><div><span class="lbl">Concierge load dropped</span><span class="txt">Repetitive hours-and-location questions handled entirely by L·AI·C.</span></div></div>
+          <div class="cs-finding"><span class="num">3×</span><div><span class="lbl">Faster time-to-answer</span><span class="txt">Members reach a booking, class, or amenity in three steps or fewer.</span></div></div>
+          <div class="cs-finding"><span class="num">100%</span><div><span class="lbl">Graceful fallbacks</span><span class="txt">Every dead-end routes to a human — never a blank screen.</span></div></div>
+          <div class="cs-finding"><span class="num">↑</span><div><span class="lbl">Concierge time reclaimed</span><span class="txt">Freed staff for high-touch, revenue-driving conversations.</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ On Demand case study modal ============ -->
+<div id="caseModal2" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6500;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.68);backdrop-filter:blur(10px);">
+  <div class="cs-card">
+    <div style="height:72px;background:linear-gradient(#ececef,#dcdce0);border-bottom:1px solid rgba(0,0,0,0.12);display:flex;align-items:center;padding:0 28px;gap:12px;position:relative;">
+      <button type="button" id="cs2Close" title="Close" aria-label="Close" style="width:20px;height:20px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.18);padding:0;display:inline-flex;align-items:center;justify-content:center;color:transparent;">
+        <svg viewBox="0 0 10 10" width="8" height="8" aria-hidden="true"><path d="M2 2 L8 8 M8 2 L2 8" stroke="rgba(0,0,0,0.55)" stroke-width="1.4" stroke-linecap="round"></path></svg>
+      </button>
+      <span style="position:absolute;left:0;right:0;text-align:center;font-size:13px;color:#333;font-weight:600;pointer-events:none;">Case 02 — On Demand</span>
+    </div>
+    <div class="cs-scroll">
+      <div class="cs-banner">
+        <img class="cs-banner-img" data-locked="ondemand-thumbnail.png" src="" alt="On Demand in hand">
+        <div class="cs-hero-copy">
+          <div class="cs-kicker">Case 02 · 2024</div>
+          <div class="cs-title">On Demand</div>
+          <div class="cs-subtitle">Filter, sort, and actually find a class — 800K+ Life Time members</div>
+        </div>
+      </div>
+      <div class="cs-tags">
+        <span class="cs-tag">Product Design</span>
+        <span class="cs-tag">UX Research</span>
+        <span class="cs-tag">Information Architecture</span>
+        <span class="cs-tag">2024</span>
+      </div>
+      <div class="cs-copy">
+        <p>On Demand had thousands of classes and no way to sort through them. The library grew faster than the way people could find anything in it — no filter, no sort, no way to narrow by duration, level, or coach.</p>
+        <p>I audited the full content catalogue, ran 20+ user sessions, and benchmarked Peloton, Apple Fitness+, and Nike Training across six dimensions. Duration surfaced as the most-requested filter by a wide margin — so the system was rebuilt around it, then expanded to nine dimensions members could actually navigate.</p>
+        <p style="font-style:italic;color:#555;">Category → discipline → your class. One clear path where there used to be none.</p>
+      </div>
+      <div class="cs-metrics">
+        <div class="cs-metric"><strong>9</strong><span>filter dimensions</span></div>
+        <div class="cs-metric"><strong>800K+</strong><span>members served</span></div>
+        <div class="cs-metric"><strong>Live</strong><span>in the LT app</span></div>
+      </div>
+      <div class="cs-artifacts">
+        <div class="cs-artifact contain tall">
+          <div class="cs-section-title">Process & solution</div>
+          <img data-locked="ondemand-diagram.png" src="" alt="On Demand process, research, competitor analysis, and solution">
+        </div>
+        <div class="cs-artifact">
+          <div class="cs-section-title">Endless scroll — before</div>
+          <video autoplay="" muted="" loop="" playsinline="" data-locked="ondemand-endless.mp4" src=""></video>
+        </div>
+        <div class="cs-artifact">
+          <div class="cs-section-title">No-dev prototype</div>
+          <video autoplay="" muted="" loop="" playsinline="" data-locked="ondemand-nocode.mp4" src=""></video>
+        </div>
+      </div>
+      <div class="cs-footer-row">
+        <div class="cs-footer-video">
+          <div class="cs-section-title">In-context demo</div>
+          <video autoplay="" muted="" loop="" playsinline="" data-locked="ondemand-video.mp4" src=""></video>
+        </div>
+        <div class="cs-findings">
+          <div class="cs-section-title">Findings</div>
+          <div class="cs-finding"><span class="num">9</span><div><span class="lbl">Filter dimensions</span><span class="txt">Members can now sort by duration, level, coach, format, and more.</span></div></div>
+          <div class="cs-finding"><span class="num">20+</span><div><span class="lbl">User sessions</span><span class="txt">Insights validated against Peloton, Apple Fitness+, and Nike Training.</span></div></div>
+          <div class="cs-finding"><span class="num">#1</span><div><span class="lbl">Duration surfaced</span><span class="txt">The most-requested filter — now the entry point to every class.</span></div></div>
+          <div class="cs-finding"><span class="num">1</span><div><span class="lbl">Clear path</span><span class="txt">Category → discipline → class, where there used to be none.</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Strategic Comms case study modal ============ -->
+<div id="caseModal3" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6500;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.68);backdrop-filter:blur(10px);">
+  <div class="cs-card">
+    <div style="height:72px;background:linear-gradient(#ececef,#dcdce0);border-bottom:1px solid rgba(0,0,0,0.12);display:flex;align-items:center;padding:0 28px;gap:12px;position:relative;">
+      <button type="button" id="cs3Close" title="Close" aria-label="Close" style="width:20px;height:20px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.18);padding:0;display:inline-flex;align-items:center;justify-content:center;color:transparent;">
+        <svg viewBox="0 0 10 10" width="8" height="8" aria-hidden="true"><path d="M2 2 L8 8 M8 2 L2 8" stroke="rgba(0,0,0,0.55)" stroke-width="1.4" stroke-linecap="round"></path></svg>
+      </button>
+      <span style="position:absolute;left:0;right:0;text-align:center;font-size:13px;color:#333;font-weight:600;pointer-events:none;">Case 03 — Strategic Comms</span>
+    </div>
+    <div class="cs-scroll">
+      <div class="cs-banner" style="padding:24px 30px;background:#f0f0f0;">
+        <img class="cs-banner-img" data-locked="sc-deck-v4.jpg" src="" alt="Investor deck system — clean 3x3 grid of slides" style="height:auto;max-height:520px;object-fit:contain;background:transparent;border-radius:8px;">
+        <div class="cs-hero-copy">
+          <div class="cs-kicker">Case 03 · 2025–2026</div>
+          <div class="cs-title">Strategic Comms</div>
+          <div class="cs-subtitle">High-stakes corporate narratives, designed quickly and clearly</div>
+        </div>
+      </div>
+      <div class="cs-tags">
+        <span class="cs-tag">Creative Direction</span>
+        <span class="cs-tag">Design</span>
+        <span class="cs-tag">Strategy</span>
+        <span class="cs-tag">April 2025 – April 2026</span>
+      </div>
+      <div class="cs-copy">
+        <p>I was the in-house designer at a strategic communications and investor relations firm, translating complex financial and corporate narratives into clear, credible visual communications across decks, infographics, social content, websites, print, and events.</p>
+        <p style="font-style:italic;color:#555;">Because the original work is confidential, these are original reconstructions that represent the scope, tone, and craft of the engagement.</p>
+      </div>
+      <div class="cs-metrics">
+        <div class="cs-metric"><strong>40+</strong><span>total deliverables</span></div>
+        <div class="cs-metric"><strong>20+</strong><span>investor decks</span></div>
+        <div class="cs-metric"><strong>12</strong><span>months · 1 designer</span></div>
+      </div>
+      <div class="cs-artifacts" style="grid-template-columns:1fr 1.15fr; align-items:stretch;">
+        <div class="cs-artifact contain" style="padding:20px;display:flex;flex-direction:column;min-height:480px;">
+          <div class="cs-section-title">Investor deck system</div>
+          <img data-locked="sc-deck-v4.jpg" src="" alt="Full investor deck system — nine slides organized in an even grid" style="flex:1;min-height:0;object-fit:contain;width:100%;height:100%;">
+        </div>
+        <div class="cs-artifact contain" style="padding:20px;display:flex;flex-direction:column;min-height:480px;">
+          <div class="cs-section-title">Capital markets infographic</div>
+          <img data-locked="sc-infographic-navy.jpg" src="" alt="Q3 capital markets snapshot infographic on deep navy" style="flex:1;min-height:0;object-fit:contain;width:100%;height:100%;">
+        </div>
+      </div>
+      <div style="margin:0 26px 26px; display:grid; grid-template-columns:1.4fr 1fr; gap:14px;">
+        <div class="cs-artifact contain" style="border-radius:12px;">
+          <div class="cs-section-title">Website system</div>
+          <img data-locked="sc-web-v2.jpg" src="" alt="Monument Strategic Communications — full website system">
+        </div>
+        <div class="cs-findings">
+          <div class="cs-section-title">Signature work</div>
+          <div class="cs-finding"><span class="num">◆</span><div><span class="lbl">Investor decks</span><span class="txt">Serif-led editorial system for earnings, IPOs, and fundraises.</span></div></div>
+          <div class="cs-finding"><span class="num">◆</span><div><span class="lbl">Market infographics</span><span class="txt">Quarterly snapshots, transaction announcements, sector reports.</span></div></div>
+          <div class="cs-finding"><span class="num">◆</span><div><span class="lbl">Print + events</span><span class="txt">Roadshow collateral, signage, and executive one-pagers.</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Notes modal ============ -->
+
+<!-- ============ Case 04 · Rebrand case study modal ============ -->
+<div id="caseModal4" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6500;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.68);backdrop-filter:blur(10px);">
+  <div class="cs-card">
+    <div style="height:72px;background:linear-gradient(#ececef,#dcdce0);border-bottom:1px solid rgba(0,0,0,0.12);display:flex;align-items:center;padding:0 28px;gap:12px;position:relative;">
+      <button type="button" id="cs4Close" title="Close" aria-label="Close" style="width:20px;height:20px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.18);padding:0;display:inline-flex;align-items:center;justify-content:center;color:transparent;">
+        <svg viewBox="0 0 10 10" width="8" height="8" aria-hidden="true"><path d="M2 2 L8 8 M8 2 L2 8" stroke="rgba(0,0,0,0.55)" stroke-width="1.4" stroke-linecap="round"></path></svg>
+      </button>
+      <span style="position:absolute;left:0;right:0;text-align:center;font-size:13px;color:#333;font-weight:600;pointer-events:none;">Case 04 — Rebrand</span>
+    </div>
+    <div class="cs-scroll">
+      <div class="cs-banner">
+        <img class="cs-banner-img" data-locked="cs4-hr-flatlay.jpg" src="" alt="Harland & Reyes stationery flatlay — oxblood cards, ivory letterhead, wax seal">
+        <div class="cs-hero-copy">
+          <div class="cs-kicker">Case 04 · 2025</div>
+          <div class="cs-title">Rebrand</div>
+          <div class="cs-subtitle">A full identity system for a white-collar firm — mark, kit, and every touchpoint.</div>
+        </div>
+      </div>
+      <div class="cs-tags">
+        <span class="cs-tag">Brand Identity</span>
+        <span class="cs-tag">Art Direction</span>
+        <span class="cs-tag">Print + Social</span>
+        <span class="cs-tag">2025</span>
+      </div>
+      <div class="cs-copy">
+        <p>Sole designer on a full identity rebrand for a white-collar firm — wordmark, monogram, palette, typography, stationery, social system, and event collateral. Positioned to feel discreet, senior, and unmistakably editorial.</p>
+        <p style="font-style:italic;color:#555;">The client cannot currently be named — the engagement is under confidentiality. The visuals shown here are original reconstructions built from scratch to represent the scope, tone, and craft of the actual work.</p>
+      </div>
+      <div class="cs-metrics">
+        <div class="cs-metric"><strong>30+</strong><span>identity assets</span></div>
+        <div class="cs-metric"><strong>1</strong><span>designer, end-to-end</span></div>
+        <div class="cs-metric"><strong>4</strong><span>months to launch</span></div>
+      </div>
+      <div class="cs-artifacts">
+        <div class="cs-artifact contain tall">
+          <div class="cs-section-title">Brand kit — mark, palette, type</div>
+          <img data-locked="cs4-hr-guidelines.jpg" src="" alt="Harland & Reyes brand system page — wordmark, monogram, palette, typography">
+        </div>
+        <div class="cs-artifact contain">
+          <div class="cs-section-title">Social system</div>
+          <img data-locked="cs4-hr-social.jpg" src="" alt="Harland & Reyes social system — six alternating oxblood and ivory editorial posts">
+        </div>
+      </div>
+      <div class="cs-footer-row">
+        <div class="cs-artifact contain" style="border-radius:12px;">
+          <div class="cs-section-title">Event collateral — flyer + program</div>
+          <img data-locked="cs4-hr-flyer.jpg" src="" alt="Harland & Reyes event flyer and program in oxblood and ivory">
+        </div>
+        <div class="cs-findings">
+          <div class="cs-section-title">Deliverables</div>
+          <div class="cs-finding"><span class="num">◆</span><div><span class="lbl">Wordmark + monogram</span><span class="txt">Serif primary lockup with a hand-built H&R monogram for tight touchpoints and wax seals.</span></div></div>
+          <div class="cs-finding"><span class="num">◆</span><div><span class="lbl">Palette + type system</span><span class="txt">Oxblood, ink navy, ivory, antique brass. Chronicle Display paired with Founders Grotesk.</span></div></div>
+          <div class="cs-finding"><span class="num">◆</span><div><span class="lbl">Stationery + business cards</span><span class="txt">Letterhead, envelope, oxblood cards with brass foil monogram, wax-sealed mailers.</span></div></div>
+          <div class="cs-finding"><span class="num">◆</span><div><span class="lbl">Social + event kit</span><span class="txt">Six-post editorial social system, event flyer, program booklet, and signage.</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ About modal (Parinaz Kassemi menu) ============ -->
+<div id="aboutModal" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6400;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.35);backdrop-filter:blur(6px);">
+  <div style="width:min(440px,92vw);max-height:88vh;overflow:auto;background:linear-gradient(180deg,#eef4fb 0%,#dfe8f2 100%);border-radius:14px;box-shadow:0 32px 80px rgba(0,0,0,0.35),0 0 0 1px rgba(0,0,0,0.14);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;color:#1c1d22;">
+    <div style="height:28px;display:flex;align-items:center;padding:0 12px;gap:8px;">
+      <button type="button" id="aboutClose" aria-label="Close" style="width:13px;height:13px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.22);padding:0;cursor:pointer;"></button>
+      <span style="width:13px;height:13px;border-radius:50%;background:#c8c8ce;border:1px solid rgba(0,0,0,0.18);"></span>
+      <span style="width:13px;height:13px;border-radius:50%;background:#c8c8ce;border:1px solid rgba(0,0,0,0.18);"></span>
+    </div>
+    <div style="padding:6px 34px 30px;text-align:center;">
+      <img src="images/photo-headshot.png" alt="Parinaz Kassemi" style="width:150px;height:150px;border-radius:50%;object-fit:cover;margin:6px auto 18px;box-shadow:0 8px 24px rgba(30,50,90,0.18);display:block;">
+      <h2 style="margin:0;font-size:26px;font-weight:700;letter-spacing:-0.01em;">Parinaz Kassemi</h2>
+      <div style="font-size:13px;color:#6a7482;margin-top:2px;">Product Designer · 2026</div>
+      <div style="margin:22px auto 0;display:grid;grid-template-columns:auto 1fr;column-gap:16px;row-gap:8px;font-size:13px;text-align:left;max-width:320px;">
+        <div style="color:#6a7482;text-align:right;">Focus</div><div>Design systems & AI</div>
+        <div style="color:#6a7482;text-align:right;">Based in</div><div>New York, NY</div>
+        <div style="color:#6a7482;text-align:right;">Languages</div><div>EN · FA · ES · FR</div>
+        <div style="color:#6a7482;text-align:right;">Email</div><div><a href="mailto:pkassemi@gmail.com" style="color:#3068C4;text-decoration:none;">pkassemi@gmail.com</a></div>
+      </div>
+      <div style="margin-top:22px;">
+        <button type="button" id="aboutMore" style="background:#fff;border:1px solid rgba(0,0,0,0.14);padding:6px 20px;border-radius:8px;font:600 13px inherit;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.05);">More Info…</button>
+      </div>
+      <div id="aboutMoreBody" style="display:none;margin:22px 0 0;padding-top:22px;border-top:1px solid rgba(0,0,0,0.08);text-align:left;font-size:13px;line-height:1.6;color:#33383f;">
+        <p style="margin:0 0 10px;"><strong>Designing useful systems through research, motion, prototypes, and a little productive discomfort.</strong></p>
+        <p style="margin:0 0 10px;">I grow the same way I design—by studying something deeply, then testing it against reality.</p>
+        <p style="margin:0 0 10px;">As a first-generation Iranian-American, I learned early how to navigate between different perspectives. Growing up between two cultures taught me to ask better questions, embrace ambiguity, and find common ground.</p>
+        <p style="margin:0 0 10px;">That curiosity has taken me from the midwest to New York, and across new communities, cultures, and problems that challenged how I think.</p>
+        <p style="margin:14px 0 4px;"><strong>Principles</strong></p>
+        <p style="margin:0;">Study deeply · Test against reality · Keep changing perspective.</p>
+      </div>
+      <div style="margin-top:18px;font-size:11px;color:#8590a0;">™ and © 2020–2026 Parinaz Kassemi. All rights reserved.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Stickies modal (draw a little sticky note) ============ -->
+<div id="stickiesModal" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6420;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.5);backdrop-filter:blur(8px);">
+  <div style="width:min(640px,94vw);max-height:94vh;background:#fff8a8;border-radius:10px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,0.4),0 0 0 1px rgba(0,0,0,0.14);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;color:#3a2f10;display:flex;flex-direction:column;">
+    <div style="height:38px;background:#f2df76;border-bottom:1px solid rgba(0,0,0,0.12);display:flex;align-items:center;padding:0 12px;gap:10px;flex-shrink:0;">
+      <button type="button" id="stickiesClose" aria-label="Close" style="width:14px;height:14px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.22);padding:0;cursor:pointer;"></button>
+      <span style="font-size:13px;color:#5b4d10;font-weight:650;">Stickies</span>
+      <div style="margin-left:14px;display:flex;gap:2px;">
+        <button type="button" class="st-tab active" data-tab="draw" style="padding:4px 12px;border-radius:6px;border:0;background:rgba(0,0,0,0.12);font:600 11px inherit;color:#3a2f10;cursor:pointer;">✏️ Draw</button>
+        <button type="button" class="st-tab" data-tab="wall" style="padding:4px 12px;border-radius:6px;border:0;background:transparent;font:600 11px inherit;color:#5b4d10;cursor:pointer;">🧱 Wall</button>
+      </div>
+      <div id="stDrawTools" style="margin-left:auto;display:flex;gap:6px;align-items:center;">
+        <button type="button" class="st-color" data-c="#3a2f10" aria-label="Ink" style="width:18px;height:18px;border-radius:50%;background:#3a2f10;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.2);cursor:pointer;padding:0;"></button>
+        <button type="button" class="st-color" data-c="#c96b4a" aria-label="Peach" style="width:18px;height:18px;border-radius:50%;background:#c96b4a;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.2);cursor:pointer;padding:0;"></button>
+        <button type="button" class="st-color" data-c="#3068C4" aria-label="Blue" style="width:18px;height:18px;border-radius:50%;background:#3068C4;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.2);cursor:pointer;padding:0;"></button>
+        <button type="button" class="st-color" data-c="#5aa06a" aria-label="Green" style="width:18px;height:18px;border-radius:50%;background:#5aa06a;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.2);cursor:pointer;padding:0;"></button>
+        <button type="button" id="stClear" style="margin-left:6px;padding:4px 10px;border-radius:6px;border:1px solid rgba(0,0,0,0.18);background:#fff9df;font:600 11px inherit;cursor:pointer;">Clear</button>
+      </div>
+    </div>
+
+    <div id="stDrawPane" style="display:flex;flex-direction:column;overflow:auto;">
+      <canvas id="stCanvas" width="1120" height="820" style="display:block;width:100%;height:auto;background:#fff8a8;cursor:crosshair;touch-action:none;"></canvas>
+      <div style="padding:10px 14px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#fff5a0;border-top:1px solid rgba(0,0,0,0.08);">
+        <input type="text" id="stName" placeholder="Your name (optional)" maxlength="40" style="flex:1;min-width:140px;padding:7px 10px;border-radius:6px;border:1px solid rgba(0,0,0,0.16);background:#fff9df;font:500 12px inherit;color:#3a2f10;">
+        <input type="text" id="stMessage" placeholder="Say hi 👋 (optional)" maxlength="200" style="flex:2;min-width:180px;padding:7px 10px;border-radius:6px;border:1px solid rgba(0,0,0,0.16);background:#fff9df;font:500 12px inherit;color:#3a2f10;">
+        <button type="button" id="stPost" style="padding:8px 16px;border-radius:8px;border:0;background:#3a2f10;color:#fff8a8;font:700 12px inherit;cursor:pointer;letter-spacing:0.02em;">Post to wall ↗</button>
+      </div>
+      <div id="stPostStatus" style="padding:0 14px 10px;font-size:11px;color:#8a7a3a;min-height:16px;">Draw a little sticky · pick a color · add a name and say hi.</div>
+    </div>
+
+    <div id="stWallPane" style="display:none;flex-direction:column;overflow:hidden;background:#fff5a0;">
+      <div id="stWallMeta" style="padding:10px 14px;font-size:11px;color:#8a7a3a;border-bottom:1px solid rgba(0,0,0,0.08);display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <span>A little wall of hellos from everyone who's passed through.</span>
+        <button type="button" id="stRefresh" style="padding:4px 10px;border-radius:6px;border:1px solid rgba(0,0,0,0.18);background:#fff9df;font:600 11px inherit;cursor:pointer;">Refresh</button>
+      </div>
+      <div id="stWallGrid" style="padding:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;overflow:auto;max-height:60vh;background:#fff5a0;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Synth (Programma 900) modal ============ -->
+<div id="synthModal" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6450;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.62);backdrop-filter:blur(10px);">
+  <div class="synth-card" style="width:min(920px,94vw);max-height:92vh;background:linear-gradient(180deg,#141419 0%, #0d0d12 100%);border-radius:20px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.65),0 0 0 1px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.06);font-family:'SF Mono','JetBrains Mono',ui-monospace,monospace;color:#1a1a24;">
+    <div class="synth-titlebar" style="height:34px;background:linear-gradient(180deg,#242429,#16161c);border-bottom:1px solid rgba(0,0,0,0.6);display:flex;align-items:center;padding:0 12px;gap:8px;position:relative;">
+      <button type="button" id="synthClose" aria-label="Close" style="width:16px;height:16px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.22);padding:0;cursor:pointer;"></button>
+      <span style="width:12px;height:12px;border-radius:50%;background:#febc2e;border:1px solid rgba(0,0,0,0.15);"></span>
+      <span style="width:12px;height:12px;border-radius:50%;background:#28c840;border:1px solid rgba(0,0,0,0.15);"></span>
+      <span style="position:absolute;left:0;right:0;text-align:center;font-size:10px;letter-spacing:0.28em;color:#8a8478;font-weight:600;pointer-events:none;text-transform:uppercase;">programma 900 · sonic plates</span>
+    </div>
+    <div style="padding:14px 16px 16px;overflow:auto;max-height:calc(92vh - 34px);color:#e8e4d8;">
+      <!-- Memory preset strip -->
+      <div class="p900-memory">
+        <div class="p900-mem-label"><span style="opacity:0.55;">MEMORY</span><br><span style="letter-spacing:0.32em;">SONIC PLATES</span></div>
+        <button class="p900-preset active" data-preset="kiln"><span class="p900-preset-tag" style="background:#e85d3a;"></span><div><div class="pn">KILN BASS</div><div class="ps">warm · dark · immediate</div></div></button>
+        <button class="p900-preset" data-preset="frost"><span class="p900-preset-tag" style="background:#5aa0c8;"></span><div><div class="pn">FROSTLINE</div><div class="ps">wide · glass · suspended</div></div></button>
+        <button class="p900-preset" data-preset="brass"><span class="p900-preset-tag" style="background:#c9a84c;"></span><div><div class="pn">BRASS DUST</div><div class="ps">heavy · tactile · slow</div></div></button>
+        <button class="p900-preset" data-preset="night"><span class="p900-preset-tag" style="background:#c9c4b8;"></span><div><div class="pn">NIGHT TRANSIT</div><div class="ps">narrow · pulsed · restless</div></div></button>
+      </div>
+      <div class="p900-rowmarks"><span>SOURCE</span><span>SHAPE</span><span>SPACE</span><span>OUTPUT</span></div>
+
+      <!-- Panels grid -->
+      <div style="display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:8px;">
+        <!-- OSC panel -->
+        <div class="p900-panel">
+          <div class="p900-panel-head"><span class="p900-panel-num">01</span><span class="p900-label">OSCILLATOR</span><span class="p900-panel-tag">VCO-1</span></div>
+          <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div class="p900-knob" data-param="detune" data-min="-50" data-max="50" data-value="0"><div class="p900-knob-dot"></div></div>
+              <div class="p900-sub">DETUNE</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <button class="p900-wave selected" data-wave="sine" title="Sine"><svg viewBox="0 0 24 8"><path d="M1 4 Q 6 -3, 12 4 T 23 4" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg></button>
+              <button class="p900-wave" data-wave="square" title="Square"><svg viewBox="0 0 24 8"><path d="M1 6 L1 2 L7 2 L7 6 L13 6 L13 2 L19 2 L19 6 L23 6" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg></button>
+              <button class="p900-wave" data-wave="sawtooth" title="Saw"><svg viewBox="0 0 24 8"><path d="M1 6 L7 2 L7 6 L13 2 L13 6 L19 2 L19 6" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg></button>
+              <button class="p900-wave" data-wave="triangle" title="Triangle"><svg viewBox="0 0 24 8"><path d="M1 6 L5 2 L9 6 L13 2 L17 6 L21 2 L23 4" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg></button>
+            </div>
+          </div>
+        </div>
+        <!-- TRACE MONITOR panel -->
+        <div class="p900-panel">
+          <div class="p900-panel-head"><span class="p900-panel-num">02</span><span class="p900-label">TRACE MONITOR</span><span class="p900-panel-tag" style="color:#7fd88f;">● LIVE INPUT</span></div>
+          <div class="p900-scope"><canvas id="p900Scope" width="480" height="120"></canvas></div>
+          <div class="p900-scope-foot"><span>NO VOICE</span><span id="p900ScopeName">KILN BASS</span></div>
+        </div>
+        <!-- FILTER panel -->
+        <div class="p900-panel">
+          <div class="p900-panel-head"><span class="p900-panel-num">03</span><span class="p900-label">FILTER</span><span class="p900-panel-tag">VCF-24</span></div>
+          <div style="display:flex;gap:12px;justify-content:space-around;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div class="p900-knob" data-param="cutoff" data-min="80" data-max="8000" data-value="2400" data-curve="log"><div class="p900-knob-dot"></div></div>
+              <div class="p900-sub">CUTOFF</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div class="p900-knob" data-param="resonance" data-min="0.5" data-max="18" data-value="2"><div class="p900-knob-dot"></div></div>
+              <div class="p900-sub">RESO</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Second row: Envelope / Modulation / Effects / Master (orange) -->
+      <div style="display:grid;grid-template-columns:0.9fr 0.9fr 1.1fr 0.85fr;gap:8px;margin-top:8px;">
+        <!-- ENVELOPE panel -->
+        <div class="p900-panel">
+          <div class="p900-panel-head"><span class="p900-panel-num">04</span><span class="p900-label">ENVELOPE</span><span class="p900-panel-tag">ADSR</span></div>
+          <div style="display:flex;gap:8px;justify-content:space-around;padding-top:2px;">
+            <div class="p900-slider-col"><input type="range" class="p900-slider" data-param="attack" min="1" max="1500" value="15"><div class="p900-sub">A</div></div>
+            <div class="p900-slider-col"><input type="range" class="p900-slider" data-param="decay" min="10" max="1500" value="180"><div class="p900-sub">D</div></div>
+            <div class="p900-slider-col"><input type="range" class="p900-slider" data-param="sustain" min="0" max="100" value="60"><div class="p900-sub">S</div></div>
+            <div class="p900-slider-col"><input type="range" class="p900-slider" data-param="release" min="20" max="2500" value="420"><div class="p900-sub">R</div></div>
+          </div>
+        </div>
+        <!-- MODULATION panel (LFO) -->
+        <div class="p900-panel">
+          <div class="p900-panel-head"><span class="p900-panel-num">05</span><span class="p900-label">MODULATION</span><span class="p900-panel-tag">LFO</span></div>
+          <div style="display:flex;justify-content:space-around;align-items:center;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+              <div class="p900-knob small" data-param="lfoRate" data-min="0.1" data-max="12" data-value="4"><div class="p900-knob-dot"></div></div>
+              <div class="p900-sub">RATE</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+              <div class="p900-knob small" data-param="lfoDepth" data-min="0" data-max="1200" data-value="0"><div class="p900-knob-dot"></div></div>
+              <div class="p900-sub">DEPTH</div>
+            </div>
+          </div>
+        </div>
+        <!-- EFFECTS panel: Delay + Reverb combined -->
+        <div class="p900-panel">
+          <div class="p900-panel-head"><span class="p900-panel-num">06</span><span class="p900-label">EFFECTS</span><span class="p900-panel-tag">TAPE / ROOM</span></div>
+          <div style="display:flex;justify-content:space-around;align-items:center;gap:6px;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+              <div class="p900-knob small" data-param="delayTime" data-min="0.02" data-max="0.9" data-value="0.28"><div class="p900-knob-dot"></div></div>
+              <div class="p900-sub">TIME</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+              <div class="p900-knob small" data-param="delayFb" data-min="0" data-max="0.85" data-value="0.35"><div class="p900-knob-dot"></div></div>
+              <div class="p900-sub">REPEAT</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+              <div class="p900-knob small" data-param="reverb" data-min="0" data-max="0.85" data-value="0.22"><div class="p900-knob-dot"></div></div>
+              <div class="p900-sub">SPACE</div>
+            </div>
+          </div>
+        </div>
+        <!-- MASTER panel (orange highlight) -->
+        <div class="p900-panel p900-panel-accent">
+          <div class="p900-panel-head"><span class="p900-panel-num" style="color:rgba(255,255,255,0.5);">07</span><span class="p900-label" style="color:#fff;">MASTER</span><span class="p900-panel-tag" style="color:rgba(255,255,255,0.55);">0 / 0</span></div>
+          <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+              <div class="p900-knob" data-param="volume" data-min="0" data-max="1" data-value="0.6"><div class="p900-knob-dot"></div></div>
+              <div class="p900-sub" style="color:rgba(255,255,255,0.7);">LEVEL</div>
+            </div>
+            <div class="p900-vu"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="p900-sub" style="color:rgba(255,255,255,0.55);">OUTPUT ARMED</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8-STEP SEQUENCER -->
+      <div class="p900-seq">
+        <div class="p900-seq-head">
+          <div class="p900-panel-head" style="margin-bottom:0;"><span class="p900-panel-num">07</span><span class="p900-label">8-STEP SEQUENCER</span><span class="p900-panel-tag" style="background:#1a1a20;color:#c9a84c;padding:2px 8px;border-radius:2px;">ROOT C4</span></div>
+          <button type="button" id="p900SeqRun" class="p900-seq-run">▶ RUN</button>
+        </div>
+        <div class="p900-seq-grid" id="p900SeqGrid"></div>
+      </div>
+
+      <!-- LED strip / OLED -->
+      <div id="p900-leds" style="display:flex;gap:6px;justify-content:center;align-items:center;margin:16px 0 10px;padding:10px 14px;background:linear-gradient(180deg,#0a0a12,#1a1a24);border-radius:10px;box-shadow:inset 0 2px 8px rgba(0,0,0,0.8),0 1px 0 rgba(255,255,255,0.6);border:1px solid rgba(0,0,0,0.3);">
+        <span class="p900-led" data-hue="0"></span>
+        <span class="p900-led" data-hue="18"></span>
+        <span class="p900-led" data-hue="30"></span>
+        <span class="p900-led" data-hue="45"></span>
+        <span class="p900-led" data-hue="60"></span>
+        <span class="p900-led" data-hue="120"></span>
+        <span class="p900-led" data-hue="180"></span>
+        <span class="p900-led" data-hue="200"></span>
+        <span class="p900-led" data-hue="220"></span>
+        <span class="p900-led" data-hue="260"></span>
+        <span class="p900-led" data-hue="300"></span>
+        <span class="p900-led" data-hue="340"></span>
+      </div>
+
+      <div style="font-size:8px;letter-spacing:0.28em;color:#8a8478;font-weight:600;text-transform:uppercase;margin-bottom:6px;padding-left:2px;">08 · PRESSURE KEYBED</div>
+      <!-- Keyboard -->
+      <div id="p900-keyboard" style="position:relative;height:150px;background:linear-gradient(180deg,#2a2a34,#0a0a12);border-radius:10px;padding:8px;box-shadow:inset 0 2px 10px rgba(0,0,0,0.8),0 1px 0 rgba(255,255,255,0.6);border:1px solid rgba(0,0,0,0.3);"></div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:10px;letter-spacing:0.12em;color:#8a8478;">
+        <span style="text-transform:uppercase;">keys · a s d f g h j k l ;   ·   sharps · w e t y u o p</span>
+        <span style="text-transform:uppercase;">oct · z ↓  x ↑</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ============ Artboard (Marbling Atelier) modal ============ -->
+<div id="artboardModal" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6460;display:none;align-items:center;justify-content:center;background:rgba(20,16,10,0.55);backdrop-filter:blur(10px);">
+  <div class="mb-card">
+    <div class="mb-titlebar">
+      <button type="button" id="artboardClose" aria-label="Close" style="width:14px;height:14px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.2);padding:0;cursor:pointer;"></button>
+      <span class="mb-title-serif">Suminagashi Studio</span>
+      <span class="mb-crumbs">Floating ink · slow water</span>
+      <div class="mb-titlebar-right">
+        <button type="button" class="mb-icon-btn" id="mbUndo" title="Undo">↶</button>
+        <button type="button" class="mb-icon-btn" id="mbRedo" title="Redo" disabled="">↷</button>
+        <button type="button" class="mb-icon-btn" id="mbClear" title="Clear water">⟲</button>
+        <span class="mb-titlebar-sep"></span>
+        <button type="button" class="mb-icon-btn" id="mbSave" title="Save water">◱ SAVE WATER</button>
+      </div>
+    </div>
+
+    <div class="mb-body">
+      <!-- Left rail: instruments -->
+      <aside class="mb-rail mb-rail-left">
+        <div class="mb-rail-head">Instruments</div>
+        <button class="mb-tool active" data-tool="dropper"><span class="mb-tool-ico">◉</span><div><div class="mb-tool-name">Dropper</div></div><span class="mb-tool-num">1</span></button>
+        <button class="mb-tool" data-tool="stylus"><span class="mb-tool-ico">╱</span><div><div class="mb-tool-name">Stylus</div></div><span class="mb-tool-num">2</span></button>
+        <button class="mb-tool" data-tool="comb"><span class="mb-tool-ico">▦</span><div><div class="mb-tool-name">Comb</div></div><span class="mb-tool-num">3</span></button>
+        <button class="mb-tool" data-tool="rake"><span class="mb-tool-ico">☰</span><div><div class="mb-tool-name">Rake</div></div><span class="mb-tool-num">4</span></button>
+        <button class="mb-tool" data-tool="breath"><span class="mb-tool-ico">〜</span><div><div class="mb-tool-name">Breath</div></div><span class="mb-tool-num">5</span></button>
+
+        <div class="mb-rail-sep"></div>
+        <div class="mb-slider-label"><span>DROP SIZE</span><span id="mbSizeVal">62</span></div>
+        <input type="range" id="mbSize" class="mb-slider-h" min="10" max="120" value="62">
+        <p class="mb-tool-hint" id="mbToolHint">Place a controlled bloom of color.</p>
+      </aside>
+
+      <!-- Center: canvas surface -->
+      <div class="mb-center">
+        <div class="mb-caption"><span class="mb-caption-num">No. 01</span> <span id="mbCaption">The water is clear and still.</span></div>
+        <div class="mb-canvas-wrap">
+          <canvas id="mbCanvas" width="820" height="500"></canvas>
+          <div class="mb-brush"></div>
+        </div>
+        <div class="mb-impressions">
+          <div class="mb-impressions-label">Impressions</div>
+          <div class="mb-impressions-sub">Your prints will rest here</div>
+          <div class="mb-impressions-strip" id="mbImpressions">
+            <div class="mb-impression-slot"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right rail: pigments -->
+      <aside class="mb-rail mb-rail-right">
+        <div class="mb-rail-head">PIGMENT COMPOSITION</div>
+        <div class="mb-pigment-heading">Mineral <span style="opacity:0.4;">▾</span></div>
+        <p class="mb-pigment-desc">Ground stone hues with a measured, open bloom.</p>
+        <div class="mb-swatches">
+          <button class="mb-swatch active" data-color="#2b1a4a" data-name="Iris" style="background:#2b1a4a;"></button>
+          <button class="mb-swatch" data-color="#7a1f2b" data-name="Oxblood" style="background:#7a1f2b;"></button>
+          <button class="mb-swatch" data-color="#3a6b52" data-name="Moss" style="background:#3a6b52;"></button>
+          <button class="mb-swatch" data-color="#c98a3a" data-name="Amber" style="background:#c98a3a;"></button>
+          <button class="mb-swatch" data-color="#141018" data-name="Sumi" style="background:#141018;"></button>
+        </div>
+        <div class="mb-swatch-names">
+          <span>Iris</span><span>Oxblood</span><span>Moss</span><span>Amber</span><span>Sumi</span>
+        </div>
+
+        <div class="mb-rail-sep"></div>
+        <div class="mb-paper-row">
+          <div class="mb-paper-swatch"></div>
+          <div>
+            <div class="mb-paper-label">PAPER TONE</div>
+            <div class="mb-paper-sub">Warm cotton · 300 gsm</div>
+          </div>
+        </div>
+
+        <div class="mb-rail-sep"></div>
+        <div class="mb-guided">GUIDED STARTS <span style="opacity:0.4;">▾</span></div>
+      </aside>
+    </div>
+
+    <div class="mb-footer">
+      <span>DRAG DIRECTLY ACROSS THE WATER</span>
+      <span class="mb-footer-mid">1–5 TOOLS · F FULL SCREEN · C CLEAN VIEW · ⌘Z UNDO</span>
+      <button type="button" class="mb-print-btn" id="mbMakePrint">Make print <span style="letter-spacing:0.4em;">↘</span></button>
+    </div>
+  </div>
+</div>
+
+
+
+<div id="collectionModal" role="dialog" aria-modal="true">
+  <div class="cm-card">
+    <div class="cm-head">
+      <button type="button" class="dot close" id="cmClose" title="Close" aria-label="Close">
+        <svg viewBox="0 0 10 10" width="8" height="8" aria-hidden="true"><path d="M2 2 L8 8 M8 2 L2 8" stroke="rgba(0,0,0,0.55)" stroke-width="1.4" stroke-linecap="round"></path></svg>
+      </button>
+      <span class="cm-title" id="cmTitle">Bookshelf</span>
+    </div>
+    <div class="cm-body" id="cmBody"></div>
+  </div>
+</div>
+<div id="menubar">
+  <div class="left">
+    <div class="mb-menu brand-menu" data-menu="brand">
+      <button class="brand-lock" type="button" title="Lock desktop" aria-label="Lock desktop">
+        <img src="images/spiral2.png" alt="Parinaz Kassemi personal brand mark" class="brand-logo">
+      </button>
+      <button class="mb-trigger brand-trigger" type="button">
+        <span>Parinaz Kassemi</span>
+      </button>
+      <div class="mb-dropdown">
+        <button type="button" data-action="about">About Parinaz</button>
+        <div class="mb-sep"></div>
+        <a href="mailto:pkassemi@gmail.com">Say hi<span class="mb-shortcut">↗</span></a>
+      </div>
+    </div>
+    <div class="mb-menu" data-menu="shop">
+      <button class="mb-trigger" type="button">Shop</button>
+      <div class="mb-dropdown">
+        <a href="https://www.framer.com/@parinaz-kassemi/" target="_blank" rel="noopener noreferrer">Sites & Components<span class="mb-shortcut">↗</span></a>
+        <a href="https://parinazkassemi.gumroad.com/" target="_blank" rel="noopener noreferrer">Templates<span class="mb-shortcut">↗</span></a>
+        <a href="https://stock.adobe.com/contributor/213420721/Parinaz" target="_blank" rel="noopener noreferrer">Stock Images<span class="mb-shortcut">↗</span></a>
+      </div>
+    </div>
+    <div class="mb-menu" data-menu="edit">
+      <button class="mb-trigger" type="button">Edit</button>
+      <div class="mb-dropdown">
+        <button type="button" data-action="emoji">Cursor Emoji<span class="mb-shortcut" id="cursorEmojiCurrent">🌀</span></button>
+        <div class="mb-sep"></div>
+        <button type="button" data-action="clear-emojis">Reset Cursor</button>
+      </div>
+    </div>
+    <div class="mb-menu" data-menu="help">
+      <button class="mb-trigger" type="button">Help</button>
+      <div class="mb-dropdown">
+        <button type="button" data-action="tour">Getting Started</button>
+        <button type="button" data-action="tour-shortcuts">Essential Shortcuts</button>
+        <div class="mb-sep"></div>
+        <a href="mailto:pkassemi@gmail.com">Contact Parinaz<span class="mb-shortcut">↗</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="center"></div>
+  <div class="right">
+    <a class="social" href="https://www.linkedin.com/in/parinazkassemi/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8h4.56v14H.22V8zm7.5 0h4.37v1.9h.06c.61-1.15 2.1-2.36 4.32-2.36 4.62 0 5.47 3.04 5.47 7v7.46h-4.56v-6.6c0-1.58-.03-3.6-2.2-3.6-2.2 0-2.53 1.72-2.53 3.49V22H7.72V8z"></path></svg></a>
+    <a class="social" href="https://www.instagram.com/parinaz.kassemi/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle></svg></a>
+    <a class="social" href="https://www.pinterest.com/parinazkassemi/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12c0 5 3 9.3 7.4 11.1-.1-.9-.2-2.4 0-3.4.2-.9 1.4-5.7 1.4-5.7s-.35-.7-.35-1.75c0-1.65.95-2.88 2.14-2.88 1 0 1.5.76 1.5 1.66 0 1.02-.65 2.54-.98 3.95-.28 1.18.6 2.15 1.77 2.15 2.12 0 3.75-2.24 3.75-5.47 0-2.86-2.06-4.86-5-4.86-3.4 0-5.4 2.55-5.4 5.19 0 1.03.4 2.13.89 2.73.1.12.11.22.08.34-.09.36-.28 1.18-.32 1.35-.05.22-.17.27-.4.16-1.48-.69-2.4-2.86-2.4-4.6 0-3.75 2.72-7.19 7.85-7.19 4.12 0 7.32 2.94 7.32 6.87 0 4.1-2.58 7.4-6.17 7.4-1.2 0-2.34-.63-2.72-1.37l-.74 2.83c-.27 1.03-1 2.33-1.48 3.12.9.28 1.85.43 2.85.43 6.6 0 12-5.4 12-12S18.6 0 12 0z"></path></svg></a>
+    <span id="datebox">—</span>
+    <span id="clock">--:--</span>
+  </div>
+</div>
+
+<!-- Peach helper (Help > Getting Started) -->
+<div id="peach-guide" role="dialog" aria-label="Portfolio walkthrough">
+  <div class="bubble">
+    <div class="step" id="peachStep">Step 1 of 6</div>
+    <h4 id="peachTitle">Hi, I'm Mochi 🍡</h4>
+    <p id="peachBody">Welcome to the interactive desktop. Let me show you around.</p>
+    <div class="row">
+      <button type="button" class="ghost" id="peachSkip">Skip</button>
+      <button type="button" id="peachNext">Next →</button>
+    </div>
+  </div>
+  <div class="peach-wrap" role="button" tabindex="0" aria-label="Meet Mochi">
+    <img class="peach" src="images/mochi.png" alt="Mochi the mascot" draggable="false">
+  </div>
+</div>
+
+<!-- Emoji picker (Edit > Cursor Emoji) -->
+<div id="emoji-picker" role="dialog" aria-label="Emojis and symbols">
+  <button type="button" class="close-x" aria-label="Close">×</button>
+  <h4>Pick your cursor</h4>
+  <div class="grid" id="emojiGrid"></div>
+  <div class="hint">Tap an emoji to make it your cursor. Reset any time from Edit → Reset Cursor.</div>
+</div>
+
+
+
+<!-- Wallpaper picker: top-right under the clock/date -->
+<div id="wallpaper-picker" aria-label="Choose wallpaper">
+  <div class="wp-title">Wallpaper</div>
+  <div class="wp-grid">
+    <button class="wp-swatch" data-theme="sky" style="background:linear-gradient(135deg,#fef4d6,#cfe4f5);" title="Sky" aria-label="Sky">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+    </button>
+    <button class="wp-swatch" data-theme="forest" style="background:linear-gradient(135deg,#e4efd6,#bcd6a8);" title="Forest" aria-label="Forest">
+      <svg viewBox="0 0 24 24"><path d="M12 3c-3.5 2.6-5.5 5.4-5.5 8.5 0 3 2 5 5.5 5s5.5-2 5.5-5c0-3.1-2-5.9-5.5-8.5z"></path><path d="M12 9v13"></path></svg>
+    </button>
+    <button class="wp-swatch" data-theme="desert" style="background:linear-gradient(135deg,#fde3d9,#f4bcc0);" title="Desert" aria-label="Desert">
+      <svg viewBox="0 0 24 24"><path d="M12 4c-.9 0-1.5.7-1.5 1.5V20h3V5.5C13.5 4.7 12.9 4 12 4z"></path><path d="M8 9c-.9 0-1.5.7-1.5 1.5V20h3v-9.5C9.5 9.7 8.9 9 8 9z"></path><path d="M16 11c-.9 0-1.5.7-1.5 1.5V20h3v-7.5c0-.8-.6-1.5-1.5-1.5z"></path></svg>
+    </button>
+    <button class="wp-swatch" data-theme="night" style="background:linear-gradient(135deg,#1a1d2b,#05070d);" title="Night" aria-label="Night">
+      <svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path></svg>
+    </button>
+  </div>
+</div>
+
+<!-- Right-side widget rail -->
+<div id="widget-rail">
+  <div class="widget" id="weather-widget">
+    <div class="w-title">Weather · Now</div>
+    <div class="w-body" style="display:flex;gap:14px;align-items:stretch;">
+      <div style="flex:1;display:flex;gap:8px;align-items:center;">
+        <div class="w-emoji" id="wxEmoji">☀️</div>
+        <div>
+          <div class="w-temp"><span id="wxTemp">—</span>°</div>
+          <div class="w-loc">NYC</div>
+          <div class="w-cond" id="wxCond">Loading…</div>
+        </div>
+      </div>
+      <div style="width:1px;background:currentColor;opacity:0.15;"></div>
+      <div style="flex:1;display:flex;gap:8px;align-items:center;">
+        <div class="w-emoji" id="wxEmoji2">☀️</div>
+        <div>
+          <div class="w-temp"><span id="wxTemp2">—</span>°</div>
+          <div class="w-loc">Bay Area</div>
+          <div class="w-cond" id="wxCond2">Loading…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="widget" id="music-widget">
+    <div class="w-title">Now Playing</div>
+    <div class="mp-cover" id="mpCover" aria-hidden="true">
+      <div class="mp-disc"><div class="mp-hole"></div></div>
+    </div>
+    <div class="mp-meta">
+      <div class="mp-track" id="mpTrack">Golden Hour</div>
+      <div class="mp-artist" id="mpArtist">Lofi · Sky</div>
+    </div>
+    <div class="mp-controls">
+      <button class="mp-btn" id="mpPrev" aria-label="Previous">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"></path></svg>
+      </button>
+      <button class="mp-btn mp-play" id="mpPlay" aria-label="Play/Pause">
+        <svg id="mpPlayIcon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+        <svg id="mpPauseIcon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="display:none;"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
+      </button>
+      <button class="mp-btn" id="mpNext" aria-label="Next">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"></path></svg>
+      </button>
+    </div>
+    <audio id="mpAudio" loop="" preload="none"></audio>
+  </div>
+  <div class="widget" id="snake-widget">
+    <div class="w-title" style="display:flex;justify-content:space-between;align-items:center;">
+      <span>Bricks</span>
+      <span class="game-expand" id="snakeExpand" title="Expand">⛶</span>
+    </div>
+    <div class="brick-wrap"><canvas id="brickCanvas" width="240" height="180"></canvas>
+      <div class="brick-overlay" id="brickOverlay"><div class="k">▶</div><div>Click to play</div></div>
+    </div>
+    <div class="game-meta"><span>Score <span id="gameMoves">0</span></span><span>Best <span id="gameBest">0</span></span></div>
+  </div>
+  <div class="widget" id="awards-widget">
+    <div class="w-title"><span>Awards</span><span class="aw-count">2026</span></div>
+    <div class="aw-grid">
+      <a class="aw-badge" href="https://www.cssdesignawards.com/sites/parinazs-desktop-portfolio/49807/" target="_blank" rel="noopener noreferrer" aria-label="CSS Design Awards — Site Nominee">
+        <img class="aw-day" src="images/cssda-nominee-dark.svg" alt="CSSDA Site Nominee">
+        <img class="aw-night" src="images/cssda-nominee-white.svg" alt="CSSDA Site Nominee">
+      </a>
+      <a class="aw-badge" href="https://www.cssdesignawards.com/sites/parinazs-desktop-portfolio/49807/" target="_blank" rel="noopener noreferrer" aria-label="CSS Design Awards — Website Nominee. Click to vote.">
+        <img class="aw-day" src="images/cssda-nominee-dark-vote.svg" alt="CSSDA Website Nominee — Vote">
+        <img class="aw-night" src="images/cssda-nominee-white-vote.svg" alt="CSSDA Website Nominee — Vote">
+      </a>
+    </div>
+    <div class="aw-caption">Nominee · click to vote</div>
+  </div>
+</div>
+
+<!-- Bricks fullscreen modal -->
+<div id="snakeModal" role="dialog" aria-modal="true">
+  <div class="sm-card">
+    <div class="sm-head">
+      <span>Bricks · Move to aim · Click to launch</span>
+      <button class="sm-close" id="snakeModalClose" aria-label="Close">✕</button>
+    </div>
+    <div class="brick-wrap large"><canvas id="brickCanvasBig" width="480" height="360"></canvas>
+      <div class="brick-overlay" id="brickOverlayBig"><div class="k">▶</div><div>Click / tap to launch</div></div>
+    </div>
+    <div class="sm-head" style="margin:14px 0 0;">
+      <span>Score <span id="gameMovesBig">0</span></span>
+      <span>Best <span id="gameBestBig">0</span></span>
+      <button type="button" class="gm-reset" id="gameResetBig">New game</button>
+    </div>
+  </div>
+</div>
+
+<!-- Recycle bin modal -->
+<div id="trashModal" role="dialog" aria-modal="true">
+  <div class="trash-card">
+    <div class="trash-head">
+      <button class="trash-close" id="trashClose" aria-label="Close"></button>
+      <span class="trash-title">Recycle Bin</span>
+    </div>
+    <div class="trash-body" id="trashBody"></div>
+  </div>
+</div>
+
+<div id="brand-stack">
+  <span class="avail"><span class="dot"></span>Available for work</span>
+<p class="hero-lede">Designing products from concept to launch with clarity, systems thinking, and visual craft.</p>
+</div>
+
+<div id="copyright">© 2026 Parinaz Kassemi</div>
+
+<!-- Mobile iOS-style status bar + hamburger (visible only <=760px) -->
+<div id="mobile-statusbar" aria-hidden="false">
+  <span class="ms-clock" id="msClock">--:--</span>
+  <img class="ms-logo" src="images/spiral2.png" alt="">
+  <div class="ms-right">
+    <svg class="ms-ic ms-signal" viewBox="0 0 17 11" aria-hidden="true"><rect x="0" y="7" width="3" height="4" rx="0.8"></rect><rect x="4.5" y="5" width="3" height="6" rx="0.8"></rect><rect x="9" y="2.5" width="3" height="8.5" rx="0.8"></rect><rect x="13.5" y="0" width="3" height="11" rx="0.8"></rect></svg>
+    <svg class="ms-ic ms-wifi" viewBox="0 0 16 12" aria-hidden="true"><path d="M8 2.2 C4.6 2.2 1.9 3.5 0 5.1 l1.6 1.6 C3.3 5.3 5.5 4.4 8 4.4 s4.7 0.9 6.4 2.3 L16 5.1 C14.1 3.5 11.4 2.2 8 2.2 z"></path><path d="M8 5.9 C5.9 5.9 4.1 6.7 2.8 7.9 l1.6 1.6 c1 -0.9 2.2 -1.4 3.6 -1.4 s2.6 0.5 3.6 1.4 l1.6 -1.6 C11.9 6.7 10.1 5.9 8 5.9 z"></path><circle cx="8" cy="10.2" r="1.4"></circle></svg>
+    <svg class="ms-ic ms-bat" viewBox="0 0 26 12" aria-hidden="true"><rect x="0.5" y="0.5" width="22" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1"></rect><rect x="2.5" y="2.5" width="17" height="7" rx="1.4" fill="currentColor"></rect><rect x="23.2" y="4" width="1.8" height="4" rx="0.6" fill="currentColor"></rect></svg>
+    <button type="button" class="ms-hamburger" id="msHamburger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span><span></span>
+    </button>
+  </div>
+</div>
+
+<!-- Mobile hamburger sheet -->
+<div id="mobile-sheet" role="dialog" aria-label="Menu" aria-hidden="true">
+  <div class="msh-scrim" id="mshScrim"></div>
+  <div class="msh-panel">
+    <div class="msh-head">
+      <div class="msh-brand">
+        <img src="images/spiral2.png" alt="" class="msh-logo">
+        <div>
+          <div class="msh-name">Parinaz Kassemi</div>
+          <div class="msh-role">Product Designer</div>
+        </div>
+      </div>
+      <button type="button" class="msh-close" id="mshClose" aria-label="Close">×</button>
+    </div>
+    <nav class="msh-nav">
+      <button type="button" data-sheet="about">About Parinaz</button>
+      <button type="button" data-sheet="tour">Getting Started</button>
+      <button type="button" data-sheet="emoji">Cursor Emoji</button>
+      <div class="msh-sep"></div>
+      <a href="https://www.framer.com/@parinaz-kassemi/" target="_blank" rel="noopener noreferrer">Sites & Components <span>↗</span></a>
+      <a href="https://parinazkassemi.gumroad.com/" target="_blank" rel="noopener noreferrer">Templates <span>↗</span></a>
+      <a href="https://stock.adobe.com/contributor/213420721/Parinaz" target="_blank" rel="noopener noreferrer">Stock Images <span>↗</span></a>
+      <div class="msh-sep"></div>
+      <a href="mailto:pkassemi@gmail.com">Say hi <span>✉</span></a>
+    </nav>
+    <div class="msh-social">
+      <a href="https://www.linkedin.com/in/parinazkassemi/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8h4.56v14H.22V8zm7.5 0h4.37v1.9h.06c.61-1.15 2.1-2.36 4.32-2.36 4.62 0 5.47 3.04 5.47 7v7.46h-4.56v-6.6c0-1.58-.03-3.6-2.2-3.6-2.2 0-2.53 1.72-2.53 3.49V22H7.72V8z"></path></svg></a>
+      <a href="https://www.instagram.com/parinaz.kassemi/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle></svg></a>
+      <a href="https://www.pinterest.com/parinazkassemi/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12c0 5 3 9.3 7.4 11.1-.1-.9-.2-2.4 0-3.4.2-.9 1.4-5.7 1.4-5.7s-.35-.7-.35-1.75c0-1.65.95-2.88 2.14-2.88 1 0 1.5.76 1.5 1.66 0 1.02-.65 2.54-.98 3.95-.28 1.18.6 2.15 1.77 2.15 2.12 0 3.75-2.24 3.75-5.47 0-2.86-2.06-4.86-5-4.86-3.4 0-5.4 2.55-5.4 5.19 0 1.03.4 2.13.89 2.73.1.12.11.22.08.34-.09.36-.28 1.18-.32 1.35-.05.22-.17.27-.4.16-1.48-.69-2.4-2.86-2.4-4.6 0-3.75 2.72-7.19 7.85-7.19 4.12 0 7.32 2.94 7.32 6.87 0 4.1-2.58 7.4-6.17 7.4-1.2 0-2.34-.63-2.72-1.37l-.74 2.83c-.27 1.03-1 2.33-1.48 3.12.9.28 1.85.43 2.85.43 6.6 0 12-5.4 12-12S18.6 0 12 0z"></path></svg></a>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile-only bottom drawer (widgets slide in here on <=760px) -->
+<div id="mobile-drawer" aria-label="Widgets drawer">
+  <div class="md-handle" id="mdHandle"><div class="md-grip"></div></div>
+  <div class="md-body" id="mdBody"></div>
+</div>
+
+<div id="stage">
+  <svg class="grain" width="100%" height="100%">
+    <filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"></feTurbulence><feColorMatrix type="saturate" values="0"></feColorMatrix></filter>
+    <rect width="100%" height="100%" filter="url(#noise)"></rect>
+  </svg>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <filter id="knockoutLight" x="0" y="0" width="1" height="1">
+        <feColorMatrix type="matrix" values="
+          1 0 0 0 0
+          0 1 0 0 0
+          0 0 1 0 0
+          -1.15 -1.15 -1.15 0 1.05"></feColorMatrix>
+      </filter>
+      <filter id="knockoutDark" x="0" y="0" width="1" height="1">
+        <feColorMatrix type="matrix" values="
+          1 0 0 0 0
+          0 1 0 0 0
+          0 0 1 0 0
+          1.2 1.2 1.2 0 -0.15"></feColorMatrix>
+      </filter>
+    </defs>
+  </svg>
+  <div class="tech-grid"></div>
+
+  <div id="layer-wrap">
+  <div id="layer">
+
+    <!-- ===== constant grid / blueprint chrome ===== -->
+    <div class="bp-line" style="top:80px;"></div>
+    <div class="bp-line" style="top:220px;"></div>
+    <div class="bp-line" style="top:360px;"></div>
+    <div class="bp-line" style="top:500px;"></div>
+    <div class="bp-line" style="top:640px;"></div>
+    <div class="bp-line" style="top:780px;"></div>
+    <div class="bp-line" style="top:920px;"></div>
+    <div class="bp-line" style="top:1060px;"></div>
+    <div class="bp-line" style="top:1200px;"></div>
+    <div class="bp-line v" style="left:80px;"></div>
+    <div class="bp-line v" style="left:340px;"></div>
+    <div class="bp-line v" style="left:600px;"></div>
+    <div class="bp-line v" style="left:860px;"></div>
+    <div class="bp-line v" style="left:1100px;"></div>
+    <div class="bp-line v" style="left:1340px;"></div>
+    <div class="bp-line v" style="left:1600px;"></div>
+    <div class="bp-line v" style="left:1860px;"></div>
+    <div class="bp-line v" style="left:2120px;"></div>
+
+    <div class="crosshair" style="left:71px; top:71px;"></div>
+    <div class="crosshair" style="left:2111px; top:71px;"></div>
+    <div class="crosshair" style="left:71px; top:1191px;"></div>
+    <div class="crosshair" style="left:2111px; top:1191px;"></div>
+    <div class="crosshair" style="left:1091px; top:71px;"></div>
+    <div class="crosshair" style="left:1091px; top:1191px;"></div>
+
+    <div class="dot-cluster" style="left:96px; top:254px;">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="dot-cluster" style="left:1200px; top:504px;">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="coord" id="coordText" style="left:56px; bottom:190px;">36.7783° N<br>119.4179° W</div>
+
+    
+
+    <svg id="lineSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+
+    <!-- centerpiece removed; landscape lives in stage background -->
+
+     <!-- ===== case studies: folders ===== -->
+     <div class="node" id="n-case1" style="left:860px; top:170px; --rot:0deg;">
+       <div class="cs-lock-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></div>
+       <div class="folder"><div class="tab"></div><div class="body"></div></div>
+        <div class="node-label">case_study_01</div>
+       <div class="node-sub">AI Chatbot</div>
+     </div>
+      <div class="node" id="n-case2" style="left:1060px; top:780px; --rot:0deg;">
+       <div class="cs-lock-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></div>
+       <div class="folder"><div class="tab"></div><div class="body"></div></div>
+         <div class="node-label">case_study_02</div>
+        <div class="node-sub">New Product Launch</div>
+     </div>
+      <div class="node" id="n-case3" style="left:440px; top:820px; --rot:0deg;">
+       <div class="cs-lock-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></div>
+       <div class="folder"><div class="tab"></div><div class="body"></div></div>
+         <div class="node-label">case_study_03</div>
+        <div class="node-sub">Client Work</div>
+     </div>
+      <div class="node" id="n-case4" style="left:1360px; top:780px; --rot:0deg;">
+       <div class="cs-lock-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></div>
+       <div class="folder"><div class="tab"></div><div class="body"></div></div>
+         <div class="node-label">case_study_04</div>
+        <div class="node-sub">Branding</div>
+     </div>
+    <div class="node icon-node collection-node" id="n-bookshelf" data-collection="books" style="left:700px; top:940px; --rot:0deg;">
+      <div class="icon-tile">
+        <img src="images/icon-books.png" alt="Bookshelf" style="width:100%;height:100%;object-fit:contain;">
+      </div>
+      <div class="node-label">bookshelf</div><div class="node-sub">7 titles</div>
+    </div>
+    <div class="node icon-node" id="n-synth" style="left:220px; top:930px; --rot:0deg;">
+      <div class="icon-tile">
+        <img src="images/icon-synth.png" alt="Programma 900 synthesizer app icon" style="width:100%;height:100%;object-fit:contain;">
+      </div>
+      <div class="node-label">programma_900</div><div class="node-sub">Synth</div>
+    </div>
+    <div class="node icon-node collection-node" id="n-watchlist" data-collection="films" style="left:870px; top:940px; --rot:0deg;">
+      <div class="icon-tile">
+        <img src="images/icon-films-v2.png" alt="Watchlist" style="width:100%;height:100%;object-fit:contain;">
+      </div>
+      <div class="node-label">watchlist</div><div class="node-sub">6 titles</div>
+    </div>
+    <!-- Mobile-only: aggregated Photos icon -->
+    <div class="node icon-node collection-node photos-mobile" id="n-photos" data-collection="photos" style="--rot:0deg;">
+      <div class="icon-tile photos-tile" aria-label="Photos">
+        <svg class="photos-flower" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g style="mix-blend-mode:multiply;">
+            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#ff9a3c" opacity="0.78" transform="rotate(0 50 50)"></ellipse>
+            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#f2d64a" opacity="0.78" transform="rotate(45 50 50)"></ellipse>
+            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#8ccb52" opacity="0.78" transform="rotate(90 50 50)"></ellipse>
+            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#5aa8d6" opacity="0.78" transform="rotate(135 50 50)"></ellipse>
+            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#7f8ed1" opacity="0.78" transform="rotate(180 50 50)"></ellipse>
+            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#b782c9" opacity="0.78" transform="rotate(225 50 50)"></ellipse>
+            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#e57ea3" opacity="0.78" transform="rotate(270 50 50)"></ellipse>
+            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#ef6f6f" opacity="0.78" transform="rotate(315 50 50)"></ellipse>
+          </g>
+        </svg>
+      </div>
+      <div class="node-label">photos</div><div class="node-sub">Library</div>
+    </div>
+    <div class="node photo-node" id="n-resume" style="left:1080px; top:920px; --pw:118px; --ph:158px; --rot:0deg;" data-kind="resume">
+      <div class="cs-lock-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></div>
+      <div class="thumb"><img data-locked="resume-v3.png" src="" alt="Resume"></div>
+      <div class="node-label">resume</div><div class="node-sub">PDF · 2026</div>
+    </div>
+    <div class="node" id="n-stickies" style="left:540px; top:150px; --rot:0deg;">
+      <div class="note-thumb" style="background:linear-gradient(160deg,#fff6c9 0%,#ffe89a 55%,#f5d270 100%); box-shadow:0 8px 16px rgba(180,150,60,0.25), inset 0 1.5px 0 rgba(255,255,255,0.8), inset 0 -4px 10px rgba(180,140,50,0.15);"><span>✏️</span></div>
+      <div class="node-label">stickies</div><div class="node-sub">Draw a note</div>
+    </div>
+    <div class="node" id="n-artboard" style="left:340px; top:640px; --rot:-2deg;">
+      <div class="note-thumb artboard-thumb" aria-hidden="true">
+        <svg viewBox="0 0 100 108" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="16" cy="30" rx="7" ry="11" fill="#e9c9c1"></ellipse>
+          <circle cx="16" cy="26" r="1.6" fill="#d9aaa0"></circle>
+          <circle cx="16" cy="34" r="1.6" fill="#d9aaa0"></circle>
+          <rect x="30" y="22" width="4" height="22" rx="1.4" fill="#f0e6d2" stroke="#c9beA6" stroke-width="0.4"></rect>
+          <g transform="translate(52 42)">
+            <path d="M-14 6 A14 14 0 0 1 14 6 Z" fill="#f4efe2" stroke="#b7ac93" stroke-width="0.5"></path>
+            <path d="M-11 6 L-8 -6 M-6 6 L-4 -8 M-2 6 L-1 -9 M2 6 L1 -9 M6 6 L4 -8 M11 6 L8 -6" stroke="#b7ac93" stroke-width="0.5" fill="none"></path>
+          </g>
+          <circle cx="62" cy="30" r="3.2" fill="#3d7fb8"></circle>
+          <ellipse cx="22" cy="60" rx="10" ry="8" fill="#c8c2b3"></ellipse>
+          <ellipse cx="20" cy="58" rx="4" ry="2" fill="#dcd6c6" opacity="0.7"></ellipse>
+          <path d="M42 52 l14 4 -2 20 -14 -3 z" fill="#b98f5c"></path>
+          <rect x="74" y="34" width="12" height="34" rx="1.6" fill="#a9c1b1" stroke="#7d998a" stroke-width="0.5"></rect>
+          <path d="M74 40 L86 40 M74 50 L86 50 M74 60 L86 60" stroke="#7d998a" stroke-width="0.4" opacity="0.5"></path>
+          <circle cx="62" cy="82" r="7" fill="#b0a992"></circle>
+          <circle cx="74" cy="88" r="4.5" fill="#928a76"></circle>
+          <rect x="8" y="86" width="16" height="3" rx="1.5" fill="#c9522f"></rect>
+          <rect x="30" y="90" width="14" height="3" rx="1.5" fill="#5a5245"></rect>
+        </svg>
+      </div>
+      <div class="node-label">suminagashi</div><div class="node-sub">Floating ink studio</div>
+    </div>
+
+    <!-- ===== photos: selectable, real images ===== -->
+    <div class="node photo-node" id="n-sunflower" style="left:430px; top:310px; --pw:124px; --ph:99px; --rot:0deg;">
+      <div class="thumb"><img src="images/photo-sunflower.png" alt="Sunflowers"></div>
+      <div class="node-label">sunflowers</div><div class="node-sub">North Dakota</div>
+    </div>
+    <div class="node photo-node" id="n-snorkel" style="left:720px; top:170px; --pw:93px; --ph:117px; --rot:0deg;">
+      <div class="thumb"><img src="images/photo-snorkel.png" alt="Snorkeling"></div>
+      <div class="node-label">snorkeling</div><div class="node-sub">Maui HI</div>
+    </div>
+    <div class="node photo-node" id="n-helicopter" style="left:390px; top:530px; --pw:130px; --ph:99px; --rot:0deg;">
+      <div class="thumb"><img src="images/photo-mountain.png" alt="Mountain"></div>
+      <div class="node-label">mountain</div><div class="node-sub">Boulder CO</div>
+    </div>
+    <div class="node photo-node" id="n-pottery" style="left:1160px; top:700px; --pw:117px; --ph:99px; --rot:0deg;">
+      <div class="thumb"><img src="images/photo-pottery.png" alt="Pottery"></div>
+      <div class="node-label">pottery</div><div class="node-sub">Minnesota</div>
+    </div>
+    <div class="node photo-node" id="n-nyc" style="left:520px; top:930px; --pw:93px; --ph:124px; --rot:0deg;">
+      <div class="thumb"><img src="images/photo-nyc.png" alt="NYC"></div>
+      <div class="node-label">rockefeller</div><div class="node-sub">NYC</div>
+    </div>
+    <div class="node photo-node" id="n-book" style="left:650px; top:560px; --pw:93px; --ph:111px; --rot:0deg;">
+      <div class="thumb"><img src="images/photo-crimepunishment.png" alt="Reading"></div>
+      <div class="node-label">reading</div><div class="node-sub">Dostoevsky</div>
+    </div>
+    <div class="node photo-node" id="n-cave" style="left:520px; top:420px; --pw:124px; --ph:124px; --rot:0deg;">
+      <div class="thumb"><img src="images/photo-cave.png" alt="Sea cave"></div>
+      <div class="node-label">sea_cave</div><div class="node-sub">Hawaii</div>
+    </div>
+    <div class="node photo-node" id="n-desert-tree" style="left:1270px; top:730px; --pw:105px; --ph:124px; --rot:0deg;">
+      <div class="thumb"><img src="images/photo-joshua.png" alt="Joshua Tree"></div>
+      <div class="node-label">joshua_tree</div><div class="node-sub">Mojave</div>
+    </div>
+    <div class="node photo-node" id="n-kitten" style="left:880px; top:660px; --pw:105px; --ph:105px; --rot:0deg;">
+      <div class="thumb"><img src="images/photo-kitten.jpg" alt="Kitten"></div>
+      <div class="node-label">kit-kat</div><div class="node-sub">Backyard</div>
+    </div>
+    <div class="node photo-node" id="n-festival" style="left:1260px; top:560px; --pw:99px; --ph:130px; --rot:0deg;">
+      <div class="thumb"><img src="images/photo-festival.jpg" alt="Festival"></div>
+      <div class="node-label">music_festival</div><div class="node-sub">Wisconsin</div>
+    </div>
+    <div class="node photo-node" id="n-scuba" style="left:1010px; top:170px; --pw:124px; --ph:111px; --rot:0deg;">
+      <div class="thumb"><img src="images/photo-scuba.jpg" alt="Scuba"></div>
+      <div class="node-label">scuba</div><div class="node-sub">Maui HI</div>
+    </div>
+    <div class="node photo-node" id="n-iceland" style="left:420px; top:720px; --pw:124px; --ph:99px; --rot:0deg;">
+      <div class="thumb"><img src="images/photo-iceland.png" alt="Iceland"></div>
+      <div class="node-label">cliffside</div><div class="node-sub">Iceland</div>
+    </div>
+    <div class="node photo-node" id="n-lagoon" style="left:580px; top:690px; --pw:111px; --ph:111px; --rot:0deg;">
+      <div class="thumb"><img src="images/photo-lagoon.png" alt="Blue Lagoon"></div>
+      <div class="node-label">blue_lagoon</div><div class="node-sub">Iceland</div>
+    </div>
+        <div class="node photo-node" id="n-karate" style="left:1270px; top:940px; --pw:95px; --ph:130px; --rot:0deg;">
+      <div class="thumb"><img src="images/photo-karate.png" alt="Karate"></div>
+      <div class="node-label">karate</div><div class="node-sub">Green Belt</div>
+      <div class="selection-ring"></div>
+    </div>
+    <div class="node photo-node" id="n-climb" style="left:980px; top:760px; --pw:93px; --ph:124px; --rot:0deg;">
+      <div class="thumb"><img src="images/photo-climb.png" alt="Climbing"></div>
+      <div class="node-label">bouldering</div><div class="node-sub">Minnesota</div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ============ DOCK — tech stack ============ -->
+<div class="dock-wrap">
+  <div class="dock-section-label">Tech Stack</div>
+  <div class="dock" id="dock">
+    <div class="di" data-name="Figma">
+      <div class="di-lbl">Figma</div>
+      <!-- preview modal injected below via JS-friendly marker -->
+      <div class="di-icon">
+        <img src="https://www.google.com/s2/favicons?sz=128&domain=figma.com" alt="Figma">
+      </div>
+      <div class="di-dot"></div>
+    </div>
+    <div class="di" data-name="Framer">
+      <div class="di-lbl">Framer</div>
+      <div class="di-icon">
+        <img src="https://www.google.com/s2/favicons?sz=128&domain=framer.com" alt="Framer">
+      </div>
+      <div class="di-dot"></div>
+    </div>
+    <div class="di" data-name="Claude">
+      <div class="di-lbl">Claude</div>
+      <div class="di-icon">
+        <img src="https://www.google.com/s2/favicons?sz=128&domain=claude.ai" alt="Claude">
+      </div>
+      <div class="di-dot"></div>
+    </div>
+    <div class="di" data-name="OpenAI">
+      <div class="di-lbl">OpenAI</div>
+      <div class="di-icon">
+        <img src="https://www.google.com/s2/favicons?sz=128&domain=openai.com" alt="OpenAI">
+      </div>
+      <div class="di-dot"></div>
+    </div>
+    <div class="di" data-name="Lovable">
+      <div class="di-lbl">Lovable</div>
+      <div class="di-icon">
+        <div class="lovable-mark" aria-label="Lovable">
+          <img src="images/lovable-heart.jpeg" alt="Lovable">
+        </div>
+      </div>
+      <div class="di-dot"></div>
+    </div>
+    <div class="di" data-name="Cursor">
+      <div class="di-lbl">Cursor</div>
+      <div class="di-icon">
+        <img src="https://www.google.com/s2/favicons?sz=128&domain=cursor.com" alt="Cursor">
+      </div>
+      <div class="di-dot"></div>
+    </div>
+    <div class="di" data-name="Notion">
+      <div class="di-lbl">Notion</div>
+      <div class="di-icon">
+        <img src="https://www.google.com/s2/favicons?sz=128&domain=notion.so" alt="Notion">
+      </div>
+      <div class="di-dot"></div>
+    </div>
+    <div class="di" data-name="Midjourney">
+      <div class="di-lbl">Midjourney</div>
+      <div class="di-icon">
+        <img src="https://www.google.com/s2/favicons?sz=128&domain=midjourney.com" alt="Midjourney">
+      </div>
+      <div class="di-dot"></div>
+    </div>
+    <div class="ddiv"></div>
+    <div class="di trash-di" id="trashDock" data-name="Recycle Bin">
+      <div class="di-lbl">Recycle Bin</div>
+      <div class="di-icon">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <defs>
+            <linearGradient id="binBody" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f6f7f9"></stop>
+              <stop offset="55%" stop-color="#dfe3ea"></stop>
+              <stop offset="100%" stop-color="#a8b0bd"></stop>
+            </linearGradient>
+            <linearGradient id="binLid" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#eef1f6"></stop>
+              <stop offset="100%" stop-color="#b7bdc9"></stop>
+            </linearGradient>
+          </defs>
+          <!-- lid -->
+          <rect x="10" y="14" width="44" height="7" rx="3" fill="url(#binLid)" stroke="#8892a2" stroke-width="0.8"></rect>
+          <rect x="27" y="10" width="10" height="5" rx="2" fill="#c9cfd9" stroke="#8892a2" stroke-width="0.8"></rect>
+          <!-- body -->
+          <path d="M14 22 L50 22 L46 56 Q45.4 59 42.4 59 L21.6 59 Q18.6 59 18 56 Z" fill="url(#binBody)" stroke="#8892a2" stroke-width="0.8" stroke-linejoin="round"></path>
+          <!-- vertical ribs -->
+          <path d="M24 26 L23 55 M32 26 L32 55 M40 26 L41 55" stroke="rgba(255,255,255,0.7)" stroke-width="1.2" fill="none"></path>
+          <path d="M24 26 L23 55 M32 26 L32 55 M40 26 L41 55" stroke="rgba(0,0,0,0.18)" stroke-width="0.6" fill="none" transform="translate(1,0)"></path>
+          <!-- inner shadow -->
+          <ellipse cx="32" cy="23.5" rx="17" ry="2.3" fill="rgba(0,0,0,0.28)"></ellipse>
+        </svg>
+      </div>
+      <div class="di-dot"></div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div id="awwwards" style="position: fixed; z-index: 999; transform: translateY(-50%); top: 50%; left: 0;"><a href="https://www.awwwards.com/sites/parinazs-desktop-portfolio" target="_blank" rel="noopener"><svg width="53.08" height="171.358" viewBox="0 0 53.08 171.358" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="M0 0h53.08v171.358H0z"></path><g fill="#000"><path d="M20.048 153.585v-2.002l6.752-3.757h-6.752v-1.9h10.23v2.002l-6.752 3.757h6.752v1.9zM29.899 142.382a3.317 3.317 0 0 1-1.359 1.293c-.575.297-1.223.446-1.944.446-.721 0-1.369-.149-1.944-.446a3.317 3.317 0 0 1-1.359-1.293c-.331-.564-.497-1.232-.497-2.003 0-.769.166-1.437.497-2.002a3.332 3.332 0 0 1 1.359-1.294c.575-.297 1.224-.445 1.944-.445.722 0 1.369.148 1.944.445a3.326 3.326 0 0 1 1.359 1.294c.33.565.496 1.233.496 2.002.001.77-.166 1.438-.496 2.003m-1.703-3.348c-.435-.331-.967-.497-1.601-.497s-1.167.166-1.601.497c-.434.332-.65.78-.65 1.345s.217 1.014.65 1.346c.434.33.967.496 1.601.496s1.166-.166 1.601-.496c.434-.332.649-.78.649-1.346.001-.565-.215-1.013-.649-1.345M22.912 134.996v-1.812h1.185c-.43-.283-.752-.593-.973-.929-.219-.336-.329-.732-.329-1.19 0-.479.127-.902.38-1.272.254-.37.635-.633 1.141-.79-.478-.262-.851-.591-1.118-.985a2.221 2.221 0 0 1-.402-1.265c0-.682.2-1.218.599-1.607.4-.391.957-.585 1.668-.585h5.218v1.812H25.37c-.682 0-1.023.303-1.023.907 0 .467.264.85.789 1.146.527.299 1.286.446 2.28.446h2.865v1.813H25.37c-.682 0-1.023.303-1.023.906 0 .468.275.851.826 1.147.551.298 1.352.446 2.404.446h2.704v1.812h-7.369zM21.626 122.457c-.225.224-.502.336-.833.336s-.608-.112-.833-.336a1.128 1.128 0 0 1-.336-.833c0-.331.111-.609.336-.833.225-.225.502-.336.833-.336s.608.111.833.336c.225.224.337.502.337.833 0 .332-.112.608-.337.833m1.286-1.739h7.366v1.813h-7.366v-1.813zM22.912 118.668v-1.812h1.185a3.348 3.348 0 0 1-.951-1.009 2.434 2.434 0 0 1-.351-1.272c0-.681.19-1.229.57-1.644.38-.414.931-.621 1.651-.621h5.263v1.812h-4.722c-.418 0-.727.096-.92.285-.195.19-.293.447-.293.769 0 .302.116.58.351.833.233.254.577.458 1.03.613.453.156.992.234 1.615.234h2.938v1.812h-7.366zM29.833 109.129a3.33 3.33 0 0 1-1.432 1.169 4.535 4.535 0 0 1-1.805.373 4.537 4.537 0 0 1-1.807-.373c-.579-.248-1.057-.638-1.432-1.169s-.563-1.196-.563-1.995c0-.771.183-1.413.549-1.93a3.28 3.28 0 0 1 1.382-1.141 4.221 4.221 0 0 1 1.709-.364h.746v5.071c.447-.02.838-.183 1.168-.49.332-.307.498-.724.498-1.248 0-.41-.093-.754-.277-1.031-.186-.278-.473-.529-.863-.753l.542-1.462c.69.303 1.224.724 1.592 1.265.371.541.556 1.235.556 2.083 0 .799-.188 1.464-.563 1.995m-4.085-3.574c-.41.088-.746.261-1.009.52-.262.258-.395.61-.395 1.06 0 .428.137.784.409 1.067.272.282.604.458.994.525v-3.172zM29.833 100.878c-.375.531-.852.921-1.432 1.169a4.552 4.552 0 0 1-3.612 0c-.579-.248-1.057-.638-1.432-1.169s-.563-1.196-.563-1.995c0-.77.183-1.412.549-1.93a3.278 3.278 0 0 1 1.382-1.14 4.222 4.222 0 0 1 1.709-.365h.746v5.072a1.794 1.794 0 0 0 1.168-.49c.332-.307.498-.724.498-1.249 0-.41-.093-.753-.277-1.031-.186-.277-.473-.528-.863-.753l.542-1.462c.69.302 1.224.724 1.592 1.265.371.541.556 1.234.556 2.083 0 .799-.188 1.464-.563 1.995m-4.085-3.573c-.41.088-.746.261-1.009.519-.262.258-.395.611-.395 1.06 0 .429.137.784.409 1.067.272.282.604.458.994.526v-3.172zM35.481 16.926l-4.782 14.969h-3.266l-2.584-9.682-2.584 9.682h-3.268l-4.781-14.969h3.713l2.673 10.276 2.524-10.276h3.445l2.524 10.276 2.674-10.276zM37.979 27.083c1.426 0 2.495 1.068 2.495 2.495 0 1.425-1.069 2.495-2.495 2.495-1.425 0-2.495-1.07-2.495-2.495-.001-1.427 1.07-2.495 2.495-2.495"></path></g></svg></a></div>
+
+
+
+<script src="app.js"></script>
+</body></html>
