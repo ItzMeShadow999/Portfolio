@@ -22,13 +22,13 @@
   // ---- SVG Cursor Picker ----
   // Three built-in SVG cursors
   const CURSOR_SVGS = {
-    // Paper: cream arrow with dog-ear fold, ink-pen aesthetic
+    // Paper: rounded, torn-edge scrap of aged parchment
     paper: {
       label: '✦',
       // default arrow (hotspot 3,2)
-      normal: `<svg xmlns='http://www.w3.org/2000/svg' width='28' height='32' viewBox='0 0 28 32'><path d='M4 2 L24 12.5 L15.5 15.5 L11.5 26.5 Z' fill='%23f5f0e8' stroke='%23555' stroke-width='1.2' stroke-linejoin='round'/><path d='M11.5 26.5 L15.5 15.5 L24 12.5' fill='none' stroke='%23333' stroke-width='0.8' opacity='0.4'/><path d='M20.5 12 L18 14.5' stroke='%23333' stroke-width='0.6' opacity='0.3'/></svg>`,
-      // pointer hand variant (hotspot 8,3)
-      pointer: `<svg xmlns='http://www.w3.org/2000/svg' width='28' height='32' viewBox='0 0 28 32'><path d='M4 2 L24 12.5 L15.5 15.5 L11.5 26.5 Z' fill='%23f5f0e8' stroke='%23555' stroke-width='1.2' stroke-linejoin='round'/><path d='M11.5 26.5 L15.5 15.5 L24 12.5' fill='none' stroke='%23333' stroke-width='0.8' opacity='0.4'/></svg>`,
+      normal: `<svg xmlns='http://www.w3.org/2000/svg' width='28' height='32' viewBox='0 0 28 32'><defs><linearGradient id='ppA' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23faf3dc'/><stop offset='45%' stop-color='%23e8d2a0'/><stop offset='100%' stop-color='%23c7a468'/></linearGradient><radialGradient id='ppB' cx='75%' cy='18%' r='70%'><stop offset='0%' stop-color='%23a97c3f' stop-opacity='0.5'/><stop offset='100%' stop-color='%23a97c3f' stop-opacity='0'/></radialGradient><radialGradient id='ppC' cx='22%' cy='88%' r='55%'><stop offset='0%' stop-color='%238a5f2c' stop-opacity='0.35'/><stop offset='100%' stop-color='%238a5f2c' stop-opacity='0'/></radialGradient></defs><path d='M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z' fill='url(%23ppA)' stroke='%237a5a30' stroke-width='0.8' stroke-linejoin='round'/><path d='M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z' fill='url(%23ppB)'/><path d='M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z' fill='url(%23ppC)'/><path d='M13.3 15.4 C14.3 14.2 16.2 14.5 17.8 13.9' fill='none' stroke='%236b4d26' stroke-width='0.5' opacity='0.5'/></svg>`,
+      // pointer hand variant
+      pointer: `<svg xmlns='http://www.w3.org/2000/svg' width='28' height='32' viewBox='0 0 28 32'><defs><linearGradient id='ppA2' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23fdf7e6'/><stop offset='45%' stop-color='%23eeddb0'/><stop offset='100%' stop-color='%23d1af78'/></linearGradient><radialGradient id='ppB2' cx='75%' cy='18%' r='70%'><stop offset='0%' stop-color='%23a97c3f' stop-opacity='0.45'/><stop offset='100%' stop-color='%23a97c3f' stop-opacity='0'/></radialGradient><radialGradient id='ppC2' cx='22%' cy='88%' r='55%'><stop offset='0%' stop-color='%238a5f2c' stop-opacity='0.3'/><stop offset='100%' stop-color='%238a5f2c' stop-opacity='0'/></radialGradient></defs><path d='M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z' fill='url(%23ppA2)' stroke='%237a5a30' stroke-width='0.8' stroke-linejoin='round'/><path d='M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z' fill='url(%23ppB2)'/><path d='M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z' fill='url(%23ppC2)'/></svg>`,
       hotspot: '3 2',
     },
     // macOS: smooth rounded white arrow
@@ -44,7 +44,7 @@
   function renderCursorPreviews() {
     const paperEl = document.getElementById('cursorPreviewPaper');
     const macosEl = document.getElementById('cursorPreviewMacos');
-    if (paperEl) paperEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="36" viewBox="0 0 28 32"><path d="M4 2 L24 12.5 L15.5 15.5 L11.5 26.5 Z" fill="#f5f0e8" stroke="#555" stroke-width="1.2" stroke-linejoin="round"/><path d="M11.5 26.5 L15.5 15.5 L24 12.5" fill="none" stroke="#333" stroke-width="0.8" opacity="0.4"/><path d="M20.5 12 L18 14.5" stroke="#333" stroke-width="0.6" opacity="0.3"/></svg>`;
+    if (paperEl) paperEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="36" viewBox="0 0 28 32"><defs><linearGradient id="ppPrevA" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#faf3dc"/><stop offset="45%" stop-color="#e8d2a0"/><stop offset="100%" stop-color="#c7a468"/></linearGradient><radialGradient id="ppPrevB" cx="75%" cy="18%" r="70%"><stop offset="0%" stop-color="#a97c3f" stop-opacity="0.5"/><stop offset="100%" stop-color="#a97c3f" stop-opacity="0"/></radialGradient><radialGradient id="ppPrevC" cx="22%" cy="88%" r="55%"><stop offset="0%" stop-color="#8a5f2c" stop-opacity="0.35"/><stop offset="100%" stop-color="#8a5f2c" stop-opacity="0"/></radialGradient></defs><path d="M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z" fill="url(#ppPrevA)" stroke="#7a5a30" stroke-width="0.8" stroke-linejoin="round"/><path d="M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z" fill="url(#ppPrevB)"/><path d="M5 2 C3.6 0.9 2.3 2.4 3.4 3.8 L17.2 11.4 C19.3 12.5 19.6 13.2 17.8 13.9 C16.2 14.5 14.3 14.2 13.3 15.4 C12.5 16.4 12.2 17.8 11.7 19.1 L9.6 24.9 C9 26.4 7.6 26.2 7.2 24.6 L5 14.1 C4.7 12.8 4.3 12.1 3.1 11.6 C1.7 11 1.5 9.6 2.9 8.9 Z" fill="url(#ppPrevC)"/><path d="M13.3 15.4 C14.3 14.2 16.2 14.5 17.8 13.9" fill="none" stroke="#6b4d26" stroke-width="0.5" opacity="0.5"/></svg>`;
     if (macosEl) macosEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="34" viewBox="0 0 24 28"><path d="M3 2 L3 22 L8 17.5 L12 26 L14.5 24.8 L10.5 16 L17 16 Z" fill="white" stroke="rgba(0,0,0,0.45)" stroke-width="1.4" stroke-linejoin="round" paint-order="stroke"/></svg>`;
   }
   renderCursorPreviews();
@@ -199,80 +199,6 @@
     });
   }
 
-  // ---- Peach walkthrough ----
-  const peach = document.getElementById('peach-guide');
-  const pTitle = document.getElementById('peachTitle');
-  const pBody = document.getElementById('peachBody');
-  const pStep = document.getElementById('peachStep');
-  const STEPS = [
-    { t:"Hi, I'm Mochi 🍡", b:"I'm your tour guide. This is Shadow's interactive desktop portfolio. Poke around like it's a real computer." },
-    { t:'Change the vibe 🌅', b:'Top-right wallpaper picker swaps landscapes — Sky, Forest, Desert, Night. Each one re-themes the whole desktop.' },
-    { t:'Open the case studies 📁', b:'Folders 1–4 are the real case studies. Double-click to open. No peeking at the titles until you do.' },
-    { t:'Play with the widgets 🎛️', b:'The synth on the left actually plays. Bookshelf, Watchlist, and Photos open collections. Notes and the resume are draggable.' },
-    { t:'Shop the extras 🛍️', b:'Top menu → Shop has my Framer components, Gumroad templates, and Adobe Stock library.' },
-    { t:'Pick your cursor ✨', b:'Edit → Cursor Style lets you switch to a paper pointer, a soft macOS arrow, or draw your own. Reset any time from Edit → Reset Cursor.' },
-  ];
-  let idx = 0;
-  let shortcutMode = false;
-  function renderStep() {
-    if (shortcutMode) return;
-    const s = STEPS[idx];
-    pTitle.textContent = s.t; pBody.textContent = s.b;
-    pStep.textContent = 'Step ' + (idx+1) + ' of ' + STEPS.length;
-    document.getElementById('peachNext').textContent = idx === STEPS.length - 1 ? 'Done ✓' : 'Next →';
-  }
-  function openPeach() { shortcutMode = false; idx = 0; renderStep(); peach.classList.add('show'); }
-  function closePeach() { peach.classList.remove('show'); }
-  document.getElementById('peachNext').addEventListener('click', () => {
-    if (shortcutMode) { shortcutMode = false; closePeach(); return; }
-    if (idx >= STEPS.length - 1) { closePeach(); return; }
-    idx++; renderStep();
-  });
-  document.getElementById('peachSkip').addEventListener('click', closePeach);
-  // Drag Barry, or tap to open the tour
-  (function makeBarryDraggable(){
-    const grip = peach.querySelector('.peach-wrap');
-    let dragging = false, moved = false, startPtr, startPos;
-    grip.addEventListener('pointerdown', e => {
-      dragging = true; moved = false;
-      startPtr = { x:e.clientX, y:e.clientY };
-      const r = peach.getBoundingClientRect();
-      startPos = { x:r.left, y:r.top };
-      peach.classList.add('docked');
-      peach.style.setProperty('left', r.left + 'px', 'important');
-      peach.style.setProperty('top',  r.top  + 'px', 'important');
-      peach.style.setProperty('right', 'auto', 'important');
-      peach.style.setProperty('bottom', 'auto', 'important');
-      grip.setPointerCapture(e.pointerId);
-    });
-    grip.addEventListener('pointermove', e => {
-      if (!dragging) return;
-      const dx = e.clientX - startPtr.x, dy = e.clientY - startPtr.y;
-      if (!moved && Math.hypot(dx,dy) > 4) { moved = true; peach.classList.add('dragging'); }
-      if (moved) {
-        peach.style.setProperty('left', (startPos.x + dx) + 'px', 'important');
-        peach.style.setProperty('top',  (startPos.y + dy) + 'px', 'important');
-      }
-    });
-    function end(e){
-      if (!dragging) return;
-      dragging = false;
-      try { grip.releasePointerCapture(e.pointerId); } catch(_){}
-      peach.classList.remove('dragging');
-      if (!moved) {
-        // clean tap → open/close tour, restore auto-stroll position
-        peach.classList.remove('docked');
-        peach.style.removeProperty('left');
-        peach.style.removeProperty('top');
-        peach.style.removeProperty('right');
-        peach.style.removeProperty('bottom');
-        if (peach.classList.contains('show')) closePeach(); else openPeach();
-      }
-    }
-    grip.addEventListener('pointerup', end);
-    grip.addEventListener('pointercancel', end);
-  })();
-
   // ---- Wire menu actions ----
   document.querySelectorAll('#menubar .mb-dropdown [data-action]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -281,15 +207,6 @@
       if (act === 'about') { window.__openAbout && window.__openAbout(); }
       else if (act === 'cursor-style') openCursorPicker();
       else if (act === 'reset-cursor') resetCursorStyle();
-      else if (act === 'tour') openPeach();
-      else if (act === 'tour-shortcuts') {
-        shortcutMode = true;
-        pTitle.textContent = 'Essential shortcuts ⌨️';
-        pBody.textContent = 'Double-click folders to open · drag notes and photos anywhere · click the synth keys to play · use the wallpaper picker (top right) to change themes · Esc closes anything open.';
-        pStep.textContent = 'Quick reference';
-        document.getElementById('peachNext').textContent = 'Got it ✓';
-        peach.classList.add('show');
-      }
     });
   });
 })();
@@ -3075,7 +2992,7 @@ function renderBookshelf() {
   sheet.querySelectorAll('[data-sheet]').forEach(el => {
     el.addEventListener('click', () => {
       const key = el.getAttribute('data-sheet');
-      const map = { about:'about', tour:'tour', 'cursor-style':'cursor-style' };
+      const map = { about:'about', 'cursor-style':'cursor-style' };
       const target = document.querySelector(`#menubar [data-action="${map[key]}"]`);
       close();
       setTimeout(() => target?.click(), 200);
