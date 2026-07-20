@@ -327,55 +327,6 @@ body[data-theme="night"] .mb-dropdown .mb-sep { background:rgba(255,255,255,0.08
 body[data-theme="night"] .brand-menu > .brand-lock:hover { background:rgba(255,255,255,0.1); }
 .brand-menu > .brand-trigger { margin-left:-2px; }
 
-/* ============ Mascot helper (little frog friend) ============ */
-#peach-guide {
-  position:fixed; left:20px; top:112px; z-index:9998;
-  display:flex; align-items:flex-end; gap:12px; flex-direction:row-reverse;
-  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;
-  pointer-events:auto;
-}
-@keyframes peachIn { from { transform:translateY(20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
-#peach-guide .peach {
-  width:76px; height:76px;
-  filter:drop-shadow(0 6px 14px rgba(50,90,50,0.28));
-  animation:mochiSquish 2.4s ease-in-out infinite;
-  transform-origin:50% 100%;
-  user-select:none; cursor:pointer; transition:transform 0.15s;
-  display:block;
-}
-#peach-guide.dragging .peach, #peach-guide.paused .peach { animation:none; }
-@keyframes mochiSquish {
-  0%,100% { transform:translateY(0) scale(1, 1); }
-  35%     { transform:translateY(-4px) scale(0.96, 1.06); }
-  55%     { transform:translateY(0) scale(1.08, 0.92); }
-  75%     { transform:translateY(-2px) scale(0.98, 1.03); }
-}
-#peach-guide.dragging .peach { cursor:grabbing; }
-#peach-guide { cursor:grab; }
-#peach-guide .peach-wrap { touch-action:none; }
-#peach-guide .bubble {
-  display:none; background:#fff; color:#2a1e1c; border-radius:18px; padding:14px 16px 12px;
-  max-width:280px; box-shadow:0 12px 36px rgba(40,20,10,0.22), 0 2px 6px rgba(0,0,0,0.08);
-  position:relative; font-size:13px; line-height:1.45;
-  animation:peachIn 0.35s cubic-bezier(.2,.9,.3,1.2);
-}
-#peach-guide.show .bubble { display:block; }
-#peach-guide .bubble::after {
-  content:''; position:absolute; left:-8px; bottom:18px;
-  width:14px; height:14px; background:#fff; transform:rotate(45deg);
-  border-radius:2px;
-}
-#peach-guide .bubble h4 { margin:0 0 4px; font-size:13px; font-weight:700; color:#d64550; letter-spacing:0.02em; }
-#peach-guide .bubble p { margin:0 0 10px; }
-#peach-guide .bubble .row { display:flex; gap:8px; align-items:center; justify-content:space-between; }
-#peach-guide .bubble .step { font-size:11px; opacity:0.55; letter-spacing:0.08em; text-transform:uppercase; }
-#peach-guide .bubble button {
-  border:0; background:#ee5a5f; color:#fff; padding:5px 12px; border-radius:12px;
-  font:600 12px inherit; cursor:pointer; letter-spacing:0.02em;
-}
-#peach-guide .bubble button.ghost { background:transparent; color:#8a7a72; padding:5px 8px; }
-#peach-guide .bubble button:hover { filter:brightness(1.06); }
-
 /* ============ Cursor style picker ============ */
 #cursor-picker {
   position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
@@ -440,10 +391,6 @@ body[data-theme="night"] .cursor-draw-act { background:rgba(255,255,255,0.08); c
 @media (max-width:760px) {
   .mb-menu > .mb-trigger { font-size:11px; padding:3px 7px; }
   .mb-dropdown { min-width:200px; font-size:12px; }
-  #peach-guide { left:auto; right:12px; top:100px; bottom:auto; flex-direction:row; }
-  #peach-guide .bubble::after { left:auto; right:-8px; }
-  #peach-guide .peach { width:60px; height:60px; }
-  #peach-guide .bubble { max-width:220px; font-size:12px; }
   #cursor-picker { width:min(280px, calc(100vw - 24px)); }
 }
 
