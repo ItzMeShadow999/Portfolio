@@ -666,7 +666,7 @@
     <div class="mb-menu" data-menu="edit">
       <button class="mb-trigger" type="button">Edit</button>
       <div class="mb-dropdown">
-        <button type="button" data-action="cursor-style">Cursor Style<span class="mb-shortcut" id="cursorStyleCurrent">✦</span></button>
+        <button type="button" data-action="cursor-style">Cursor Style<span class="mb-shortcut" id="cursorStyleCurrent">Default</span></button>
         <div class="mb-sep"></div>
         <button type="button" data-action="reset-cursor">Reset Cursor</button>
       </div>
@@ -689,28 +689,8 @@
 <div id="cursor-picker" role="dialog" aria-label="Cursor style">
   <button type="button" class="close-x" id="cursorPickerClose" aria-label="Close">×</button>
   <h4>Cursor Style</h4>
-  <div class="cursor-picker-grid">
-    <button type="button" class="cursor-option" data-cursor="paper">
-      <div class="cursor-preview" id="cursorPreviewPaper"></div>
-      <div class="cursor-option-label">Paper</div>
-    </button>
-    <button type="button" class="cursor-option" data-cursor="macos">
-      <div class="cursor-preview" id="cursorPreviewMacos"></div>
-      <div class="cursor-option-label">macOS</div>
-    </button>
-    <button type="button" class="cursor-option" data-cursor="draw">
-      <div class="cursor-preview cursor-preview-draw" id="cursorPreviewDraw">
-        <canvas id="cursorDrawCanvas" width="56" height="56"></canvas>
-        <div class="cursor-draw-hint" id="cursorDrawHint">Draw here</div>
-      </div>
-      <div class="cursor-option-label">Draw yours</div>
-    </button>
-  </div>
-  <div class="cursor-draw-actions" id="cursorDrawActions" style="display:none;">
-    <button type="button" id="cursorDrawClear" class="cursor-draw-act">Clear</button>
-    <button type="button" id="cursorDrawApply" class="cursor-draw-act primary">Use it</button>
-  </div>
-  <div class="cursor-picker-hint">Won't save after refresh or leaving the page.</div>
+  <div class="cursor-picker-grid" id="cursorPickerGrid"></div>
+  <div class="cursor-picker-hint">Your choice is remembered on this device.</div>
 </div>
 
 
