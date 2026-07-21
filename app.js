@@ -3132,6 +3132,26 @@ function renderBookshelf() {
     else app.modal.style.display = 'none';
   }
 
+  // When a window is at normal (non-maximized) size, it should behave like a
+  // real desktop window: no full-screen dimming, and clicks on the empty
+  // area around the card pass straight through to the desktop/other apps
+  // underneath. When maximized it covers the whole screen anyway, so the
+  // normal blocking backdrop is restored (nothing behind it to reach).
+  function setBackdropMode(app){
+    const card = app.modal.firstElementChild;
+    if (app.maximized) {
+      app.modal.style.background = '';
+      app.modal.style.backdropFilter = '';
+      app.modal.style.pointerEvents = '';
+      if (card) card.style.pointerEvents = '';
+    } else {
+      app.modal.style.background = 'transparent';
+      app.modal.style.backdropFilter = 'none';
+      app.modal.style.pointerEvents = 'none';
+      if (card) card.style.pointerEvents = 'auto';
+    }
+  }
+
   function minimizeApp(app){
     app.suppressObserver = true;
     hideModal(app);
@@ -3143,6 +3163,7 @@ function renderBookshelf() {
     app.suppressObserver = true;
     showModal(app);
     app.modal.style.zIndex = ++zCounter;
+    setBackdropMode(app);
     setState(app, 'open');
     setTimeout(() => { app.suppressObserver = false; }, 0);
   }
@@ -3155,15 +3176,17 @@ function renderBookshelf() {
   function toggleMaximize(app){
     const card = app.modal.firstElementChild;
     if (!card) return;
-    const maximized = card.classList.toggle('wm-maximized');
-    if (app.controls?.maxBtn) app.controls.maxBtn.setAttribute('aria-pressed', maximized ? 'true' : 'false');
+    app.maximized = !app.maximized;
+    card.classList.toggle('wm-maximized', app.maximized);
+    setBackdropMode(app);
+    if (app.controls?.maxBtn) app.controls.maxBtn.setAttribute('aria-pressed', app.maximized ? 'true' : 'false');
   }
 
   APP_CONFIG.forEach(cfg => {
     const modal = document.getElementById(cfg.modalId);
     if (!modal) return;
     const usesClass = CLASS_BASED.has(cfg.id);
-    const app = { ...cfg, modal, usesClass, state: 'closed', suppressObserver:false };
+    const app = { ...cfg, modal, usesClass, state: 'closed', maximized:false, suppressObserver:false };
     app.controls = buildControls(app);
     if (app.controls) {
       app.controls.minBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); minimizeApp(app); });
@@ -3171,12 +3194,18 @@ function renderBookshelf() {
     }
     apps.push(app);
 
+    // Clicking into a window's content brings it above other open windows.
+    modal.addEventListener('mousedown', () => {
+      if (app.state === 'open') app.modal.style.zIndex = ++zCounter;
+    });
+
     const observer = new MutationObserver(() => {
       if (app.suppressObserver) return;
       const visible = isVisible(modal);
       if (visible) {
         if (app.state !== 'open') {
           app.modal.style.zIndex = ++zCounter;
+          setBackdropMode(app);
           setState(app, 'open');
         }
       } else {
@@ -3184,6 +3213,16 @@ function renderBookshelf() {
           setState(app, 'closed');
         }
         // if state was already 'minimized' or 'closed', nothing to do
+        // reset maximize state once an app is actually closed (not minimized)
+        if (app.state === 'closed' && app.maximized) {
+          const card = app.modal.firstElementChild;
+          if (card) card.classList.remove('wm-maximized');
+          app.maximized = false;
+          app.modal.style.background = '';
+          app.modal.style.backdropFilter = '';
+          app.modal.style.pointerEvents = '';
+          if (card) card.style.pointerEvents = '';
+        }
       }
     });
     observer.observe(modal, { attributes:true, attributeFilter:['style','class'] });
