@@ -1094,7 +1094,7 @@ dItems.forEach(item => {
           <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:22px;border-radius:6px;background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.08);font-size:11px;color:#555;box-shadow:inset 0 -1px 0 rgba(0,0,0,0.04);">−</span>
           <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:22px;border-radius:6px;background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.08);font-size:11px;color:#555;box-shadow:inset 0 -1px 0 rgba(0,0,0,0.04);">+</span>
           <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:22px;border-radius:6px;background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.08);color:#555;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24"><use href="./images/icons.svg#icon-search"></use></svg>
           </span>
         </div>
       </div>
@@ -2609,15 +2609,15 @@ function renderBookshelf() {
         </div>
         <div class="ios-photos-tabs">
           <div class="ios-tab active">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="1.6" fill="currentColor" stroke="none"/><path d="M21 16 l-5 -6 -5 6 -3 -3 -5 5"/></svg>
+            <svg viewBox="0 0 24 24"><use href="./images/icons.svg#icon-tab-library"></use></svg>
             <span>Library</span>
           </div>
           <div class="ios-tab">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M6 7 V5 h12 v2"/></svg>
+            <svg viewBox="0 0 24 24"><use href="./images/icons.svg#icon-tab-collections"></use></svg>
             <span>Collections</span>
           </div>
           <div class="ios-tab">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M20 20 l-4.5 -4.5"/></svg>
+            <svg viewBox="0 0 24 24"><use href="./images/icons.svg#icon-tab-search"></use></svg>
           </div>
         </div>
       </div>`;
