@@ -67,28 +67,8 @@ a, button, .di, .wp-swatch, .mp-btn, .node, .folder, .photo-node .thumb, .book, 
 @keyframes loaderSpin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
 #menubar .brand { cursor:pointer; }
 
-/* ============ Case-study password gate ============ */
-#pwGate { position:fixed; inset:0; z-index:8000; display:none; align-items:center; justify-content:center; background:rgba(10,14,22,0.72); backdrop-filter:blur(10px); font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif; }
-#pwGate.on { display:flex; }
-#pwGate .pw-card { width:min(360px,88vw); background:#fafafa; border-radius:14px; box-shadow:0 40px 100px rgba(0,0,0,0.55),0 0 0 1px rgba(0,0,0,0.12); overflow:hidden; }
-#pwGate .pw-head { padding:22px 22px 8px; text-align:center; }
-#pwGate .pw-lock { width:44px; height:44px; margin:0 auto 12px; display:flex; align-items:center; justify-content:center; border-radius:12px; background:#111; color:#fff; }
-#pwGate .pw-title { font-size:15px; font-weight:600; color:#111; }
-#pwGate .pw-sub { font-size:11px; color:#666; margin-top:4px; letter-spacing:0.03em; }
-#pwGate .pw-body { padding:14px 22px 22px; display:flex; flex-direction:column; gap:10px; }
-#pwGate input { width:100%; padding:10px 12px; border:1px solid rgba(0,0,0,0.15); border-radius:8px; font-size:13px; font-family:inherit; background:#fff; box-sizing:border-box; }
-#pwGate input:focus { outline:none; border-color:#4A6FA0; box-shadow:0 0 0 3px rgba(74,111,160,0.18); }
-#pwGate .pw-btns { display:flex; gap:8px; }
-#pwGate button { flex:1; padding:9px 12px; border:1px solid rgba(0,0,0,0.14); border-radius:8px; background:#fff; font-family:inherit; font-size:12px; font-weight:600; cursor:pointer; }
-#pwGate button.primary { background:#111; color:#fff; border-color:#111; }
-#pwGate .pw-err { font-size:11px; color:#c33; min-height:14px; }
-
-/* Case node lock badge — centered over the folder body (JS reparents it inside .folder .body) */
 .node { position:relative; }
 .folder { position:relative; }
-.folder .cs-lock-badge, .node > .cs-lock-badge, .photo-node .thumb .cs-lock-badge { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:26px; height:26px; border-radius:50%; background:rgba(15,18,24,0.86); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 14px rgba(0,0,0,0.38), 0 0 0 2px rgba(255,255,255,0.6); pointer-events:none; z-index:5; backdrop-filter:blur(4px); }
-.folder .cs-lock-badge svg, .node > .cs-lock-badge svg, .photo-node .thumb .cs-lock-badge svg { width:13px; height:13px; }
-.node.unlocked .cs-lock-badge { display:none; }
 /* mobile-only Photos folder */
 .photos-mobile { display:none !important; }
 
@@ -710,70 +690,10 @@ body[data-theme="night"] .node .selection-ring { background:rgba(180,190,205,0.2
   #previewModal.resume-preview #pvScroll > div:nth-child(2) { padding:8px 16px 12px !important; }
 }
 
-/* ============ Case study modal refinements ============ */
-.cs-card, #caseModal2 .cs-card, #caseModal3 .cs-card { width:min(980px,94vw); max-height:92vh; border-radius:16px; overflow:hidden; box-shadow:0 40px 100px rgba(0,0,0,0.55),0 0 0 1px rgba(0,0,0,0.15); display:flex; flex-direction:column; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif; }
-/* All case studies — unified neutral #fafafa / detail boxes #f0f0f0 */
-.cs-card, #caseModal2 .cs-card, #caseModal3 .cs-card, #caseModal4 .cs-card { background:#fafafa; }
-.cs-tag, #caseModal2 .cs-tag, #caseModal3 .cs-tag, #caseModal4 .cs-tag { background:#f0f0f0; color:#3a3a3a; }
-.cs-metric, #caseModal2 .cs-metric, #caseModal3 .cs-metric, #caseModal4 .cs-metric { background:#f0f0f0; }
-.cs-artifact, #caseModal2 .cs-artifact, #caseModal3 .cs-artifact, #caseModal4 .cs-artifact { background:#f0f0f0; }
-.cs-artifact.contain img, .cs-artifact.contain video,
-#caseModal2 .cs-artifact.contain img, #caseModal2 .cs-artifact.contain video,
-#caseModal3 .cs-artifact.contain img, #caseModal3 .cs-artifact.contain video,
-#caseModal4 .cs-artifact.contain img, #caseModal4 .cs-artifact.contain video { background:#f0f0f0; }
-.cs-scroll { overflow-y:auto; padding:0; }
-.cs-banner { position:relative; background:#f0f0f0; box-shadow:inset 0 -1px 0 rgba(0,0,0,0.06); }
-.cs-banner img.cs-banner-img { width:100%; height:clamp(320px,52vh,520px); object-fit:cover; display:block; }
-.cs-banner video.cs-banner-video { width:100%; height:clamp(320px,52vh,520px); object-fit:cover; display:block; background:#f0f0f0; }
-/* Footer demo — video shares row with a bigger findings sidecar (findings dominant) */
-.cs-footer-row { margin:18px 26px 26px; display:grid; grid-template-columns:1fr 1.2fr; gap:14px; align-items:stretch; }
-.cs-footer-video { border-radius:12px; overflow:hidden; background:#f0f0f0; box-shadow:0 8px 20px rgba(0,0,0,0.08); display:flex; flex-direction:column; }
-.cs-footer-video video { width:100%; display:block; max-height:260px; object-fit:contain; background:#f0f0f0; flex:1; }
-.cs-footer-video .cs-section-title { padding:10px 14px; background:#f0f0f0; color:#303033; }
-.cs-findings { background:#f0f0f0; border-radius:12px; padding:16px 18px; display:flex; flex-direction:column; gap:10px; }
-.cs-findings .cs-section-title { padding:0 0 4px; color:#8a8380; }
-.cs-finding { display:flex; gap:10px; align-items:flex-start; font-size:12.5px; line-height:1.45; color:#2a2a2e; }
-.cs-finding .num { flex:0 0 auto; font-weight:700; font-size:16px; color:#111; min-width:44px; text-align:left; letter-spacing:-0.01em; }
-.cs-finding .lbl { font-weight:600; }
-.cs-finding .txt { color:#555; font-size:11.5px; margin-top:1px; display:block; }
-@media (max-width:760px) { .cs-footer-row { grid-template-columns:1fr; } }
-.cs-hero-copy { position:absolute; left:0; right:0; bottom:0; padding:22px 30px; color:#fff; background:linear-gradient(180deg,transparent,rgba(0,0,0,0.55)); }
-.cs-kicker, .cs-section-title { font-size:11px; letter-spacing:0.18em; text-transform:uppercase; opacity:0.75; }
-.cs-title { font-size:30px; font-weight:700; letter-spacing:0; margin-top:2px; }
-.cs-subtitle { font-size:13px; opacity:0.85; margin-top:2px; }
-.cs-tags { padding:18px 26px 6px; display:flex; flex-wrap:wrap; gap:6px; }
-.cs-tag { font-size:11px; letter-spacing:0.08em; padding:5px 10px; border-radius:999px; background:#f0f0f0; color:#3a3a3a; }
-.cs-copy { padding:12px 30px 4px; font-size:15.5px; line-height:1.65; color:#2a2a2e; max-width:840px; }
-.cs-copy p + p { margin-top:10px; }
-.cs-metrics { padding:16px 26px 6px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
-.cs-metric { text-align:center; padding:12px 8px; background:#f0f0f0; border-radius:12px; }
-.cs-metric strong { display:block; font-size:20px; color:#111; }
-.cs-metric span { display:block; font-size:11.5px; color:#555; margin-top:3px; letter-spacing:0.04em; }
-.cs-artifacts { padding:18px 30px 28px; display:grid; grid-template-columns:1.9fr 1fr; gap:16px; align-items:stretch; }
-.cs-artifacts.triple { grid-template-columns:1.9fr 1fr; }
-/* Case 01 LAIC — balanced pairing, both align to bottom */
-#caseModal .cs-artifacts.paired { grid-template-columns:1.15fr 1fr; align-items:stretch; }
-#caseModal .cs-artifacts.paired .cs-artifact { min-height:460px; }
-#caseModal .cs-artifacts.paired .cs-artifact img,
-#caseModal .cs-artifacts.paired .cs-artifact video { max-height:none; height:100%; }
-.cs-artifact { background:#f0f0f0; border-radius:14px; padding:0; border:1px solid rgba(0,0,0,0.08); box-shadow:0 6px 16px rgba(0,0,0,0.06); display:flex; flex-direction:column; overflow:hidden; position:relative; }
-.cs-section-title { color:#8a8380; margin:0; padding:10px 14px 6px; font-size:10.5px; }
-.cs-artifact img, .cs-artifact video { width:100%; flex:1; min-height:0; height:100%; object-fit:contain; display:block; background:transparent; }
-.cs-artifact.contain img, .cs-artifact.contain video { object-fit:contain; background:#f0f0f0; padding:10px; }
-.cs-artifact.tall { grid-row:span 2; min-height:560px; }
-.cs-artifact.tall img, .cs-artifact.tall video { object-fit:contain; padding:14px; }
-.cs-artifacts .cs-artifact:not(.tall) { min-height:270px; }
-.cs-artifacts .cs-artifact:not(.tall) video { max-height:280px; padding:10px; background:#f0f0f0; }
-.cs-placeholder { min-height:240px; padding:24px; display:grid; place-items:center; text-align:center; color:#49453f; font-size:13px; line-height:1.5; background:repeating-linear-gradient(135deg,rgba(255,255,255,0.42) 0 10px,rgba(255,255,255,0.18) 10px 20px); }
 .note-doc { color:#2b2722; }
 .note-doc h2 { font-size:22px; margin:0 0 10px; letter-spacing:0; }
 .note-doc p { margin:0 0 10px; font-size:14px; line-height:1.55; }
 .note-doc ul { margin:8px 0 0 18px; font-size:13px; line-height:1.6; }
-@media (max-width:760px) {
-  .cs-card { width:94vw; max-height:88vh; }
-  .cs-artifacts, .cs-metrics { grid-template-columns:1fr; }
-  .cs-title { font-size:24px; }
-}
 
 @keyframes drift { 0%,100% { transform:translateY(0px); } 50% { transform:translateY(-4px); } }
 
@@ -1091,9 +1011,6 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
   /* Mobile: uniform 72px rounded-square tiles (iPhone home-screen rhythm).
      All specifics live below inside #layer overrides so folders, photos,
      notes, and icon tiles share the same footprint. */
-  .node .cs-lock-badge { width:26px; height:26px; }
-  .node .cs-lock-badge svg { width:13px; height:13px; }
-
   /* Mobile desktop: use a real scrollable grid instead of squeezing the
      2200px desktop canvas into the phone. The old scaled canvas was what
      created the hard horizontal clipping band where icons seemed to vanish. */
@@ -1152,38 +1069,6 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
     display:block !important; margin:0 !important;
     object-fit:contain;
   }
-  /* Case-study "folders" on mobile become flat app-style rounded blue tiles */
-  #layer [id^="n-case"] .folder {
-    width:60px !important; height:60px !important; margin-top:0 !important;
-    background:linear-gradient(160deg,#5ea8ff 0%,#2f7ce6 55%,#1966d1 100%);
-    border-radius:14px !important;
-    box-shadow:0 8px 18px rgba(30,80,160,0.28), inset 0 1.5px 0 rgba(255,255,255,0.35);
-    position:relative;
-  }
-  #layer [id^="n-case"] .folder .tab,
-  #layer [id^="n-case"] .folder::before { display:none !important; }
-  #layer [id^="n-case"] .folder .body {
-    position:absolute !important; inset:0 !important;
-    background:transparent !important; border:0 !important; border-radius:14px !important;
-    display:flex !important; align-items:center !important; justify-content:center !important;
-    top:0 !important;
-  }
-  #layer [id^="n-case"] .cs-lock-badge {
-    position:static !important; transform:none !important;
-    width:auto !important; height:auto !important;
-    background:transparent !important; box-shadow:none !important;
-    z-index:6;
-  }
-  #layer [id^="n-case"] .cs-lock-badge svg {
-    width:26px; height:26px; color:#ffffff;
-  }
-  /* Case-study tiles: white label on the blue tile */
-  #layer [id^="n-case"] .node-label {
-    color:#ffffff !important;
-    text-shadow:0 1px 2px rgba(0,0,0,0.22);
-  }
-  #layer [id^="n-case"].selected .node-label,
-  #layer [id^="n-case"] .node-label { background:transparent !important; }
   /* Note-thumb: hide desktop paper-line decorations at this small size */
   #layer .note-thumb::before { left:4px; right:4px; top:4px; height:5px; border-radius:2px; }
   #layer .note-thumb::after { display:none; }
@@ -1200,10 +1085,6 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
   #layer #n-watchlist { order: 5; }
   #layer #n-synth     { order: 6; }
   #layer #n-resume    { order: 7; }
-  #layer #n-case1 { order: 10; }
-  #layer #n-case2 { order: 11; }
-  #layer #n-case3 { order: 12; }
-  #layer #n-case4 { order: 13; }
   /* Hide individual photos on mobile — replaced by aggregated Photos folder. Keep resume (a PDF). */
   #layer .photo-node:not(#n-resume) { display:none !important; }
   #layer .photos-mobile { display:flex !important; }
