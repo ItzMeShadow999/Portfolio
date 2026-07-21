@@ -1931,6 +1931,27 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
     if (sizeValEl) sizeValEl.textContent = dropSize;
     updateBrushCursor();
   });
+  if (sizeEl) {
+    sizeEl.addEventListener('pointerenter', showBrushCursor);
+    sizeEl.addEventListener('pointerleave', hideBrushCursor);
+    sizeEl.addEventListener('pointermove', moveBrushCursor);
+    sizeEl.addEventListener('mouseenter', showBrushCursor);
+    sizeEl.addEventListener('mouseleave', hideBrushCursor);
+    sizeEl.addEventListener('mousemove', moveBrushCursor);
+    // Keep the cursor visible for the whole drag even if the pointer
+    // strays slightly above/below the thin track while dragging the thumb.
+    sizeEl.addEventListener('pointerdown', () => {
+      showBrushCursor();
+      const onMove = (e) => moveBrushCursor(e);
+      const onUp = () => {
+        hideBrushCursor();
+        document.removeEventListener('pointermove', onMove);
+        document.removeEventListener('pointerup', onUp);
+      };
+      document.addEventListener('pointermove', onMove);
+      document.addEventListener('pointerup', onUp);
+    });
+  }
   let ringSize = 0;
   const ICON_BOX = 30; // must match .mb-brush-icon width/height in styles.css
   function updateBrushCursor(){
