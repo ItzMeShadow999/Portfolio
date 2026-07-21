@@ -1572,25 +1572,39 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
 .mb-caption-num { font-family:'Inter',sans-serif; font-size:9px; letter-spacing:0.24em; text-transform:uppercase; color:#a89773; font-style:normal; font-weight:600; margin-right:8px; }
 .mb-canvas-wrap { position:relative; background:#f6f0dc; border-radius:8px; box-shadow:inset 0 2px 8px rgba(0,0,0,0.08), 0 12px 30px rgba(60,40,15,0.15); overflow:hidden; aspect-ratio:820/500; }
 #mbCanvas { display:block; width:100%; height:100%; touch-action:none; cursor:none; }
-.mb-brush {
-  position:absolute; top:0; left:0;
-  width:24px; height:24px;
-  margin-left:-12px; margin-top:-12px;
-  border-radius:50%;
-  border:1.5px solid rgba(20,16,10,0.65);
-  background:rgba(46,35,20,0.18);
-  box-shadow:0 0 0 1px rgba(255,255,255,0.4) inset, 0 2px 6px rgba(0,0,0,0.18);
-  pointer-events:none;
-  display:none;
-  z-index:5;
-  transform:translate(-9999px,-9999px);
-  transition:width .08s ease, height .08s ease, margin .08s ease, background-color .1s ease, border-color .1s ease;
+
+/* ---- New icon-based brush cursor (replaces the old plain-circle .mb-brush) ---- */
+#artboardModal,
+#artboardModal * {
+  cursor: none !important;
 }
-.mb-canvas-wrap.mb-hover .mb-brush { display:block; }
-.mb-brush.tool-stylus, .mb-brush.tool-comb, .mb-brush.tool-rake {
-  border-radius:3px;
+.mb-brush-icon {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  pointer-events: none;
+  z-index: 2147483647;
+  display: none;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  transform: translate(-4px, -4px); /* tip alignment, tune per icon */
 }
-.mb-brush.drawing { background:rgba(46,35,20,0.32); }
+.mb-brush-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.35);
+  pointer-events: none;
+  z-index: 2147483646;
+  display: none;
+}
 
 .mb-impressions { display:flex; align-items:center; gap:12px; padding:6px 4px; }
 .mb-impressions-label { font-family:'Instrument Serif',Georgia,serif; font-style:italic; font-size:13px; color:#5a4a2a; }
