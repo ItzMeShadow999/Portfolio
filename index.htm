@@ -26,14 +26,14 @@
   <div class="lock-name">Shadow</div>
   <div class="lock-role">Product Designer</div>
   <div class="lock-cta">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+    <svg class="icon" viewBox="0 0 24 24"><use href="./images/icons.svg#icon-unlock"></use></svg>
     Click to unlock
   </div>
   <div class="lock-slider" id="lockSlider">
     <div class="lock-slider-track">
       <div class="lock-slider-label">Slide to unlock</div>
       <div class="lock-slider-knob" id="lockSliderKnob" role="button" aria-label="Slide to unlock">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+        <svg class="icon" viewBox="0 0 24 24"><use href="./images/icons.svg#icon-chevron-right"></use></svg>
       </div>
     </div>
   </div>
@@ -143,10 +143,10 @@
               <div class="p900-sub">DETUNE</div>
             </div>
             <div style="display:flex;flex-direction:column;gap:5px;">
-              <button class="p900-wave selected" data-wave="sine" title="Sine"><svg viewBox="0 0 24 8"><path d="M1 4 Q 6 -3, 12 4 T 23 4" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg></button>
-              <button class="p900-wave" data-wave="square" title="Square"><svg viewBox="0 0 24 8"><path d="M1 6 L1 2 L7 2 L7 6 L13 6 L13 2 L19 2 L19 6 L23 6" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg></button>
-              <button class="p900-wave" data-wave="sawtooth" title="Saw"><svg viewBox="0 0 24 8"><path d="M1 6 L7 2 L7 6 L13 2 L13 6 L19 2 L19 6" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg></button>
-              <button class="p900-wave" data-wave="triangle" title="Triangle"><svg viewBox="0 0 24 8"><path d="M1 6 L5 2 L9 6 L13 2 L17 6 L21 2 L23 4" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg></button>
+              <button class="p900-wave selected" data-wave="sine" title="Sine"><svg class="icon" viewBox="0 0 24 8"><use href="./images/icons.svg#icon-wave-sine"></use></svg></button>
+              <button class="p900-wave" data-wave="square" title="Square"><svg class="icon" viewBox="0 0 24 8"><use href="./images/icons.svg#icon-wave-square"></use></svg></button>
+              <button class="p900-wave" data-wave="sawtooth" title="Saw"><svg class="icon" viewBox="0 0 24 8"><use href="./images/icons.svg#icon-wave-sawtooth"></use></svg></button>
+              <button class="p900-wave" data-wave="triangle" title="Triangle"><svg class="icon" viewBox="0 0 24 8"><use href="./images/icons.svg#icon-wave-triangle"></use></svg></button>
             </div>
           </div>
         </div>
@@ -388,7 +388,7 @@
   <div class="cm-card">
     <div class="cm-head">
       <button type="button" class="dot close" id="cmClose" title="Close" aria-label="Close">
-        <svg viewBox="0 0 10 10" width="8" height="8" aria-hidden="true"><path d="M2 2 L8 8 M8 2 L2 8" stroke="rgba(0,0,0,0.55)" stroke-width="1.4" stroke-linecap="round"></path></svg>
+        <svg class="icon" viewBox="0 0 10 10" width="8" height="8" aria-hidden="true"><use href="./images/icons.svg#icon-close-x"></use></svg>
       </button>
       <span class="cm-title" id="cmTitle">Bookshelf</span>
     </div>
@@ -462,16 +462,16 @@
   <div class="wp-title">Wallpaper</div>
   <div class="wp-grid">
     <button class="wp-swatch" data-theme="sky" style="background:linear-gradient(135deg,#fef4d6,#cfe4f5);" title="Sky" aria-label="Sky">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+      <svg class="icon" viewBox="0 0 24 24"><use href="./images/icons.svg#icon-wp-sky"></use></svg>
     </button>
     <button class="wp-swatch" data-theme="forest" style="background:linear-gradient(135deg,#e4efd6,#bcd6a8);" title="Forest" aria-label="Forest">
-      <svg viewBox="0 0 24 24"><path d="M12 3c-3.5 2.6-5.5 5.4-5.5 8.5 0 3 2 5 5.5 5s5.5-2 5.5-5c0-3.1-2-5.9-5.5-8.5z"></path><path d="M12 9v13"></path></svg>
+      <svg class="icon" viewBox="0 0 24 24"><use href="./images/icons.svg#icon-wp-forest"></use></svg>
     </button>
     <button class="wp-swatch" data-theme="desert" style="background:linear-gradient(135deg,#fde3d9,#f4bcc0);" title="Desert" aria-label="Desert">
-      <svg viewBox="0 0 24 24"><path d="M12 4c-.9 0-1.5.7-1.5 1.5V20h3V5.5C13.5 4.7 12.9 4 12 4z"></path><path d="M8 9c-.9 0-1.5.7-1.5 1.5V20h3v-9.5C9.5 9.7 8.9 9 8 9z"></path><path d="M16 11c-.9 0-1.5.7-1.5 1.5V20h3v-7.5c0-.8-.6-1.5-1.5-1.5z"></path></svg>
+      <svg class="icon" viewBox="0 0 24 24"><use href="./images/icons.svg#icon-wp-desert"></use></svg>
     </button>
     <button class="wp-swatch" data-theme="night" style="background:linear-gradient(135deg,#1a1d2b,#05070d);" title="Night" aria-label="Night">
-      <svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path></svg>
+      <svg class="icon" viewBox="0 0 24 24"><use href="./images/icons.svg#icon-wp-night"></use></svg>
     </button>
   </div>
 </div>
@@ -489,14 +489,14 @@
     </div>
     <div class="mp-controls">
       <button class="mp-btn" id="mpPrev" aria-label="Previous">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"></path></svg>
+        <svg class="icon" viewBox="0 0 24 24" width="14" height="14"><use href="./images/icons.svg#icon-music-prev"></use></svg>
       </button>
       <button class="mp-btn mp-play" id="mpPlay" aria-label="Play/Pause">
-        <svg id="mpPlayIcon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
-        <svg id="mpPauseIcon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="display:none;"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
+        <svg id="mpPlayIcon" class="icon" viewBox="0 0 24 24" width="18" height="18"><use href="./images/icons.svg#icon-music-play"></use></svg>
+        <svg id="mpPauseIcon" class="icon" viewBox="0 0 24 24" width="18" height="18" style="display:none;"><use href="./images/icons.svg#icon-music-pause"></use></svg>
       </button>
       <button class="mp-btn" id="mpNext" aria-label="Next">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"></path></svg>
+        <svg class="icon" viewBox="0 0 24 24" width="14" height="14"><use href="./images/icons.svg#icon-music-next"></use></svg>
       </button>
     </div>
     <audio id="mpAudio" loop="" preload="none"></audio>
@@ -547,9 +547,9 @@
   <span class="ms-clock" id="msClock">--:--</span>
   <img class="ms-logo" src="images/spiral2.png" alt="">
   <div class="ms-right">
-    <svg class="ms-ic ms-signal" viewBox="0 0 17 11" aria-hidden="true"><rect x="0" y="7" width="3" height="4" rx="0.8"></rect><rect x="4.5" y="5" width="3" height="6" rx="0.8"></rect><rect x="9" y="2.5" width="3" height="8.5" rx="0.8"></rect><rect x="13.5" y="0" width="3" height="11" rx="0.8"></rect></svg>
-    <svg class="ms-ic ms-wifi" viewBox="0 0 16 12" aria-hidden="true"><path d="M8 2.2 C4.6 2.2 1.9 3.5 0 5.1 l1.6 1.6 C3.3 5.3 5.5 4.4 8 4.4 s4.7 0.9 6.4 2.3 L16 5.1 C14.1 3.5 11.4 2.2 8 2.2 z"></path><path d="M8 5.9 C5.9 5.9 4.1 6.7 2.8 7.9 l1.6 1.6 c1 -0.9 2.2 -1.4 3.6 -1.4 s2.6 0.5 3.6 1.4 l1.6 -1.6 C11.9 6.7 10.1 5.9 8 5.9 z"></path><circle cx="8" cy="10.2" r="1.4"></circle></svg>
-    <svg class="ms-ic ms-bat" viewBox="0 0 26 12" aria-hidden="true"><rect x="0.5" y="0.5" width="22" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1"></rect><rect x="2.5" y="2.5" width="17" height="7" rx="1.4" fill="currentColor"></rect><rect x="23.2" y="4" width="1.8" height="4" rx="0.6" fill="currentColor"></rect></svg>
+    <svg class="ms-ic ms-signal icon" viewBox="0 0 17 11" aria-hidden="true"><use href="./images/icons.svg#icon-status-signal"></use></svg>
+    <svg class="ms-ic ms-wifi icon" viewBox="0 0 16 12" aria-hidden="true"><use href="./images/icons.svg#icon-status-wifi"></use></svg>
+    <svg class="ms-ic ms-bat icon" viewBox="0 0 26 12" aria-hidden="true"><use href="./images/icons.svg#icon-status-battery"></use></svg>
     <button type="button" class="ms-hamburger" id="msHamburger" aria-label="Menu" aria-expanded="false">
       <span></span><span></span><span></span><span></span>
     </button>
@@ -668,28 +668,14 @@
      <!-- ===== new empty folders ===== -->
      <div class="node icon-node" id="n-thispc" style="left:24px; top:40px; --rot:0deg;">
        <div class="icon-tile">
-         <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-           <rect x="6" y="10" width="52" height="34" rx="3" fill="#dfe6ee" stroke="#8a97a8" stroke-width="1.6"></rect>
-           <rect x="10" y="14" width="44" height="24" rx="1.4" fill="#22304a"></rect>
-           <rect x="14" y="18" width="20" height="2.6" rx="1.3" fill="#5aa0e0"></rect>
-           <rect x="14" y="23.5" width="28" height="2.2" rx="1.1" fill="#4a5d7c"></rect>
-           <rect x="14" y="28" width="16" height="2.2" rx="1.1" fill="#4a5d7c"></rect>
-           <rect x="26" y="44" width="12" height="6" fill="#b7c1cf"></rect>
-           <rect x="18" y="50" width="28" height="4" rx="2" fill="#8a97a8"></rect>
-         </svg>
+         <svg class="icon" viewBox="0 0 64 64" aria-hidden="true"><use href="./images/icons.svg#icon-this-pc"></use></svg>
        </div>
        <div class="node-label">this_pc</div>
        <div class="node-sub">Device info</div>
      </div>
      <div class="node icon-node" id="n-myip" style="left:154px; top:40px; --rot:0deg;">
        <div class="icon-tile">
-         <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-           <circle cx="32" cy="32" r="24" fill="#dcf0e6" stroke="#6fae7a" stroke-width="1.6"></circle>
-           <path d="M8 32h48M32 8c7 6.5 7 41.5 0 48M32 8c-7 6.5-7 41.5 0 48" fill="none" stroke="#6fae7a" stroke-width="1.4"></path>
-           <path d="M12 20c6 4 34 4 40 0M12 44c6-4 34-4 40 0" fill="none" stroke="#6fae7a" stroke-width="1.2" opacity="0.7"></path>
-           <circle cx="32" cy="32" r="5.5" fill="#2f8f52"></circle>
-           <circle cx="32" cy="32" r="9.5" fill="none" stroke="#2f8f52" stroke-width="1.4" opacity="0.55"></circle>
-         </svg>
+         <svg class="icon" viewBox="0 0 64 64" aria-hidden="true"><use href="./images/icons.svg#icon-my-ip"></use></svg>
        </div>
        <div class="node-label">my_ip</div>
        <div class="node-sub">Network info</div>
@@ -731,18 +717,7 @@
     <!-- Mobile-only: aggregated Photos icon -->
     <div class="node icon-node collection-node photos-mobile" id="n-photos" data-collection="photos" style="--rot:0deg;">
       <div class="icon-tile photos-tile" aria-label="Photos">
-        <svg class="photos-flower" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <g style="mix-blend-mode:multiply;">
-            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#ff9a3c" opacity="0.78" transform="rotate(0 50 50)"></ellipse>
-            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#f2d64a" opacity="0.78" transform="rotate(45 50 50)"></ellipse>
-            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#8ccb52" opacity="0.78" transform="rotate(90 50 50)"></ellipse>
-            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#5aa8d6" opacity="0.78" transform="rotate(135 50 50)"></ellipse>
-            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#7f8ed1" opacity="0.78" transform="rotate(180 50 50)"></ellipse>
-            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#b782c9" opacity="0.78" transform="rotate(225 50 50)"></ellipse>
-            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#e57ea3" opacity="0.78" transform="rotate(270 50 50)"></ellipse>
-            <ellipse cx="50" cy="32" rx="16" ry="30" fill="#ef6f6f" opacity="0.78" transform="rotate(315 50 50)"></ellipse>
-          </g>
-        </svg>
+        <svg class="photos-flower icon" viewBox="0 0 100 100" aria-hidden="true"><use href="./images/icons.svg#icon-photos-flower"></use></svg>
       </div>
       <div class="node-label">photos</div><div class="node-sub">Library</div>
     </div>
@@ -752,26 +727,7 @@
     </div>
     <div class="node" id="n-artboard" style="left:24px; top:790px; --rot:-2deg;">
       <div class="note-thumb artboard-thumb" aria-hidden="true">
-        <svg viewBox="0 0 100 108" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="16" cy="30" rx="7" ry="11" fill="#e9c9c1"></ellipse>
-          <circle cx="16" cy="26" r="1.6" fill="#d9aaa0"></circle>
-          <circle cx="16" cy="34" r="1.6" fill="#d9aaa0"></circle>
-          <rect x="30" y="22" width="4" height="22" rx="1.4" fill="#f0e6d2" stroke="#c9beA6" stroke-width="0.4"></rect>
-          <g transform="translate(52 42)">
-            <path d="M-14 6 A14 14 0 0 1 14 6 Z" fill="#f4efe2" stroke="#b7ac93" stroke-width="0.5"></path>
-            <path d="M-11 6 L-8 -6 M-6 6 L-4 -8 M-2 6 L-1 -9 M2 6 L1 -9 M6 6 L4 -8 M11 6 L8 -6" stroke="#b7ac93" stroke-width="0.5" fill="none"></path>
-          </g>
-          <circle cx="62" cy="30" r="3.2" fill="#3d7fb8"></circle>
-          <ellipse cx="22" cy="60" rx="10" ry="8" fill="#c8c2b3"></ellipse>
-          <ellipse cx="20" cy="58" rx="4" ry="2" fill="#dcd6c6" opacity="0.7"></ellipse>
-          <path d="M42 52 l14 4 -2 20 -14 -3 z" fill="#b98f5c"></path>
-          <rect x="74" y="34" width="12" height="34" rx="1.6" fill="#a9c1b1" stroke="#7d998a" stroke-width="0.5"></rect>
-          <path d="M74 40 L86 40 M74 50 L86 50 M74 60 L86 60" stroke="#7d998a" stroke-width="0.4" opacity="0.5"></path>
-          <circle cx="62" cy="82" r="7" fill="#b0a992"></circle>
-          <circle cx="74" cy="88" r="4.5" fill="#928a76"></circle>
-          <rect x="8" y="86" width="16" height="3" rx="1.5" fill="#c9522f"></rect>
-          <rect x="30" y="90" width="14" height="3" rx="1.5" fill="#5a5245"></rect>
-        </svg>
+        <svg class="icon" viewBox="0 0 100 108"><use href="./images/icons.svg#icon-artboard-thumb"></use></svg>
       </div>
       <div class="node-label">suminagashi</div><div class="node-sub">Floating ink studio</div>
     </div>
