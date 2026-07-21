@@ -3028,3 +3028,154 @@ function renderBookshelf() {
   });
   sheet.querySelectorAll('a[href]').forEach(a => a.addEventListener('click', () => setTimeout(close, 80)));
 })();
+
+/* ============ Window manager: minimize / maximize / close + taskbar ============ */
+(function initWindowManager(){
+  const APP_CONFIG = [
+    { id:'about',      modalId:'aboutModal',      closeId:'aboutClose',      label:'About' },
+    { id:'stickies',   modalId:'stickiesModal',   closeId:'stickiesClose',   label:'Stickies' },
+    { id:'synth',      modalId:'synthModal',      closeId:'synthClose',      label:'Programma 900' },
+    { id:'artboard',   modalId:'artboardModal',   closeId:'artboardClose',   label:'Suminagashi Studio' },
+    { id:'thisPc',     modalId:'thisPcModal',     closeId:'thisPcClose',     label:'This PC' },
+    { id:'myIp',       modalId:'myIpModal',       closeId:'myIpClose',       label:'My IP' },
+    { id:'collection', modalId:'collectionModal', closeId:'cmClose',        label:'Collection' },
+    { id:'snake',      modalId:'snakeModal',      closeId:'snakeModalClose',label:'Bricks' },
+    { id:'trash',      modalId:'trashModal',      closeId:'trashClose',     label:'Recycle Bin' }
+  ];
+
+  const CLASS_BASED = new Set(['collection', 'snake', 'trash']);
+
+  const taskbarItems = document.getElementById('taskbarItems');
+  const taskbar = document.getElementById('taskbar');
+  if (!taskbarItems || !taskbar) return;
+
+  let zCounter = 9000;
+  const apps = [];
+
+  function isVisible(modal){
+    return getComputedStyle(modal).display !== 'none';
+  }
+
+  function buildControls(app){
+    const closeBtn = document.getElementById(app.closeId);
+    if (!closeBtn) return null;
+    const header = closeBtn.parentElement;
+    // Try to reuse two existing decorative dot siblings right after close (macOS traffic-light pattern)
+    let minBtn = null, maxBtn = null;
+    const s1 = closeBtn.nextElementSibling;
+    const s2 = s1 ? s1.nextElementSibling : null;
+    const looksDecorative = (el) => el && el.tagName === 'SPAN' &&
+      /border-radius\s*:\s*50%/i.test(el.getAttribute('style') || '');
+    if (looksDecorative(s1) && looksDecorative(s2)) {
+      minBtn = s1; maxBtn = s2;
+      minBtn.style.cursor = 'pointer';
+      maxBtn.style.cursor = 'pointer';
+      minBtn.setAttribute('role','button');
+      maxBtn.setAttribute('role','button');
+      minBtn.setAttribute('aria-label','Minimize');
+      maxBtn.setAttribute('aria-label','Maximize');
+    } else {
+      minBtn = document.createElement('button');
+      minBtn.type = 'button';
+      minBtn.className = 'wm-btn wm-min-btn';
+      minBtn.setAttribute('aria-label','Minimize');
+      maxBtn = document.createElement('button');
+      maxBtn.type = 'button';
+      maxBtn.className = 'wm-btn wm-max-btn';
+      maxBtn.setAttribute('aria-label','Maximize');
+      closeBtn.after(minBtn, maxBtn);
+    }
+    return { header, closeBtn, minBtn, maxBtn };
+  }
+
+  function renderTaskbar(){
+    const running = apps.filter(a => a.state === 'open' || a.state === 'minimized');
+    taskbarItems.innerHTML = '';
+    running.forEach(app => {
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'tb-item' + (app.state === 'minimized' ? ' minimized' : ' active');
+      item.innerHTML = `<span class="tb-dot"></span><span class="tb-label">${app.label}</span><span class="tb-x" title="Close">✕</span>`;
+      item.addEventListener('click', (e) => {
+        if (e.target.closest('.tb-x')) { e.stopPropagation(); closeApp(app); return; }
+        if (app.state === 'minimized') { restoreApp(app); }
+        else { minimizeApp(app); }
+      });
+      taskbarItems.appendChild(item);
+    });
+    taskbar.classList.toggle('has-apps', running.length > 0);
+  }
+
+  function setState(app, state){
+    app.state = state;
+    renderTaskbar();
+  }
+
+  function showModal(app){
+    if (app.usesClass) app.modal.classList.add('open');
+    else app.modal.style.display = 'flex';
+  }
+  function hideModal(app){
+    if (app.usesClass) app.modal.classList.remove('open');
+    else app.modal.style.display = 'none';
+  }
+
+  function minimizeApp(app){
+    app.suppressObserver = true;
+    hideModal(app);
+    setState(app, 'minimized');
+    setTimeout(() => { app.suppressObserver = false; }, 0);
+  }
+
+  function restoreApp(app){
+    app.suppressObserver = true;
+    showModal(app);
+    app.modal.style.zIndex = ++zCounter;
+    setState(app, 'open');
+    setTimeout(() => { app.suppressObserver = false; }, 0);
+  }
+
+  function closeApp(app){
+    if (app.controls?.closeBtn) app.controls.closeBtn.click();
+    else hideModal(app);
+  }
+
+  function toggleMaximize(app){
+    const card = app.modal.firstElementChild;
+    if (!card) return;
+    const maximized = card.classList.toggle('wm-maximized');
+    if (app.controls?.maxBtn) app.controls.maxBtn.setAttribute('aria-pressed', maximized ? 'true' : 'false');
+  }
+
+  APP_CONFIG.forEach(cfg => {
+    const modal = document.getElementById(cfg.modalId);
+    if (!modal) return;
+    const usesClass = CLASS_BASED.has(cfg.id);
+    const app = { ...cfg, modal, usesClass, state: 'closed', suppressObserver:false };
+    app.controls = buildControls(app);
+    if (app.controls) {
+      app.controls.minBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); minimizeApp(app); });
+      app.controls.maxBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); toggleMaximize(app); });
+    }
+    apps.push(app);
+
+    const observer = new MutationObserver(() => {
+      if (app.suppressObserver) return;
+      const visible = isVisible(modal);
+      if (visible) {
+        if (app.state !== 'open') {
+          app.modal.style.zIndex = ++zCounter;
+          setState(app, 'open');
+        }
+      } else {
+        if (app.state === 'open') {
+          setState(app, 'closed');
+        }
+        // if state was already 'minimized' or 'closed', nothing to do
+      }
+    });
+    observer.observe(modal, { attributes:true, attributeFilter:['style','class'] });
+  });
+
+  window.desktopWM = { minimizeApp, restoreApp, closeApp, toggleMaximize, apps };
+})();
