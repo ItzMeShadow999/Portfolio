@@ -3075,13 +3075,21 @@ function renderBookshelf() {
       minBtn.setAttribute('aria-label','Minimize');
       maxBtn.setAttribute('aria-label','Maximize');
     } else {
+      // Match the injected buttons' size to this modal's actual close button,
+      // so they never look oversized/undersized relative to the app's own chrome.
+      const cs = getComputedStyle(closeBtn);
+      const w = parseFloat(cs.width) || 13;
+      const h = parseFloat(cs.height) || 13;
+      const dim = Math.min(w, h, 16) + 'px'; // cap so it never balloons past a normal traffic-light dot
       minBtn = document.createElement('button');
       minBtn.type = 'button';
       minBtn.className = 'wm-btn wm-min-btn';
+      minBtn.style.width = dim; minBtn.style.height = dim;
       minBtn.setAttribute('aria-label','Minimize');
       maxBtn = document.createElement('button');
       maxBtn.type = 'button';
       maxBtn.className = 'wm-btn wm-max-btn';
+      maxBtn.style.width = dim; maxBtn.style.height = dim;
       maxBtn.setAttribute('aria-label','Maximize');
       closeBtn.after(minBtn, maxBtn);
     }
