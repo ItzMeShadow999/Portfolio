@@ -743,9 +743,13 @@ function fitLayer() {
   const sy = (wrap.clientHeight - pad) / 1300;
   const minScale = 0.18;
   const s = Math.max(minScale, Math.min(sx, sy, 1.0));
+  // Left-align the canvas (small fixed margin) instead of horizontally
+  // centering it, so left-side icons sit close to the real screen edge
+  // rather than floating in the middle of unused letterbox space.
+  layer.style.left = (pad / 2) + 'px';
   layer.style.top = '50%';
-  layer.style.transformOrigin = 'center center';
-  layer.style.transform = `translate(-50%,-50%) scale(${s})`;
+  layer.style.transformOrigin = 'left center';
+  layer.style.transform = `translateY(-50%) scale(${s})`;
   window.requestAnimationFrame(drawLines);
 }
 fitLayer();
