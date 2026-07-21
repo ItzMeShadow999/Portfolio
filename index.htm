@@ -121,7 +121,7 @@
       <span style="width:12px;height:12px;border-radius:50%;background:#28c840;border:1px solid rgba(0,0,0,0.15);"></span>
       <span style="position:absolute;left:0;right:0;text-align:center;font-size:10px;letter-spacing:0.28em;color:#8a8478;font-weight:600;pointer-events:none;text-transform:uppercase;">programma 900 · sonic plates</span>
     </div>
-    <div style="padding:14px 16px 16px;overflow:auto;max-height:calc(92vh - 34px);color:#e8e4d8;">
+    <div class="p900-body" style="padding:14px 16px 16px;overflow:auto;max-height:calc(92vh - 34px);color:#e8e4d8;">
       <!-- Memory preset strip -->
       <div class="p900-memory">
         <div class="p900-mem-label"><span style="opacity:0.55;">MEMORY</span><br><span style="letter-spacing:0.32em;">SONIC PLATES</span></div>
@@ -393,7 +393,11 @@
       </button>
       <span class="cm-title" id="cmTitle">Bookshelf</span>
     </div>
-    <div class="cm-body" id="cmBody"></div>
+    <div class="cm-body" id="cmBody" tabindex="0"></div>
+    <div class="cm-scroll-arrows" id="cmScrollArrows">
+      <button type="button" class="cm-arrow-btn" id="cmScrollUp" aria-label="Scroll up">▲</button>
+      <button type="button" class="cm-arrow-btn" id="cmScrollDown" aria-label="Scroll down">▼</button>
+    </div>
   </div>
 </div>
 <div id="menubar">
