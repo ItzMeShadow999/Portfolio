@@ -1432,8 +1432,15 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
     // Swallow clicks on the slider so tapping the track doesn't trigger loader click-to-unlock
     slider.addEventListener('click', (e) => e.stopPropagation());
   }
-  if (document.readyState === 'complete') setTimeout(markReady, 350);
-  else window.addEventListener('load', () => setTimeout(markReady, 300));
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  setTimeout(markReady, 350);
+} else {
+  document.addEventListener('DOMContentLoaded', () => setTimeout(markReady, 300));
+}
+// Failsafe: never let slow/broken subresources (external icons, fonts, video)
+// leave the lock screen stuck forever — force it ready after 3s no matter what.
+window.addEventListener('load', () => setTimeout(markReady, 100));
+setTimeout(markReady, 3000);
   // expose relock; the brand logo binding lives below
   window.__relockDesktop = relock;
   // Wire the top-bar brand → re-lock (desktop returns to lock screen)
