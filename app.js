@@ -2814,4 +2814,20 @@ function renderBookshelf() {
   const sheet = document.getElementById('mobile-sheet');
   const scrim = document.getElementById('mshScrim');
   const closeBtn = document.getElementById('mshClose');
-  const open = () => { sheet.classList.add('open'); sheet.setAttribute('aria-hidden','false'); btn.setAttribute('ari
+  const open = () => { sheet.classList.add('open'); sheet.setAttribute('aria-hidden','false'); btn.setAttribute('aria-expanded','true'); };
+  const close = () => { sheet.classList.remove('open'); sheet.setAttribute('aria-hidden','true'); btn.setAttribute('aria-expanded','false'); };
+  btn?.addEventListener('click', () => sheet.classList.contains('open') ? close() : open());
+  scrim?.addEventListener('click', close);
+  closeBtn?.addEventListener('click', close);
+  // Route sheet actions to existing menubar buttons
+  sheet.querySelectorAll('[data-sheet]').forEach(el => {
+    el.addEventListener('click', () => {
+      const key = el.getAttribute('data-sheet');
+      const map = { about:'about', 'cursor-style':'cursor-style' };
+      const target = document.querySelector(`#menubar [data-action="${map[key]}"]`);
+      close();
+      setTimeout(() => target?.click(), 200);
+    });
+  });
+  sheet.querySelectorAll('a[href]').forEach(a => a.addEventListener('click', () => setTimeout(close, 80)));
+})();
