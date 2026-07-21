@@ -298,25 +298,27 @@ const THEMES = {
 const order = ['sky','forest','desert','night'];
 let themeIdx = 0;
 
-/* ============ Site background image (local file, with fallback) ============ */
+/* ============ Site background (local file, with fallback) ============ */
 /* Looks for ./images/Background.png first; if that file doesn't exist, falls
-   back to ./images/Background.gif; if neither exists, falls back to each
-   theme's built-in gradient (t.bg) further down in applyTheme(). */
-const SITE_BG_CANDIDATES = ['images/Background.png', 'images/Background.gif'];
-let __siteBgResolved = null; // resolved path string, or false if neither exists
+   back to ./images/Background.mp4 (played as a looping background video);
+   if neither exists, falls back to each theme's built-in gradient (t.bg)
+   further down in applyTheme(). */
+const SITE_BG_IMAGE = 'images/Background.png';
+const SITE_BG_VIDEO = 'images/Background.mp4';
+let __siteBgResolved = null; // { type:'image'|'video', path } or false if neither exists
 let __siteBgPromise = null;
 function resolveSiteBackground() {
   if (__siteBgPromise) return __siteBgPromise;
   __siteBgPromise = new Promise((resolve) => {
-    const tryNext = (i) => {
-      if (i >= SITE_BG_CANDIDATES.length) { __siteBgResolved = false; resolve(false); return; }
-      const path = SITE_BG_CANDIDATES[i];
-      const probe = new Image();
-      probe.onload = () => { __siteBgResolved = path; resolve(path); };
-      probe.onerror = () => tryNext(i + 1);
-      probe.src = path;
+    const probeImg = new Image();
+    probeImg.onload = () => { const r = { type:'image', path: SITE_BG_IMAGE }; __siteBgResolved = r; resolve(r); };
+    probeImg.onerror = () => {
+      const probeVid = document.createElement('video');
+      probeVid.onloadeddata = () => { const r = { type:'video', path: SITE_BG_VIDEO }; __siteBgResolved = r; resolve(r); };
+      probeVid.onerror = () => { __siteBgResolved = false; resolve(false); };
+      probeVid.src = SITE_BG_VIDEO;
     };
-    tryNext(0);
+    probeImg.src = SITE_BG_IMAGE;
   });
   return __siteBgPromise;
 }
@@ -326,6 +328,7 @@ function applyTheme(key) {
   if (!t) return;
   document.body.setAttribute('data-theme', key);
   const stage = document.getElementById('stage');
+  const bgVideo = document.getElementById('siteBgVideo');
   const swatch = document.getElementById('themeSwatch');
   const label = document.getElementById('themeLabel');
   const coord = document.getElementById('coordText');
@@ -336,12 +339,21 @@ function applyTheme(key) {
     desert: 'linear-gradient(rgba(255,255,255,0.10),rgba(255,255,255,0.18))',
   };
   if (stage) {
-    resolveSiteBackground().then((path) => {
+    resolveSiteBackground().then((result) => {
       // Bail if the theme changed again before this resolved.
       if (document.body.getAttribute('data-theme') !== key) return;
-      if (path) {
-        stage.style.background = `${SCRIM[key]}, url("${path}") center center / cover no-repeat`;
+      if (result && result.type === 'image') {
+        if (bgVideo) { bgVideo.style.display = 'none'; bgVideo.pause(); }
+        stage.style.background = `${SCRIM[key]}, url("${result.path}") center center / cover no-repeat`;
+      } else if (result && result.type === 'video') {
+        stage.style.background = SCRIM[key];
+        if (bgVideo) {
+          if (bgVideo.getAttribute('src') !== result.path) bgVideo.setAttribute('src', result.path);
+          bgVideo.style.display = 'block';
+          bgVideo.play().catch(() => {});
+        }
       } else {
+        if (bgVideo) { bgVideo.style.display = 'none'; bgVideo.pause(); }
         stage.style.background = t.bg || '';
       }
     });
