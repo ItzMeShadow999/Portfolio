@@ -298,6 +298,29 @@ const THEMES = {
 const order = ['sky','forest','desert','night'];
 let themeIdx = 0;
 
+/* ============ Site background image (local file, with fallback) ============ */
+/* Looks for ./images/Background.png first; if that file doesn't exist, falls
+   back to ./images/Background.gif; if neither exists, falls back to each
+   theme's built-in gradient (t.bg) further down in applyTheme(). */
+const SITE_BG_CANDIDATES = ['images/Background.png', 'images/Background.gif'];
+let __siteBgResolved = null; // resolved path string, or false if neither exists
+let __siteBgPromise = null;
+function resolveSiteBackground() {
+  if (__siteBgPromise) return __siteBgPromise;
+  __siteBgPromise = new Promise((resolve) => {
+    const tryNext = (i) => {
+      if (i >= SITE_BG_CANDIDATES.length) { __siteBgResolved = false; resolve(false); return; }
+      const path = SITE_BG_CANDIDATES[i];
+      const probe = new Image();
+      probe.onload = () => { __siteBgResolved = path; resolve(path); };
+      probe.onerror = () => tryNext(i + 1);
+      probe.src = path;
+    };
+    tryNext(0);
+  });
+  return __siteBgPromise;
+}
+
 function applyTheme(key) {
   const t = THEMES[key];
   if (!t) return;
@@ -306,21 +329,22 @@ function applyTheme(key) {
   const swatch = document.getElementById('themeSwatch');
   const label = document.getElementById('themeLabel');
   const coord = document.getElementById('coordText');
-  const BG_IMAGES = {
-    sky:    '/__l5e/assets-v1/7ef1e459-3db7-4278-85a5-9713e00ea7cd/bg-sky.png',
-    night:  '/__l5e/assets-v1/a879cb78-3f8f-4841-adfe-cb406075f6ed/bg-night.png',
-    forest: '/__l5e/assets-v1/d4eb0c8a-8713-491a-9cb2-97f6b4ef68a3/bg-forest.png',
-    desert: '/__l5e/assets-v1/6200152b-68df-44a2-a081-d3868eefd931/bg-desert.png',
-  };
   const SCRIM = {
     sky:    'linear-gradient(rgba(255,255,255,0.10),rgba(255,255,255,0.18))',
     night:  'linear-gradient(rgba(0,0,0,0.35),rgba(0,0,0,0.45))',
     forest: 'linear-gradient(rgba(0,0,0,0.20),rgba(0,0,0,0.30))',
     desert: 'linear-gradient(rgba(255,255,255,0.10),rgba(255,255,255,0.18))',
   };
-  const img = BG_IMAGES[key];
-  if (stage && img) {
-    stage.style.background = `${SCRIM[key]}, url("${img}") center center / cover no-repeat`;
+  if (stage) {
+    resolveSiteBackground().then((path) => {
+      // Bail if the theme changed again before this resolved.
+      if (document.body.getAttribute('data-theme') !== key) return;
+      if (path) {
+        stage.style.background = `${SCRIM[key]}, url("${path}") center center / cover no-repeat`;
+      } else {
+        stage.style.background = t.bg || '';
+      }
+    });
   }
   if (swatch) swatch.style.background = t.swatch;
   if (label) label.textContent = t.label;
@@ -1108,11 +1132,6 @@ dItems.forEach(item => {
 
   document.querySelectorAll('.photo-node').forEach(node => {
     node.addEventListener('dblclick', e => {
-      if (node.id === 'n-resume' && !window.__caseGate?.isUnlocked?.()) {
-        e.stopPropagation();
-        window.__caseGate.requireUnlock('Resume', () => node.dispatchEvent(new MouseEvent('dblclick', { bubbles: false })));
-        return;
-      }
       const img = node.querySelector('.thumb img');
       if (!img) return;
       const label = node.querySelector('.node-label')?.textContent || 'Photo';
@@ -1153,7 +1172,6 @@ dItems.forEach(item => {
   // Adjust modal size per node type (resume → taller/wider so it isn't cut off)
   document.querySelectorAll('.photo-node').forEach(node => {
     node.addEventListener('dblclick', () => {
-      if (node.id === 'n-resume' && !window.__caseGate?.isUnlocked?.()) return;
       const isResume = node.id === 'n-resume';
       modal.querySelector('#pvImg').style.maxHeight = isResume ? 'none' : '44vh';
       modal.querySelector('#pvImg').style.width = isResume ? '100%' : '';
@@ -1217,9 +1235,7 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
     window.desktopSfx?.open?.();
   }
   function relock(){
-    // Re-lock case studies whenever the desktop re-locks
-    try { window.__caseGate && window.__caseGate.relock && window.__caseGate.relock(); } catch(_){}
-    document.querySelectorAll('#n-case1,#n-case2,#n-case3,#n-case4,#n-resume').forEach(n => n.classList.remove('unlocked'));
+    document.querySelectorAll('#n-resume').forEach(n => n.classList.remove('unlocked'));
     loader.style.display = 'flex';
     // force reflow so the transition replays
     void loader.offsetWidth;
@@ -1289,162 +1305,6 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
   const lockBtn = document.querySelector('#menubar .brand-menu .brand-lock');
   if (lockBtn) {
     lockBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); relock(); });
-  }
-})();
-
-/* ============ Case-study password gate ============ */
-window.__caseGate = (function(){
-  const KEY = 'pk_cases_unlocked_v1';
-  const gate = document.getElementById('pwGate');
-  const form = document.getElementById('pwForm');
-  const input = document.getElementById('pwInput');
-  const err = document.getElementById('pwErr');
-  const title = document.getElementById('pwTitle');
-  const cancel = document.getElementById('pwCancel');
-  let pending = null;
-  // Signed URLs live only in memory. They expire ~1h after issue, and
-  // we never persist them (no localStorage / sessionStorage). A page
-  // reload requires re-entering the password.
-  let signedUrls = null;
-  let signedUrlsExpireAt = 0;
-  function isUnlocked(){ return signedUrls !== null && Date.now() < signedUrlsExpireAt; }
-  function hydrateLockedAssets(){
-    if (!signedUrls) return;
-    document.querySelectorAll('[data-locked]').forEach(el => {
-      const key = el.getAttribute('data-locked');
-      const url = signedUrls[key];
-      if (!url) return;
-      if (el.tagName === 'VIDEO') {
-        if (el.getAttribute('src') !== url) {
-          el.setAttribute('src', url);
-          try { el.load(); } catch(_) {}
-        }
-      } else {
-        if (el.getAttribute('src') !== url) el.setAttribute('src', url);
-      }
-    });
-  }
-  function markUnlocked(payload){
-    signedUrls = (payload && payload.urls) || {};
-    const ttl = (payload && payload.expiresIn) ? payload.expiresIn * 1000 : 60 * 60 * 1000;
-    signedUrlsExpireAt = Date.now() + ttl;
-    document.querySelectorAll('#n-case1,#n-case2,#n-case3,#n-case4,#n-resume').forEach(n => n.classList.add('unlocked'));
-    hydrateLockedAssets();
-  }
-  function close(){ gate.classList.remove('on'); input.value=''; err.textContent=''; pending=null; }
-  function open(label, onOk){
-    if (isUnlocked()) { onOk(); return; }
-    pending = onOk;
-    title.textContent = label ? `Locked · ${label}` : 'Locked case study';
-    err.textContent = '';
-    input.value = '';
-    gate.classList.add('on');
-    setTimeout(() => input.focus(), 40);
-  }
-  if (gate) {
-    gate.addEventListener('click', e => { if (e.target === gate) close(); });
-    cancel.addEventListener('click', close);
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-      const submitBtn = form.querySelector('button[type="submit"]');
-      const attempt = input.value;
-      err.textContent = '';
-      if (submitBtn) submitBtn.disabled = true;
-      try {
-        const res = await fetch('/api/public/verify-case', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password: attempt })
-        });
-        const data = await res.json().catch(() => ({ ok: false }));
-        if (res.status === 429) {
-          err.textContent = (data && data.error) || 'Too many attempts. Try again later.';
-          input.select();
-        } else if (data && data.ok) {
-          markUnlocked(data);
-          const fn = pending; close();
-          if (fn) fn();
-        } else {
-          err.textContent = 'Incorrect password. Try again.';
-          input.select();
-        }
-      } catch(_) {
-        err.textContent = 'Verification failed. Try again.';
-        input.select();
-      } finally {
-        if (submitBtn) submitBtn.disabled = false;
-      }
-    });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && gate.classList.contains('on')) close(); });
-  }
-  function relockAll(){
-    signedUrls = null;
-    signedUrlsExpireAt = 0;
-    document.querySelectorAll('[data-locked]').forEach(el => {
-      if (el.tagName === 'VIDEO') { try { el.pause(); el.removeAttribute('src'); el.load(); } catch(_){} }
-      else { el.setAttribute('src', ''); }
-    });
-  }
-  return { requireUnlock: open, isUnlocked, relock: relockAll };
-})();
-
-/* ============ Case 01 · L·AI·C modal ============ */
-(function initCaseModal(){
-  const modal = document.getElementById('caseModal');
-  if (!modal) return;
-  const open = () => { modal.style.display = 'flex'; window.desktopSfx?.open(); };
-  const close = () => { modal.style.display = 'none'; };
-  document.getElementById('csClose').addEventListener('click', close);
-  modal.addEventListener('click', e => { if (e.target === modal) close(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
-  const case1 = document.getElementById('n-case1');
-  if (case1) {
-    case1.addEventListener('dblclick', e => { e.stopPropagation(); window.__caseGate.requireUnlock('Case 01 · L·AI·C', open); });
-  }
-})();
-
-/* ============ Case 02 · On Demand modal ============ */
-(function initCaseModal2(){
-  const modal = document.getElementById('caseModal2');
-  if (!modal) return;
-  const open = () => { modal.style.display = 'flex'; window.desktopSfx?.open(); };
-  const close = () => { modal.style.display = 'none'; };
-  document.getElementById('cs2Close').addEventListener('click', close);
-  modal.addEventListener('click', e => { if (e.target === modal) close(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
-  const case2 = document.getElementById('n-case2');
-  if (case2) {
-    case2.addEventListener('dblclick', e => { e.stopPropagation(); window.__caseGate.requireUnlock('Case 02 · On Demand', open); });
-  }
-})();
-
-/* ============ Case 03 · Strategic Comms modal ============ */
-(function initCaseModal3(){
-  const modal = document.getElementById('caseModal3');
-  if (!modal) return;
-  const open = () => { modal.style.display = 'flex'; window.desktopSfx?.open(); };
-  const close = () => { modal.style.display = 'none'; };
-  document.getElementById('cs3Close').addEventListener('click', close);
-  modal.addEventListener('click', e => { if (e.target === modal) close(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
-  const case3 = document.getElementById('n-case3');
-  if (case3) {
-    case3.addEventListener('dblclick', e => { e.stopPropagation(); window.__caseGate.requireUnlock('Case 03 · Strategic Comms', open); });
-  }
-})();
-
-/* ============ Case 04 · Rebrand modal ============ */
-(function initCaseModal4(){
-  const modal = document.getElementById('caseModal4');
-  if (!modal) return;
-  const open = () => { modal.style.display = 'flex'; window.desktopSfx?.open(); };
-  const close = () => { modal.style.display = 'none'; };
-  document.getElementById('cs4Close').addEventListener('click', close);
-  modal.addEventListener('click', e => { if (e.target === modal) close(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
-  const case4 = document.getElementById('n-case4');
-  if (case4) {
-    case4.addEventListener('dblclick', e => { e.stopPropagation(); window.__caseGate.requireUnlock('Case 04 · Rebrand', open); });
   }
 })();
 
@@ -2737,20 +2597,6 @@ function renderBookshelf() {
 })();
 
 /* ============ Draggable creature (Sprout) ============ */
-/* Move each case-study lock badge into its folder so it sits centered on the folder icon */
-(function reparentLockBadges(){
-  document.querySelectorAll('.node > .cs-lock-badge').forEach(badge => {
-    const node = badge.parentElement;
-    // Case-study folders: sit the lock in the folder body so it's centered on the icon shape.
-    const folderBody = node.querySelector('.folder .body');
-    if (folderBody) { folderBody.appendChild(badge); return; }
-    // Photo-node (e.g. Resume): sit the lock inside the .thumb so it centers on the image tile,
-    // not on the whole node (which would push it down below the image because of the label/sub).
-    const thumb = node.querySelector('.thumb');
-    if (thumb) thumb.appendChild(badge);
-  });
-})();
-
 (function makeSproutDraggable(){
   const el = document.getElementById('hedgehog');
   if (!el) return;
