@@ -2059,8 +2059,6 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
   const closeBtn = document.getElementById('artboardClose');
   const canvas = document.getElementById('mbCanvas');
   if (!canvas) return;
-  const canvasWrap = canvas.closest('.mb-canvas-wrap');
-  const brushEl = canvasWrap ? canvasWrap.querySelector('.mb-brush') : null;
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
   const captionEl = document.getElementById('mbCaption');
@@ -2147,36 +2145,65 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
     updateBrushCursor();
   });
 
-  // --- Custom brush cursor (the .mb-brush element) ---
-  // This element existed in the markup but was never styled or moved,
-  // so the site's own "ink brush" cursor never appeared or tracked the
-  // mouse — even though the real OS pointer moved fine. Wire it up here.
+// ---- Tool icon cursors (real SVGs, no native cursor anywhere in this modal) ----
+  const TOOL_ICON_SVG = {
+    dropper: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.06 122.88"><path d="M95.19,57.99l-4.2-4.2l6.98-6.98c6.22,0.18,12.49-2.1,17.24-6.84c9.14-9.14,9.14-23.97,0-33.11 c-9.14-9.14-23.97-9.14-33.11,0c-4.75,4.75-7.02,11.02-6.84,17.24l-6.98,6.98l-4.51-4.51c-1.51-1.51-3.96-1.51-5.47,0l-2.19,2.19 c-1.51,1.51-1.51,3.96,0,5.47l4.51,4.51l-53.5,53.5L0,122.88l29.82-7.93l53.5-53.5l4.2,4.2c1.51,1.51,3.96,1.51,5.47,0l2.19-2.19 C96.7,61.95,96.7,59.5,95.19,57.99L95.19,57.99z M28.37,108.97l-20.83,6.01l5.45-21.38L59.38,47.2l15.38,15.38L28.37,108.97 L28.37,108.97z"/></svg>`,
+    stylus: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M73.293,28.879l-2.172-2.172c-1.17-1.17-3.072-1.17-4.242,0l-38.05,38.05C26.36,67.227,25,70.509,25,74c0,0.552,0.448,1,1,1c3.491,0,6.774-1.359,9.243-3.829l38.05-38.05C74.463,31.952,74.463,30.048,73.293,28.879z M33.829,69.757c-1.842,1.843-4.219,2.955-6.78,3.194c0.239-2.561,1.352-4.938,3.194-6.78L47.5,48.914l3.586,3.586L33.829,69.757z M71.879,31.707L52.5,51.086L48.914,47.5l19.379-19.379c0.393-0.39,1.021-0.39,1.414,0l2.172,2.172C72.269,30.686,72.269,31.314,71.879,31.707z"/></svg>`,
+    comb: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><path d="M90.221,30.228C86.82,25.704,81.408,23,75.752,23H20.248c-5.624,0-11.012,2.676-14.412,7.152c-3.404,4.48-4.532,10.388-3.024,15.804l7.124,25.576c0.056,0.14,0.116,0.256,0.196,0.383c0.088,0.1,0.192,0.172,0.3,0.256c0.112,0.057,0.236,0.084,0.36,0.121c0.128,0.035,0.252,0.075,0.392,0.084c0.096,0,0.18-0.04,0.272-0.061c0.088-0.012,0.176,0.004,0.264-0.02c0.136-0.048,0.252-0.116,0.376-0.196c0.104-0.064,0.208-0.116,0.296-0.195c0.096-0.084,0.172-0.192,0.252-0.297c0.076-0.096,0.152-0.195,0.208-0.304c0.056-0.112,0.084-0.236,0.116-0.353c0.036-0.131,0.072-0.256,0.08-0.399v-28h4v28c0,1.1,0.896,2,2,2s2-0.9,2-2v-28h4v28c0,1.1,0.896,2,2,2s2-0.9,2-2v-28h4v28c0,1.1,0.896,2,2,2s2-0.9,2-2v-28h4v28c0,1.1,0.896,2,2,2s2-0.9,2-2v-28h4v28c0,1.1,0.896,2,2,2c1.1,0,2-0.9,2-2v-28h4v28c0,1.1,0.896,2,2,2c1.1,0,2-0.9,2-2v-28h4v28c0,1.1,0.896,2,2,2c1.1,0,2-0.9,2-2v-28h4v28c0,1.1,0.896,2,2,2c1.1,0,2-0.9,2-2v-28h4v28c0.008,0.145,0.043,0.272,0.084,0.408c0.031,0.124,0.06,0.24,0.111,0.344c0.057,0.117,0.133,0.213,0.204,0.313c0.084,0.104,0.147,0.212,0.252,0.296c0.084,0.084,0.196,0.14,0.3,0.204c0.112,0.076,0.232,0.148,0.364,0.196c0.188,0.057,0.375,0.08,0.56,0.08c0.403,0,0.752-0.148,1.075-0.352c0.064-0.041,0.113-0.072,0.173-0.116c0.288-0.236,0.508-0.54,0.632-0.908l7.356-25.42C94.712,40.692,93.616,34.752,90.221,30.228z"/></svg>`,
+    rake: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><rect x="0" y="8" width="96" height="14" rx="4"/><rect x="0" y="22" width="12" height="68" rx="3"/><rect x="21" y="22" width="12" height="68" rx="3"/><rect x="42" y="22" width="12" height="68" rx="3"/><rect x="63" y="22" width="12" height="68" rx="3"/><rect x="84" y="22" width="12" height="68" rx="3"/></svg>`,
+    breath: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M0 0 C6.03228065 -0.07424697 12.06429432 -0.1286483 18.09692383 -0.16479492 C20.14840326 -0.17986622 22.19985056 -0.20032682 24.2512207 -0.22631836 C27.20271748 -0.26277424 30.15378763 -0.27974306 33.10546875 -0.29296875 C34.47761787 -0.31619453 34.47761787 -0.31619453 35.87748718 -0.33988953 C40.74088272 -0.34117017 44.06853822 -0.20797889 48 3 C50.70867441 7.01376299 50.67655958 11.32255102 50 16 C48.20726402 19.12068856 46.75740595 20.54965052 43.6875 22.375 C40.04992671 23.22094728 37.60960985 22.96685978 34 22 C31 19.75 31 19.75 29 17 C29.1875 14.1875 29.1875 14.1875 30 12 C33.79588866 12.54226981 35.47211993 14.20127563 38 17 C39.98 16.34 41.96 15.68 44 15 C44.16677282 11.58343976 44.16677282 11.58343976 44 8 C40.02683055 4.02683055 34.62999284 4.7935546 29.296875 4.68359375 C24.08882644 4.5553745 21.41943902 4.49635642 18.75 4.4375 C16.93749016 4.39429106 15.12498995 4.35067601 13.3125 4.30664062 C8.87509791 4.19971871 4.43759932 4.09838134 0 4 C0 2.68 0 1.36 0 0 Z" transform="translate(0,23)"/><path d="M0 0 C2.1640625 0.3359375 2.1640625 0.3359375 4.7265625 1.7734375 C6.81486431 5.49606246 7.28920338 9.19178507 6.1640625 13.3359375 C3.5151747 16.63564557 2.07452916 18.18034507 -2.1574707 18.90356445 C-3.38812256 18.87738037 -4.61877441 18.85119629 -5.88671875 18.82421875 C-9.97273784 18.77494729 -12.05962226 18.71224569 -14.1484375 18.6484375 C-21.89020611 18.52516196 -25.362803 18.43897435 -28.8359375 18.3359375 C-28.8359375 17.0159375 -28.8359375 15.6959375 -28.8359375 14.3359375 C-23.26461694 14.18055922 -19.92536111 14.07090754 -16.5859375 13.9609375 C-11.95917969 13.82851562 -10.84414063 13.78984375 -9.6953125 13.75 C-6.58496094 13.65478516 -6.58496094 13.65478516 -6.58496094 13.65478516 C-3.86726677 13.33957125 -2.16669315 12.72561399 0.1640625 11.3359375 C0.1640625 9.6859375 0.1640625 8.0359375 0.1640625 6.3359375 C-1.4859375 6.3359375 -3.1359375 6.3359375 -4.8359375 6.3359375 C-5.1659375 6.9959375 -5.4959375 7.6559375 -5.8359375 8.3359375 C-7.4859375 8.3359375 -9.1359375 8.3359375 -10.8359375 8.3359375 C-9.86148132 1.12496175 -6.89683625 -0.29204844 0 0 Z" transform="translate(28.8359375,0.6640625)"/><path d="M0 0 C2.89740622 -0.13539281 5.78845621 -0.23426829 8.6875 -0.3125 C9.50412109 -0.35439453 10.32074219 -0.39628906 11.16210938 -0.43945312 C15.52818777 -0.52783528 17.42222745 -0.42369987 21.046875 2.234375 C23.56316415 5.79744044 23.68751878 7.68721833 23.40625 11.90625 C23 14 23 14 21.5625 16.5625 C17.76084146 18.69513772 14.2576538 18.81246972 10 18 C7.4375 16 7.4375 16 6 14 C6.66 12.68 7.32 11.36 8 10 C8.8353125 10.495 8.8353125 10.495 9.6875 11 C12.30284522 12.1309601 14.1806646 12.15662974 17 12 C17 10.35 17 8.7 17 7 C13.46813168 4.84940691 10.33712007 4.6202272 6.25 4.375 C5.07953125 4.30023438 3.9090625 4.22546875 2.703125 4.1484375 C1.81109375 4.09945312 0.9190625 4.05046875 0 4 C0 2.68 0 1.36 0 0 Z" transform="translate(0,30)"/></svg>`
+  };
+
+  function svgToMaskUrl(svgMarkup) {
+    const encoded = encodeURIComponent(svgMarkup).replace(/'/g, '%27').replace(/"/g, '%22');
+    return `url("data:image/svg+xml,${encoded}")`;
+  }
+
+  // Single fixed-position element that stands in for the cursor across the
+  // WHOLE modal (toolbar, swatches, hint text, canvas — everywhere), so the
+  // native hand/pointer cursor never has a chance to show through.
+  const brushIcon = document.createElement('div');
+  brushIcon.className = 'mb-brush-icon';
+  document.body.appendChild(brushIcon);
+
+  const brushRing = document.createElement('div');
+  brushRing.className = 'mb-brush-ring';
+  document.body.appendChild(brushRing);
+
   function updateBrushCursor(){
-    if (!brushEl) return;
-    brushEl.className = 'mb-brush tool-' + currentTool;
-    const size = Math.max(10, Math.min(120, dropSize)) * 0.9;
-    brushEl.style.width = size + 'px';
-    brushEl.style.height = size + 'px';
-    brushEl.style.marginLeft = (-size/2) + 'px';
-    brushEl.style.marginTop = (-size/2) + 'px';
-    brushEl.style.borderColor = currentColor;
-    brushEl.style.background = withAlpha(currentColor, 0.16);
+    const svg = TOOL_ICON_SVG[currentTool] || TOOL_ICON_SVG.dropper;
+    const maskUrl = svgToMaskUrl(svg);
+    brushIcon.style.webkitMaskImage = maskUrl;
+    brushIcon.style.maskImage = maskUrl;
+    brushIcon.style.backgroundColor = currentColor;
+
+    // brush-size ring only makes sense over the canvas, sized to dropSize
+    const ringSize = Math.max(10, Math.min(120, dropSize));
+    brushRing.style.width = ringSize + 'px';
+    brushRing.style.height = ringSize + 'px';
+    brushRing.style.marginLeft = (-ringSize/2) + 'px';
+    brushRing.style.marginTop = (-ringSize/2) + 'px';
+    brushRing.style.borderColor = currentColor;
   }
+
   function moveBrushCursor(e){
-    if (!brushEl || !canvasWrap) return;
-    const r = canvasWrap.getBoundingClientRect();
-    const x = e.clientX - r.left;
-    const y = e.clientY - r.top;
-    brushEl.style.transform = `translate(${x}px, ${y}px)`;
+    brushIcon.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+    brushRing.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    const overCanvas = !!(e.target && e.target.closest && e.target.closest('#mbCanvas'));
+    brushRing.style.display = overCanvas ? 'block' : 'none';
   }
-  if (canvasWrap) {
-    canvasWrap.addEventListener('pointerenter', () => { canvasWrap.classList.add('mb-hover'); });
-    canvasWrap.addEventListener('pointerleave', () => { canvasWrap.classList.remove('mb-hover'); });
-    canvasWrap.addEventListener('pointermove', moveBrushCursor);
-    // Mouse-event fallback in case pointer events are unavailable/blocked
-    canvasWrap.addEventListener('mouseenter', () => { canvasWrap.classList.add('mb-hover'); });
-    canvasWrap.addEventListener('mouseleave', () => { canvasWrap.classList.remove('mb-hover'); });
-    canvasWrap.addEventListener('mousemove', moveBrushCursor);
+
+  function showBrushCursor(){ brushIcon.style.display = 'block'; }
+  function hideBrushCursor(){ brushIcon.style.display = 'none'; brushRing.style.display = 'none'; }
+
+  // Track pointer across the WHOLE modal, not just the canvas wrap, so the
+  // icon replaces the native cursor everywhere inside this window.
+  modal.addEventListener('pointerenter', showBrushCursor);
+  modal.addEventListener('pointerleave', hideBrushCursor);
+  modal.addEventListener('pointermove', moveBrushCursor);
+  modal.addEventListener('mouseenter', showBrushCursor);
+  modal.addEventListener('mouseleave', hideBrushCursor);
+  modal.addEventListener('mousemove', moveBrushCursor);
   }
 
   // --- Drawing helpers ---
