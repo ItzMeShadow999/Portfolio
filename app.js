@@ -2058,6 +2058,9 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
   const openIcon = document.getElementById('n-artboard');
   const closeBtn = document.getElementById('artboardClose');
   const canvas = document.getElementById('mbCanvas');
+  if (!canvas) return;
+  const canvasWrap = canvas.closest('.mb-canvas-wrap');
+  const brushEl = canvasWrap ? canvasWrap.querySelector('.mb-brush') : null;
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
   const captionEl = document.getElementById('mbCaption');
@@ -2120,6 +2123,7 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
     document.querySelectorAll('#artboardModal .mb-tool').forEach(el => el.classList.toggle('active', el.dataset.tool === t));
     if (captionEl) captionEl.textContent = captions[t] || '';
     if (hintEl) hintEl.textContent = hints[t] || '';
+    updateBrushCursor();
   }
   document.querySelectorAll('#artboardModal .mb-tool').forEach(el => {
     el.addEventListener('click', () => setTool(el.dataset.tool));
@@ -2133,13 +2137,47 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
       currentColorName = el.dataset.name;
       const c = document.getElementById('mbCaption');
       if (c) c.textContent = currentColorName + ' opening on the water.';
+      updateBrushCursor();
     });
   });
 
   sizeEl?.addEventListener('input', () => {
     dropSize = parseInt(sizeEl.value, 10);
     if (sizeValEl) sizeValEl.textContent = dropSize;
+    updateBrushCursor();
   });
+
+  // --- Custom brush cursor (the .mb-brush element) ---
+  // This element existed in the markup but was never styled or moved,
+  // so the site's own "ink brush" cursor never appeared or tracked the
+  // mouse — even though the real OS pointer moved fine. Wire it up here.
+  function updateBrushCursor(){
+    if (!brushEl) return;
+    brushEl.className = 'mb-brush tool-' + currentTool;
+    const size = Math.max(10, Math.min(120, dropSize)) * 0.9;
+    brushEl.style.width = size + 'px';
+    brushEl.style.height = size + 'px';
+    brushEl.style.marginLeft = (-size/2) + 'px';
+    brushEl.style.marginTop = (-size/2) + 'px';
+    brushEl.style.borderColor = currentColor;
+    brushEl.style.background = withAlpha(currentColor, 0.16);
+  }
+  function moveBrushCursor(e){
+    if (!brushEl || !canvasWrap) return;
+    const r = canvasWrap.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const y = e.clientY - r.top;
+    brushEl.style.transform = `translate(${x}px, ${y}px)`;
+  }
+  if (canvasWrap) {
+    canvasWrap.addEventListener('pointerenter', () => { canvasWrap.classList.add('mb-hover'); });
+    canvasWrap.addEventListener('pointerleave', () => { canvasWrap.classList.remove('mb-hover'); });
+    canvasWrap.addEventListener('pointermove', moveBrushCursor);
+    // Mouse-event fallback in case pointer events are unavailable/blocked
+    canvasWrap.addEventListener('mouseenter', () => { canvasWrap.classList.add('mb-hover'); });
+    canvasWrap.addEventListener('mouseleave', () => { canvasWrap.classList.remove('mb-hover'); });
+    canvasWrap.addEventListener('mousemove', moveBrushCursor);
+  }
 
   // --- Drawing helpers ---
   function withAlpha(hex, a){
@@ -2251,18 +2289,20 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
     const y = (e.clientY - r.top)  * (H / r.height);
     return { x, y };
   }
-  canvas.addEventListener('pointerdown', e => {
+  function startDraw(e){
     e.preventDefault();
-    canvas.setPointerCapture(e.pointerId);
+    try { canvas.setPointerCapture(e.pointerId); } catch(err) {}
     snapshot();
     drawing = true;
     last = toCanvasXY(e);
+    brushEl?.classList.add('drawing');
     if (currentTool === 'dropper') {
       bloom(last.x, last.y, dropSize * 0.6, currentColor);
     } else if (currentTool === 'breath') {
       breathAt(last.x, last.y);
     }
-  });
+  }
+  canvas.addEventListener('pointerdown', startDraw);
   canvas.addEventListener('pointermove', e => {
     if (!drawing) return;
     const p = toCanvasXY(e);
@@ -2292,10 +2332,49 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
     if (drawing) {
       drawing = false; last = null;
     }
+    brushEl?.classList.remove('drawing');
   }
   canvas.addEventListener('pointerup', endDraw);
   canvas.addEventListener('pointercancel', endDraw);
   canvas.addEventListener('pointerleave', endDraw);
+
+  function moveDraw(e){
+    if (!drawing) return;
+    const p = toCanvasXY(e);
+    if (currentTool === 'stylus'){
+      const d = Math.hypot(p.x-last.x, p.y-last.y);
+      if (d < 0.8) return;
+      smearStep(last, p, Math.max(2.5, dropSize * 0.09), 0.9);
+    } else if (currentTool === 'comb'){
+      const d = Math.hypot(p.x-last.x, p.y-last.y);
+      if (d < 0.8) return;
+      const r = Math.max(1.6, dropSize * 0.055);
+      toothSmear(last, p, 8, dropSize * 0.13, r, 0.85);
+    } else if (currentTool === 'rake'){
+      const d = Math.hypot(p.x-last.x, p.y-last.y);
+      if (d < 0.8) return;
+      const r = Math.max(2.4, dropSize * 0.09);
+      toothSmear(last, p, 5, dropSize * 0.20, r, 0.9);
+    } else if (currentTool === 'breath') {
+      breathAt(p.x, p.y);
+    } else if (currentTool === 'dropper') {
+      const d = Math.hypot(p.x-last.x, p.y-last.y);
+      if (d > dropSize * 0.28) bloom(p.x, p.y, dropSize * 0.5, currentColor);
+    }
+    last = p;
+  }
+
+  // Belt-and-suspenders: if Pointer Events are missing/blocked in this
+  // browser/embed for any reason, fall back to plain mouse events so
+  // drawing still responds to the real mouse.
+  if (!window.PointerEvent) {
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', moveDraw);
+    window.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mouseleave', endDraw);
+  }
+
+  updateBrushCursor();
 
   // Toolbar buttons
   document.getElementById('mbClear')?.addEventListener('click', () => { snapshot(); fillPaper(); if (captionEl) captionEl.textContent = 'The water is clear and still.'; });
