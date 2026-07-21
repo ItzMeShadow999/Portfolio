@@ -1,5 +1,4 @@
 (function(){
-  // ---- Menubar dropdowns ----
   const menus = document.querySelectorAll('#menubar .mb-menu');
   const closeAll = (except) => menus.forEach(m => { if (m !== except) m.classList.remove('open'); });
   menus.forEach(m => {
@@ -18,28 +17,15 @@
   });
   document.addEventListener('click', () => closeAll(null));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(null); });
-
-  // ---- Cursor Style Picker (file-based, truly animated cursor themes) ----
-  // Each theme is a folder under ./cursors containing Arrow.gif (normal/pointer)
-  // and Working.gif (hand cursor used on interactive elements).
-  //
-  // NOTE: browsers only render the FIRST FRAME of an animated GIF when it's
-  // used via the CSS `cursor` property (Firefox is the lone exception). To get
-  // real animation everywhere, we hide the native cursor and follow the mouse
-  // with an <img> element instead, which animates normally like any other GIF.
   const CURSOR_THEMES = ['Anime', 'Cute', 'MacOS', 'Minecraft', 'Minecraft2', 'Normal Black', 'Normal White -soft', 'RGB'];
   const CURSOR_BASE_PATH = 'cursors';
   const CURSOR_INTERACTIVE_SELECTOR = 'a, button, .di, .wp-swatch, .mp-btn, .node, .folder, .photo-node .thumb, .book, .poster-card, .snake-expand, .sm-close, .restore-btn';
-
   function cursorFilePath(theme, file) {
     return `${CURSOR_BASE_PATH}/${theme}/${file}`;
   }
-
   const cursorStyleTag = document.createElement('style');
   cursorStyleTag.id = 'custom-cursor-style';
   document.head.appendChild(cursorStyleTag);
-
-  // Floating element that stands in for the real cursor so the GIF can animate.
   const cursorFollower = document.createElement('div');
   cursorFollower.id = 'cursor-follower';
   cursorFollower.style.cssText = 'position:fixed; top:0; left:0; display:none; pointer-events:none; z-index:2147483647;';
@@ -48,16 +34,13 @@
   cursorFollowerImg.draggable = false;
   cursorFollower.appendChild(cursorFollowerImg);
   document.body.appendChild(cursorFollower);
-
   let activeCursorTheme = null;
-  let cursorFollowerFrame = null; // 'arrow' | 'hand'
-
+  let cursorFollowerFrame = null; 
   function setCursorFollowerFrame(frame) {
     if (!activeCursorTheme || cursorFollowerFrame === frame) return;
     cursorFollowerFrame = frame;
     cursorFollowerImg.src = cursorFilePath(activeCursorTheme, frame === 'hand' ? 'Working.gif' : 'Arrow.gif');
   }
-
   function onCursorFollowerMove(e) {
     if (!activeCursorTheme) return;
     cursorFollower.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
@@ -67,21 +50,18 @@
   document.addEventListener('mousemove', onCursorFollowerMove);
   document.addEventListener('mouseleave', () => { cursorFollower.style.display = 'none'; });
   document.addEventListener('mouseenter', () => { if (activeCursorTheme) cursorFollower.style.display = 'block'; });
-
   function applyCursorTheme(theme) {
     if (!CURSOR_THEMES.includes(theme)) { resetCursorStyle(); return; }
     activeCursorTheme = theme;
     cursorFollowerFrame = null;
     setCursorFollowerFrame('arrow');
     cursorFollower.style.display = 'block';
-    // Hide the native system cursor everywhere so only the animated follower shows.
     cursorStyleTag.textContent = `* { cursor: none !important; }`;
     const label = document.getElementById('cursorStyleCurrent');
     if (label) label.textContent = theme;
     try { localStorage.setItem('cursorThemeV1', theme); } catch(_){}
     updateActiveOption(theme);
   }
-
   function resetCursorStyle() {
     activeCursorTheme = null;
     cursorFollowerFrame = null;
@@ -92,29 +72,21 @@
     if (label) label.textContent = 'Default';
     updateActiveOption(null);
   }
-
-  // Load saved cursor theme on start
   try {
     const saved = localStorage.getItem('cursorThemeV1');
     if (saved && CURSOR_THEMES.includes(saved)) applyCursorTheme(saved);
   } catch(_){}
-
   window.__resetCursor = resetCursorStyle;
-
-  // ---- Cursor Picker dialog ----
   const cursorPicker = document.getElementById('cursor-picker');
   const openCursorPicker = () => { cursorPicker.classList.add('show'); };
   const closeCursorPicker = () => cursorPicker.classList.remove('show');
   document.getElementById('cursorPickerClose').addEventListener('click', closeCursorPicker);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCursorPicker(); });
-
   function updateActiveOption(theme) {
     cursorPicker.querySelectorAll('.cursor-option').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.cursor === theme);
     });
   }
-
-  // Build one option per theme folder, previewing the theme's Arrow.gif
   const cursorPickerGrid = document.getElementById('cursorPickerGrid');
   if (cursorPickerGrid) {
     CURSOR_THEMES.forEach(theme => {
@@ -141,8 +113,6 @@
       cursorPickerGrid.appendChild(btn);
     });
   }
-
-  // ---- Wire menu actions ----
   document.querySelectorAll('#menubar .mb-dropdown [data-action]').forEach(btn => {
     btn.addEventListener('click', () => {
       const act = btn.dataset.action;
@@ -153,9 +123,6 @@
     });
   });
 })();
-
-
-
 const clockEl = document.getElementById('clock');
 const dateEl = document.getElementById('datebox');
 function tick() {
@@ -165,8 +132,6 @@ function tick() {
   dateEl.textContent = d.toLocaleDateString('en-US', { timeZone:'UTC', month:'short', day:'numeric' });
 }
 tick(); setInterval(tick, 1000);
-
-/* ============ Soft interaction sounds (unlocked by user gestures) ============ */
 (function initDesktopSfx(){
   let ctx, master;
   function ensure(){
@@ -179,7 +144,6 @@ tick(); setInterval(tick, 1000);
     if (ctx.state === 'suspended') ctx.resume();
     return ctx;
   }
-  // gentle, sine-based bell with soft attack/decay
   function bell(freq, dur=0.18, gain=0.22, when=0, detune=0){
     const c = ensure();
     const now = c.currentTime + when;
@@ -193,7 +157,6 @@ tick(); setInterval(tick, 1000);
     osc.connect(lp); lp.connect(g); g.connect(master);
     osc.start(now); osc.stop(now + dur + 0.03);
   }
-  // soft filtered-noise swoosh — used for trash / paper-crumple feel
   function swoosh({dur=0.55, startFreq=1200, endFreq=180, gain=0.28, when=0} = {}){
     const c = ensure();
     const now = c.currentTime + when;
@@ -221,14 +184,12 @@ tick(); setInterval(tick, 1000);
     restore(){ bell(520, 0.14, 0.12); bell(780, 0.20, 0.10, 0.05); },
     test(){ bell(760, 0.14, 0.14); }
   };
-  // Unlock AudioContext on first user gesture (iframe/browser policy)
   let unlocked = false;
   const unlock = async () => {
     if (unlocked) return;
     try {
       ensure();
       if (ctx.state === 'suspended') await ctx.resume();
-      // silent buffer to satisfy iframe autoplay policy
       const buf = ctx.createBuffer(1, 1, 22050);
       const src = ctx.createBufferSource();
       src.buffer = buf; src.connect(ctx.destination); src.start(0);
@@ -240,8 +201,6 @@ tick(); setInterval(tick, 1000);
   );
   document.addEventListener('pointerdown', unlock, { capture:true });
 })();
-
-/* ============ THEMES — same grid/lines/nodes always; this data drives what's allowed to change ============ */
 const THEMES = {
   sky: {
     label: 'Sky',
@@ -294,27 +253,11 @@ const THEMES = {
     callouts: ['Cluster core','Signal density','Field of view']
   }
 };
-
 const order = ['sky','forest','desert','night'];
 let themeIdx = 0;
-
-/* ============ Site background ============ */
-/* Each theme has its own static wallpaper image (t.image, set per-theme
-   above: images/Background.png, images/2Background.png, images/3Background.png,
-   images/4Background.png for Sky/Forest/Desert/Night respectively).
-   Switching themes crossfades smoothly between two stacked layers so there's
-   never an abrupt cut.
-
-   "Dynamic Wallpaper" (Edit menu toggle) swaps in a single looping video,
-   images/Background.mp4, that plays continuously behind a crossfading
-   theme-tinted scrim — so toggling it, or changing themes while it's on,
-   both stay smooth. */
 const SITE_BG_VIDEO = 'images/Background.mp4';
 const DYN_WALLPAPER_KEY = 'l5e_dynamic_wallpaper';
 let dynamicWallpaper = localStorage.getItem(DYN_WALLPAPER_KEY) === '1';
-
-// Warm the browser cache for every theme's wallpaper right away so switching
-// themes (or first paint) never has to wait on a network fetch.
 (function preloadWallpapers(){
   Object.values(THEMES).forEach(t => {
     if (!t.image) return;
@@ -327,16 +270,12 @@ let dynamicWallpaper = localStorage.getItem(DYN_WALLPAPER_KEY) === '1';
     v.src = SITE_BG_VIDEO;
   }
 })();
-
 const SCRIM = {
   sky:    'linear-gradient(rgba(255,255,255,0.10),rgba(255,255,255,0.18))',
   night:  'linear-gradient(rgba(0,0,0,0.35),rgba(0,0,0,0.45))',
   forest: 'linear-gradient(rgba(0,0,0,0.20),rgba(0,0,0,0.30))',
   desert: 'linear-gradient(rgba(255,255,255,0.10),rgba(255,255,255,0.18))',
 };
-
-// Two stacked layers so a background change fades the new one in over the
-// old one instead of popping instantly.
 let __bgLayerFlag = false;
 function crossfadeStageLayer(backgroundCss) {
   const a = document.getElementById('bgLayerA');
@@ -345,8 +284,6 @@ function crossfadeStageLayer(backgroundCss) {
   const nextEl = __bgLayerFlag ? a : b;
   const prevEl = __bgLayerFlag ? b : a;
   nextEl.style.background = backgroundCss;
-  // Force a reflow so the opacity change is picked up as a transition, not
-  // an instant jump, then flip visibility.
   void nextEl.offsetWidth;
   requestAnimationFrame(() => {
     nextEl.classList.add('active');
@@ -354,7 +291,6 @@ function crossfadeStageLayer(backgroundCss) {
   });
   __bgLayerFlag = !__bgLayerFlag;
 }
-
 function setDynamicWallpaper(on) {
   dynamicWallpaper = on;
   localStorage.setItem(DYN_WALLPAPER_KEY, on ? '1' : '0');
@@ -365,7 +301,6 @@ function setDynamicWallpaper(on) {
   }
   applyTheme(document.body.getAttribute('data-theme') || order[0]);
 }
-
 function applyTheme(key) {
   const t = THEMES[key];
   if (!t) return;
@@ -376,7 +311,6 @@ function applyTheme(key) {
   const label = document.getElementById('themeLabel');
   const coord = document.getElementById('coordText');
   if (stage) {
-    // Base fallback color/gradient in case the wallpaper image is missing.
     stage.style.background = t.bg || '';
     if (dynamicWallpaper) {
       if (bgVideo) {
@@ -384,7 +318,6 @@ function applyTheme(key) {
         bgVideo.classList.add('show');
         bgVideo.play().catch(() => {});
       }
-      // Only the theme-tinted scrim crossfades; the video keeps playing underneath.
       crossfadeStageLayer(SCRIM[key] || '');
     } else {
       if (bgVideo) { bgVideo.classList.remove('show'); bgVideo.pause(); }
@@ -394,13 +327,10 @@ function applyTheme(key) {
   if (swatch) swatch.style.background = t.swatch;
   if (label) label.textContent = t.label;
   if (coord) coord.innerHTML = t.coord || '';
-  // callouts removed
   if (window.__setMusicTheme) window.__setMusicTheme(key);
   window.requestAnimationFrame(() => { fitLayer(); drawLines(); });
 }
 applyTheme(order[0]);
-
-/* Dynamic Wallpaper toggle wiring (Edit menu) */
 (function initDynamicWallpaperToggle(){
   const toggle = document.getElementById('dynWallpaperToggle');
   if (!toggle) return;
@@ -411,25 +341,20 @@ applyTheme(order[0]);
     setDynamicWallpaper(!dynamicWallpaper);
   });
 })();
-
-/* ============ Music (Web Audio sequenced songs — chords, bass, arps, melody, drums) ============ */
-/* Each theme is a proper looping song with distinct tempo, key, mood.
-   Sky = upbeat & cute · Forest = dreamy fog · Desert = warm groove · Night = slow moonlit. */
 const CHORD_INTERVALS = {
   maj:[0,4,7,12], min:[0,3,7,12], maj7:[0,4,7,11], min7:[0,3,7,10],
   maj9:[0,4,7,14], min9:[0,3,7,14], sus2:[0,2,7,12], dom7:[0,4,7,10]
 };
 const MUSIC = {
-  sky: { // soft & sunny — Cmaj7 → Am7 → Fmaj7 → G, gentle piano-like sine, no drums
+  sky: { 
     track:'Morning Light', artist:'Sky',
     bpm:82, padWave:'sine', bassWave:'sine', arpWave:'sine', leadWave:'sine',
     padGain:0.09, bassGain:0.09, arpGain:0.06, leadGain:0.07, drums:false, cutoff:2000,
     chords:[{r:60,t:'maj7'},{r:57,t:'min7'},{r:65,t:'maj7'},{r:67,t:'maj'}],
-    // sparse, floating arp — rests between notes
     arp:[0,null,7,null,12,null,7,null, null,14,null,7,null,10,null,7],
     melody:[[0,76],[8,79],[14,81],[22,79],[28,76],[36,74],[44,77],[52,79],[60,72]]
   },
-  forest: { // dreamy foggy — Am9 → Dm9 → Fmaj9 → Em7 slow pad + bell melody
+  forest: { 
     track:'Fern Mist', artist:'Forest',
     bpm:64, padWave:'sine', bassWave:'sine', arpWave:'sine', leadWave:'sine',
     padGain:0.10, bassGain:0.11, arpGain:0.05, leadGain:0.07, drums:false, cutoff:1400,
@@ -437,7 +362,7 @@ const MUSIC = {
     arp:[0,7,null,14,null,10,null,7, null,14,null,17,null,10,null,7],
     melody:[[0,69],[8,76],[14,79],[20,77],[28,74],[36,72],[44,76],[52,79],[60,72]]
   },
-  desert: { // warm & sunlit — Dm9 → Bbmaj7 → Fmaj7 → Am7, soft sine, no drums
+  desert: { 
     track:'Amber Hour', artist:'Desert',
     bpm:72, padWave:'sine', bassWave:'sine', arpWave:'sine', leadWave:'triangle',
     padGain:0.08, bassGain:0.09, arpGain:0.05, leadGain:0.06, drums:false, cutoff:1500,
@@ -445,7 +370,7 @@ const MUSIC = {
     arp:[0,null,7,null,12,null,10,null, null,7,null,14,null,10,null,7],
     melody:[[0,74],[10,77],[20,79],[30,77],[40,74],[50,72],[60,70]]
   },
-  night: { // slow moonlit — Am7 → Fmaj7 → G → Em7, deep, sparse
+  night: { 
     track:'Moonlit Drift', artist:'Night',
     bpm:54, padWave:'sine', bassWave:'sine', arpWave:'sine', leadWave:'sine',
     padGain:0.11, bassGain:0.12, arpGain:0.04, leadGain:0.06, drums:false, cutoff:1000,
@@ -463,13 +388,10 @@ const MUSIC = {
   const artistEl= document.getElementById('mpArtist');
   const iPlay   = document.getElementById('mpPlayIcon');
   const iPause  = document.getElementById('mpPauseIcon');
-
   const mtof = n => 440 * Math.pow(2, (n - 69) / 12);
-
   let ctx=null, master=null, filter=null, verbSend=null;
   let playing=false, currentTheme=document.body.getAttribute('data-theme')||'sky';
   let schedTimer=null, nextStep=0, nextTime=0, LOOKAHEAD=0.1, INTERVAL=25;
-
   function ensureCtx(){
     if (ctx) return;
     const AC = window.AudioContext || window.webkitAudioContext;
@@ -478,7 +400,6 @@ const MUSIC = {
     master = ctx.createGain(); master.gain.value = 0;
     filter = ctx.createBiquadFilter();
     filter.type='lowpass'; filter.Q.value=0.5; filter.frequency.value=1800;
-    // simple feedback-delay "reverb" via ConvolverNode alternative — use a delay chain
     verbSend = ctx.createGain(); verbSend.gain.value = 0.22;
     const d1 = ctx.createDelay(2.0); d1.delayTime.value = 0.19;
     const d2 = ctx.createDelay(2.0); d2.delayTime.value = 0.33;
@@ -488,8 +409,6 @@ const MUSIC = {
     filter.connect(master); filter.connect(verbSend);
     master.connect(ctx.destination);
   }
-
-  // one-shot voice
   function playNote(midi, dur, wave, gain, when, {pad=false}={}){
     if (!ctx) return;
     const osc = ctx.createOscillator();
@@ -504,7 +423,6 @@ const MUSIC = {
     osc.connect(g).connect(filter);
     osc.start(when); osc.stop(when + dur + 0.05);
   }
-  // noise-based drum
   function playKick(when, gain=0.35){
     if (!ctx) return;
     const osc = ctx.createOscillator(); osc.type='sine';
@@ -530,42 +448,34 @@ const MUSIC = {
     src.connect(hp).connect(g).connect(master);
     src.start(when); src.stop(when + 0.08);
   }
-
   function scheduleStep(step, when){
     const m = MUSIC[currentTheme] || MUSIC.sky;
     const chordIdx = Math.floor(step / 16) % m.chords.length;
     const chord = m.chords[chordIdx];
     const chordIntervals = CHORD_INTERVALS[chord.t] || CHORD_INTERVALS.maj;
     const sixteenth = 60 / m.bpm / 4;
-
-    // Pad on chord change (step 0 of each bar) — sustained across the bar
     if (step % 16 === 0){
       const barDur = sixteenth * 16;
       chordIntervals.forEach(iv => {
         playNote(chord.r + iv, barDur * 0.95, m.padWave, m.padGain, when, {pad:true});
       });
     }
-    // Bass on beat 1 and 3 of the bar (steps 0 and 8)
     if (step % 8 === 0){
       const bassNote = chord.r - 12 + (step % 16 === 0 ? 0 : 7);
       playNote(bassNote, sixteenth * 6, m.bassWave, m.bassGain, when);
     }
-    // Arpeggio
     const arpNote = m.arp[step % 16];
     if (arpNote !== null && arpNote !== undefined){
       playNote(chord.r + arpNote + 12, sixteenth * 1.4, m.arpWave, m.arpGain, when);
     }
-    // Melody
     m.melody.forEach(([s, n]) => {
       if (s === step % 64) playNote(n, sixteenth * 3.2, m.leadWave, m.leadGain, when);
     });
-    // Drums
     if (m.drums){
-      if (step % 8 === 0) playKick(when, 0.42);      // kick on 1 and 3
-      if (step % 4 === 2) playHat(when, 0.06);        // hat on off-beats
+      if (step % 8 === 0) playKick(when, 0.42);      
+      if (step % 4 === 2) playHat(when, 0.06);        
     }
   }
-
   function tick(){
     if (!ctx || !playing) return;
     while (nextTime < ctx.currentTime + LOOKAHEAD){
@@ -576,7 +486,6 @@ const MUSIC = {
       nextStep = (nextStep + 1) % 64;
     }
   }
-
   function play(){
     ensureCtx();
     if (!ctx) return;
@@ -620,7 +529,6 @@ const MUSIC = {
     iPlay.style.display  = playing ? 'none' : 'block';
     iPause.style.display = playing ? 'block' : 'none';
   }
-
   playBtn.addEventListener('click', () => { playing ? pause() : play(); });
   const themes = order;
   function shift(dir){
@@ -636,8 +544,6 @@ const MUSIC = {
   setTrackFor(document.body.getAttribute('data-theme') || 'sky');
   syncUI();
 })();
-
-/* Wallpaper picker wiring */
 (function initWallpaper(){
   const picker = document.getElementById('wallpaper-picker');
   if (!picker) return;
@@ -654,8 +560,6 @@ const MUSIC = {
   });
   sync(order[0]);
 })();
-
-/* ============ grid/line system — identical every time, never touched by theme ============ */
 const HUB = { x:1100, y:650 };
 const NODE_KEYS = ['case1','case2','case3','case4','sunflower','snorkel','helicopter','joshua','pottery','nyc','book'];
 let NODES = {};
@@ -691,8 +595,6 @@ const CROSS_EDGES = [
   ['case1','snorkel'], ['case2','helicopter'], ['case4','joshua'],
   ['sunflower','nyc'], ['book','case3'], ['book','case4']
 ];
-
-// deterministic seeded jitter so curves stay stable across redraws
 function seededRand(seed) {
   let x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
@@ -701,9 +603,7 @@ function curvePath(x1,y1,x2,y2,seed) {
   const mx = (x1+x2)/2, my = (y1+y2)/2;
   const dx = x2-x1, dy = y2-y1;
   const len = Math.hypot(dx,dy) || 1;
-  // perpendicular unit vector
   const px = -dy/len, py = dx/len;
-  // two control points offset from midline for S-curve chaos
   const amp1 = (seededRand(seed)*2-1) * (len*0.35 + 60);
   const amp2 = (seededRand(seed+1.7)*2-1) * (len*0.35 + 60);
   const t1 = 0.30, t2 = 0.70;
@@ -711,27 +611,20 @@ function curvePath(x1,y1,x2,y2,seed) {
   const c2x = x1 + dx*t2 + px*amp2, c2y = y1 + dy*t2 + py*amp2;
   return `M ${x1} ${y1} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${x2} ${y2}`;
 }
-
 function drawLines() {
   const svg = document.getElementById('lineSvg');
   if (!svg) return;
   svg.innerHTML = '';
-  // connector lines removed per design
 }
 drawLines();
-
-/* redraw lines on theme change so night stroke colors apply */
 const _themeObserver = new MutationObserver(drawLines);
 _themeObserver.observe(document.body, { attributes:true, attributeFilter:['data-theme'] });
-
-/* responsive: scale the fixed 2200x1300 layer to fit the viewport */
 function fitLayer() {
   const wrap = document.getElementById('layer-wrap');
   const layer = document.getElementById('layer');
   if (!wrap || !layer) return;
   const isMobile = window.matchMedia('(max-width: 760px)').matches;
   if (isMobile) {
-    // Mobile uses a native CSS grid; don't scale or translate the layer.
     layer.style.top = '';
     layer.style.transformOrigin = '';
     layer.style.transform = 'none';
@@ -743,9 +636,6 @@ function fitLayer() {
   const sy = (wrap.clientHeight - pad) / 1300;
   const minScale = 0.18;
   const s = Math.max(minScale, Math.min(sx, sy, 1.0));
-  // Left-align the canvas (small fixed margin) instead of horizontally
-  // centering it, so left-side icons sit close to the real screen edge
-  // rather than floating in the middle of unused letterbox space.
   layer.style.left = (pad / 2) + 'px';
   layer.style.top = '50%';
   layer.style.transformOrigin = 'left center';
@@ -754,8 +644,6 @@ function fitLayer() {
 }
 fitLayer();
 window.addEventListener('resize', fitLayer);
-
-// On mobile, auto-tidy nodes into a grid that fits the visible viewport
 (function autoArrangeMobile(){
   const mq = window.matchMedia('(max-width: 760px)');
   let done = false;
@@ -771,10 +659,8 @@ window.addEventListener('resize', fitLayer);
   mq.addEventListener?.('change', () => { done = false; setTimeout(maybe, 50); });
   window.addEventListener('resize', () => { done = false; setTimeout(maybe, 200); });
 })();
-
 document.querySelectorAll('.node').forEach((el,i) => { el.style.animationDelay = (i*0.4)+'s'; });
 document.querySelectorAll('.node').forEach(node => {
-  // add selection ring element
   const ring = document.createElement('div');
   ring.className = 'selection-ring';
   node.appendChild(ring);
@@ -789,8 +675,6 @@ document.querySelectorAll('.node').forEach(node => {
 document.getElementById('stage').addEventListener('click', () => {
   document.querySelectorAll('.node.selected').forEach(n => n.classList.remove('selected'));
 });
-
-/* ============ recycle bin: drag nodes in, restore from modal ============ */
 (function initRecycleBin(){
   const dockBin = document.getElementById('trashDock');
   const modal = document.getElementById('trashModal');
@@ -858,8 +742,6 @@ document.getElementById('stage').addEventListener('click', () => {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
   window.desktopTrash = { move, restore, isOver, render, say };
 })();
-
-/* ============ drag & drop nodes; lines follow ============ */
 (function enableDrag(){
   const layer = document.getElementById('layer');
   const trashDock = document.getElementById('trashDock');
@@ -868,12 +750,10 @@ document.getElementById('stage').addEventListener('click', () => {
   let startPos = null;
   let scale = 1;
   let moved = false;
-
   function currentScale() {
     const m = new DOMMatrixReadOnly(getComputedStyle(layer).transform);
     return m.a || 1;
   }
-
   function visibleBoundsFor(node) {
     const wrap = document.getElementById('layer-wrap');
     if (!wrap || !layer) return null;
@@ -896,7 +776,6 @@ document.getElementById('stage').addEventListener('click', () => {
       maxY: Math.max(minY, maxY)
     };
   }
-
   document.querySelectorAll('.node').forEach(node => {
     node.style.cursor = 'grab';
     node.addEventListener('dragstart', e => e.preventDefault());
@@ -943,7 +822,6 @@ document.getElementById('stage').addEventListener('click', () => {
       const overTrash = !!window.desktopTrash?.isOver(e.clientX, e.clientY);
       trashDock?.classList.remove('drag-over');
       if (moved) {
-        // suppress the click-select that would otherwise fire
         const stopClick = ev => { ev.stopPropagation(); ev.preventDefault(); node.removeEventListener('click', stopClick, true); };
         node.addEventListener('click', stopClick, true);
         if (overTrash) window.desktopTrash?.move(node);
@@ -954,10 +832,7 @@ document.getElementById('stage').addEventListener('click', () => {
     node.addEventListener('pointercancel', endDrag);
   });
 })();
-
 const dock = document.getElementById('dock');
-
-/* ============ Right-click context menu: Clean Up / Sort ============ */
 (function ctxMenu(){
   const stage = document.getElementById('stage');
   const layer = document.getElementById('layer');
@@ -989,11 +864,9 @@ const dock = document.getElementById('dock');
     menu.style.left = Math.min(x, vw - r.width - 8) + 'px';
     menu.style.top  = Math.min(y, vh - r.height - 8) + 'px';
   }
-  // Store original positions once nodes are laid out
   const nodes = Array.from(document.querySelectorAll('#layer .node'));
   const original = new Map();
   nodes.forEach(n => original.set(n, { left: n.style.left, top: n.style.top }));
-
   function arrange(sortByName){
     const list = nodes.slice();
     const isMobile = window.matchMedia('(max-width: 760px)').matches;
@@ -1005,9 +878,6 @@ const dock = document.getElementById('dock');
       });
     }
     if (isMobile) {
-      // Mobile is CSS-grid based, so sorting/cleanup should never push icons
-      // outside the viewport. We only change grid order and let the scroller
-      // reveal every item naturally.
       list.forEach((n, i) => {
         n.style.transition = '';
         n.style.order = sortByName ? i : '';
@@ -1017,7 +887,6 @@ const dock = document.getElementById('dock');
       requestAnimationFrame(()=>{ if (typeof drawLines==='function') drawLines(); });
       return;
     }
-    // Compute the visible layer rect from actual DOM geometry so cleanup stays out from under fixed UI.
     const wrap = document.getElementById('layer-wrap');
     const matrix = new DOMMatrixReadOnly(getComputedStyle(layer).transform);
     const s = matrix.a || 1;
@@ -1025,8 +894,6 @@ const dock = document.getElementById('dock');
     const lr = layer.getBoundingClientRect();
     const dockSafe = isMobile ? 146 : 40;
     const edge = isMobile ? 18 : 40;
-    // Reserve space for right-side widget rail and left-side wallpaper picker
-    // so cleaned-up icons never line up behind them on desktop / iPad.
     const rail = document.getElementById('widget-rail');
     const wp   = document.getElementById('wallpaper-picker');
     const railR = (!isMobile && rail) ? rail.getBoundingClientRect() : null;
@@ -1054,12 +921,10 @@ const dock = document.getElementById('dock');
     const rectH = visible.y2 - visible.y1;
     const originX = visible.x1;
     const originY = visible.y1;
-    // Start with preferred cell size; shrink so ALL nodes fit inside the visible band.
     let colW = isMobile ? 230 : 190;
     let rowH = isMobile ? 240 : 200;
     let cols = Math.max(1, Math.floor(rectW / colW));
     let rows = Math.max(1, Math.ceil(list.length / cols));
-    // If rows overflow the visible height, add columns / shrink rows until they fit.
     while (rows * rowH > rectH && cols < list.length) {
       cols += 1;
       colW = Math.max(140, Math.floor(rectW / cols));
@@ -1083,7 +948,6 @@ const dock = document.getElementById('dock');
     });
     requestAnimationFrame(()=>{ if (typeof drawLines==='function') drawLines(); });
   }
-  // Expose so we can auto-tidy on mobile
   window.__arrangeNodes = arrange;
   function resetPositions(){
     nodes.forEach(n => {
@@ -1094,12 +958,10 @@ const dock = document.getElementById('dock');
     });
     requestAnimationFrame(()=>{ if (typeof drawLines==='function') drawLines(); });
   }
-  /* ---- Right-click-drag marquee (rubber-band) selection ---- */
   let marqueeBox = null;
   let marqueeStart = null;
   let marqueeDragging = false;
   let suppressNextContextMenu = false;
-
   function ensureMarqueeBox(){
     if (marqueeBox) return marqueeBox;
     marqueeBox = document.createElement('div');
@@ -1107,7 +969,6 @@ const dock = document.getElementById('dock');
     document.body.appendChild(marqueeBox);
     return marqueeBox;
   }
-
   function applyMarqueeSelection(rect){
     nodes.forEach(n => {
       if (n.classList.contains('trashed')) return;
@@ -1116,11 +977,8 @@ const dock = document.getElementById('dock');
       n.classList.toggle('selected', hit);
     });
   }
-
   stage.addEventListener('mousedown', e => {
     if (e.button !== 0 && e.button !== 2) return;
-    // Only start a marquee when the drag begins on empty desktop space —
-    // not on an icon, the toolbar, dock, or any open modal/menu.
     if (e.target.closest('#widget-rail, #dock, #topbar, #ctx-menu, .modal, .preview-modal, #collectionModal, .node')) return;
     const button = e.button;
     marqueeStart = { x: e.clientX, y: e.clientY };
@@ -1149,12 +1007,8 @@ const dock = document.getElementById('dock');
       document.removeEventListener('mouseup', onUp);
       if (marqueeDragging) {
         if (button === 2) {
-          // A right-click drag just finished — swallow the contextmenu
-          // event that's about to fire for this same gesture.
           suppressNextContextMenu = true;
         } else {
-          // A left-click drag just finished — swallow the click event
-          // that's about to fire, so it doesn't clear the new selection.
           suppressNextStageClick = true;
         }
         if (marqueeBox) marqueeBox.style.display = 'none';
@@ -1167,16 +1021,12 @@ const dock = document.getElementById('dock');
     document.addEventListener('mousemove', onMove);
     document.addEventListener('mouseup', onUp);
   });
-
   stage.addEventListener('contextmenu', e => {
-    // A right-click-drag just finished making a marquee selection — don't
-    // also pop the context menu for that same gesture.
     if (suppressNextContextMenu) {
       suppressNextContextMenu = false;
       e.preventDefault();
       return;
     }
-    // Skip when right-clicking inside toolbar/widgets/dock
     if (e.target.closest('#widget-rail, #dock, #topbar, #ctx-menu, .modal, .preview-modal, #collectionModal')) return;
     e.preventDefault();
     show(e.clientX, e.clientY);
@@ -1186,7 +1036,6 @@ const dock = document.getElementById('dock');
   window.addEventListener('resize', hide);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') hide(); });
 })();
-
 const dItems = Array.from(dock.querySelectorAll('.di'));
 let rafId;
 dock.addEventListener('mousemove', e => {
@@ -1221,11 +1070,7 @@ dItems.forEach(item => {
     setTimeout(() => item.classList.remove('active'), 1400);
   });
 });
-
-/* ============ Preview modal (macOS Preview-style) ============ */
 (function initPreview(){
-  // Append file extensions to labels so files vs. apps are visually differentiated.
-  // Photos become <name>.jpg, resume becomes resume.pdf. Runs once on load.
   try {
     document.querySelectorAll('.photo-node').forEach(node => {
       const lbl = node.querySelector('.node-label');
@@ -1271,7 +1116,6 @@ dItems.forEach(item => {
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
   modal.querySelector('#pvClose').addEventListener('click', close);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
-
   document.querySelectorAll('.photo-node').forEach(node => {
     node.addEventListener('dblclick', e => {
       const img = node.querySelector('.thumb img');
@@ -1310,8 +1154,6 @@ dItems.forEach(item => {
       modal.style.display = 'flex';
     });
   });
-
-  // Adjust modal size per node type (resume → taller/wider so it isn't cut off)
   document.querySelectorAll('.photo-node').forEach(node => {
     node.addEventListener('dblclick', () => {
       const isResume = node.id === 'n-resume';
@@ -1322,8 +1164,6 @@ dItems.forEach(item => {
     });
   });
 })();
-
-/* ============ Robust external links (works inside sandboxed iframes) ============ */
 document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
   a.setAttribute('target', '_blank');
   a.setAttribute('rel', 'noopener noreferrer');
@@ -1333,7 +1173,6 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
     e.preventDefault();
     const social = a.classList.contains('social');
     if (social) {
-      // Social sites block iframe embedding; force a top-level user navigation first.
       try { window.top.location.href = url; return; } catch(_) {}
       try { window.parent.location.href = url; return; } catch(_) {}
     }
@@ -1344,8 +1183,6 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
     try { window.open(url, '_blank'); } catch(_) { window.location.href = url; }
   });
 });
-
-/* ============ Lock screen — click to unlock; re-lock from brand logo ============ */
 (function initLockScreen(){
   const loader = document.getElementById('loader');
   const hint   = document.getElementById('lockHint');
@@ -1356,7 +1193,6 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
     ready = true;
     if (hint) hint.textContent = 'Click anywhere to unlock';
   }
-  /* Live UTC clock on the lock screen (mobile / tablet only) */
   (function tickLockClock(){
     const timeEl = document.getElementById('lockTime');
     const dateEl = document.getElementById('lockDate');
@@ -1379,13 +1215,11 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
   function relock(){
     document.querySelectorAll('#n-resume').forEach(n => n.classList.remove('unlocked'));
     loader.style.display = 'flex';
-    // force reflow so the transition replays
     void loader.offsetWidth;
     loader.classList.remove('hide');
   }
   loader.addEventListener('click', unlock);
   loader.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); unlock(); } });
-  /* Slide-to-unlock (mobile / touch) */
   const slider = document.getElementById('lockSlider');
   const knob   = document.getElementById('lockSliderKnob');
   if (slider && knob) {
@@ -1396,7 +1230,6 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
     };
     const onDown = (e) => {
       if (!ready) return;
-      // Prevent the loader's click handler from firing on tap
       e.stopPropagation();
       dragging = true;
       knob.classList.add('dragging');
@@ -1429,35 +1262,29 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
       }
     };
     knob.addEventListener('pointerdown', onDown);
-    // Swallow clicks on the slider so tapping the track doesn't trigger loader click-to-unlock
     slider.addEventListener('click', (e) => e.stopPropagation());
   }
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-  setTimeout(markReady, 350);
-} else {
-  document.addEventListener('DOMContentLoaded', () => setTimeout(markReady, 300));
-}
-// Failsafe: never let slow/broken subresources (external icons, fonts, video)
-// leave the lock screen stuck forever — force it ready after 3s no matter what.
-window.addEventListener('load', () => setTimeout(markReady, 100));
-setTimeout(markReady, 3000);
-  // expose relock; the brand logo binding lives below
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(markReady, 350);
+  } else {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(markReady, 300));
+  }
+  // Failsafe: don't let slow/blocked third-party images, fonts, or video
+  // leave the lock screen stuck on "Preparing desktop…" forever.
+  window.addEventListener('load', () => setTimeout(markReady, 100));
+  setTimeout(markReady, 3000);
   window.__relockDesktop = relock;
-  // Wire the top-bar brand → re-lock (desktop returns to lock screen)
   document.addEventListener('DOMContentLoaded', () => {
     const lockBtn = document.querySelector('#menubar .brand-menu .brand-lock');
     if (lockBtn) {
       lockBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); relock(); });
     }
   });
-  // Also try immediately in case DOMContentLoaded already fired
   const lockBtn = document.querySelector('#menubar .brand-menu .brand-lock');
   if (lockBtn) {
     lockBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); relock(); });
   }
 })();
-
-/* ============ About modal (Shadow menu) ============ */
 (function initAboutModal(){
   const modal = document.getElementById('aboutModal');
   if (!modal) return;
@@ -1475,8 +1302,6 @@ setTimeout(markReady, 3000);
   });
   window.__openAbout = open;
 })();
-
-/* ============ Stickies (draw a sticky note) ============ */
 (function initStickies(){
   const modal = document.getElementById('stickiesModal');
   if (!modal) return;
@@ -1513,17 +1338,13 @@ setTimeout(markReady, 3000);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     hasStrokes = false;
   });
-
-  // ---- Shared wall (Lovable Cloud) ----
   const SUPA_URL = 'https://kuchgwvwhjmrqaebrpej.supabase.co';
   const SUPA_KEY = 'sb_publishable_ehqNa8MYfg0HmnOQUY0xxQ_nWs4A6pz';
   const REST = `${SUPA_URL}/rest/v1/stickies`;
   const supaHeaders = { apikey: SUPA_KEY, 'content-type': 'application/json' };
-
   const params = new URLSearchParams(location.search);
   const adminToken = params.get('admin') || '';
   const isAdmin = adminToken.length > 0;
-
   const drawPane = document.getElementById('stDrawPane');
   const wallPane = document.getElementById('stWallPane');
   const drawTools = document.getElementById('stDrawTools');
@@ -1531,12 +1352,10 @@ setTimeout(markReady, 3000);
   const grid = document.getElementById('stWallGrid');
   const meta = document.getElementById('stWallMeta');
   const tabs = document.querySelectorAll('.st-tab');
-
   function setStatus(msg, tone) {
     status.textContent = msg;
     status.style.color = tone === 'error' ? '#b23a3a' : tone === 'ok' ? '#3a6f2a' : '#8a7a3a';
   }
-
   function setTab(name) {
     tabs.forEach(t => {
       const active = t.dataset.tab === name;
@@ -1556,11 +1375,9 @@ setTimeout(markReady, 3000);
     }
   }
   tabs.forEach(t => t.addEventListener('click', () => setTab(t.dataset.tab)));
-
   function escapeHtml(s) {
     return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
-
   function renderCard(s) {
     const name = escapeHtml(s.name?.trim()) || 'anon';
     const message = escapeHtml(s.message?.trim());
@@ -1576,7 +1393,6 @@ setTimeout(markReady, 3000);
       </div>
     `;
   }
-
   async function loadWall() {
     meta.querySelector('span').textContent = 'Loading the wall…';
     try {
@@ -1599,7 +1415,6 @@ setTimeout(markReady, 3000);
       meta.querySelector('span').textContent = 'A little wall of hellos from everyone who\'s passed through.';
     }
   }
-
   async function hideSticky(id, btn) {
     if (!confirm('Hide this sticky from the wall?')) return;
     btn.disabled = true; btn.textContent = 'Hiding…';
@@ -1616,18 +1431,13 @@ setTimeout(markReady, 3000);
       alert('Could not hide that sticky.');
     }
   }
-
   document.getElementById('stRefresh').addEventListener('click', loadWall);
-
-  // ---- Post sticky ----
   document.getElementById('stPost').addEventListener('click', async () => {
     if (!hasStrokes) { setStatus('Draw something first ✏️', 'error'); return; }
     const nameEl = document.getElementById('stName');
     const msgEl = document.getElementById('stMessage');
     const name = nameEl.value.trim().slice(0, 40) || null;
     const message = msgEl.value.trim().slice(0, 200) || null;
-
-    // downscale before upload
     const out = document.createElement('canvas');
     out.width = 560; out.height = 410;
     const octx = out.getContext('2d');
@@ -1635,7 +1445,6 @@ setTimeout(markReady, 3000);
     octx.drawImage(canvas, 0, 0, out.width, out.height);
     const image_data = out.toDataURL('image/jpeg', 0.82);
     if (image_data.length > 380000) { setStatus('Sticky is a bit big — try a simpler drawing.', 'error'); return; }
-
     setStatus('Posting…');
     try {
       const res = await fetch(REST, {
@@ -1653,7 +1462,6 @@ setTimeout(markReady, 3000);
       setStatus('Couldn\'t post. Try again in a moment.', 'error');
     }
   });
-
   const open = () => { modal.style.display = 'flex'; window.desktopSfx?.open(); };
   const close = () => { modal.style.display = 'none'; };
   document.getElementById('stickiesClose').addEventListener('click', close);
@@ -1662,8 +1470,6 @@ setTimeout(markReady, 3000);
   const node = document.getElementById('n-stickies');
   if (node) node.addEventListener('dblclick', e => { e.stopPropagation(); open(); });
 })();
-
-/* ============ Programma 900 synth ============ */
 (function initSynth(){
   const modal = document.getElementById('synthModal');
   if (!modal) return;
@@ -1672,49 +1478,37 @@ setTimeout(markReady, 3000);
   const kb = document.getElementById('p900-keyboard');
   const leds = [...document.querySelectorAll('#p900-leds .p900-led')];
   leds.forEach(l => l.style.setProperty('--h', l.dataset.hue));
-
   const params = {
     wave:'sine', detune:0, cutoff:2400, resonance:2,
     attack:15, decay:180, sustain:60, release:420,
     lfoRate:4, lfoDepth:0, delayTime:0.28, delayFb:0.35,
     reverb:0.22, volume:0.6
   };
-
   let ctx, master, filter, delay, delayFb, dryGain, wetGain, convolver, lfo, lfoGain;
   let octave = 4;
-  const active = new Map(); // key -> {osc, gain}
-
+  const active = new Map(); 
   function ensureAudio(){
     if (ctx) return;
     ctx = new (window.AudioContext || window.webkitAudioContext)();
     master = ctx.createGain(); master.gain.value = params.volume;
     filter = ctx.createBiquadFilter(); filter.type = 'lowpass';
     filter.frequency.value = params.cutoff; filter.Q.value = params.resonance;
-
-    // LFO -> filter freq
     lfo = ctx.createOscillator(); lfo.frequency.value = params.lfoRate;
     lfoGain = ctx.createGain(); lfoGain.gain.value = params.lfoDepth;
     lfo.connect(lfoGain).connect(filter.frequency); lfo.start();
-
-    // Delay
     delay = ctx.createDelay(1.2); delay.delayTime.value = params.delayTime;
     delayFb = ctx.createGain(); delayFb.gain.value = params.delayFb;
     delay.connect(delayFb).connect(delay);
-
-    // Convolution reverb (algorithmic impulse)
     convolver = ctx.createConvolver();
     convolver.buffer = makeIR(ctx, 2.2, 2.4);
     dryGain = ctx.createGain(); dryGain.gain.value = 1 - params.reverb;
     wetGain = ctx.createGain(); wetGain.gain.value = params.reverb;
-
-    // Routing: filter -> [dry -> master] + [delay -> master] + [convolver -> wet -> master]
     filter.connect(delay);
     delay.connect(master);
     filter.connect(dryGain).connect(master);
     filter.connect(convolver); convolver.connect(wetGain).connect(master);
     master.connect(ctx.destination);
   }
-
   function makeIR(ctx, duration, decay){
     const rate = ctx.sampleRate, len = rate * duration;
     const buf = ctx.createBuffer(2, len, rate);
@@ -1726,9 +1520,7 @@ setTimeout(markReady, 3000);
     }
     return buf;
   }
-
   function midiToFreq(m){ return 440 * Math.pow(2, (m - 69) / 12); }
-
   function noteOn(midi, key){
     ensureAudio();
     if (ctx.state === 'suspended') ctx.resume();
@@ -1767,16 +1559,13 @@ setTimeout(markReady, 3000);
     clearTimeout(led._t);
     led._t = setTimeout(() => led.classList.remove('on'), 260);
   }
-
-  // ===== Build keyboard (2 octaves) =====
   const WHITE = ['C','D','E','F','G','A','B'];
-  const BLACK = { 0:'C#', 1:'D#', 3:'F#', 4:'G#', 5:'A#' }; // index in WHITE
+  const BLACK = { 0:'C#', 1:'D#', 3:'F#', 4:'G#', 5:'A#' }; 
   const OCTAVES = 2;
   const totalWhites = WHITE.length * OCTAVES;
-  const keyMap = {}; // qwerty -> midi offset from base
+  const keyMap = {}; 
   const rowWhite = ['a','s','d','f','g','h','j','k','l',';','\''];
   const rowBlack = { 0:'w', 1:'e', 3:'t', 4:'y', 5:'u', 7:'o', 8:'p' };
-
   function buildKeys(){
     kb.innerHTML = '';
     const wPct = 100 / totalWhites;
@@ -1796,7 +1585,6 @@ setTimeout(markReady, 3000);
         whiteIdx++;
       }
     }
-    // black keys overlay
     whiteIdx = 0;
     for (let o = 0; o < OCTAVES; o++){
       for (let i = 0; i < WHITE.length; i++){
@@ -1824,8 +1612,6 @@ setTimeout(markReady, 3000);
     el.addEventListener('pointerup', up);
     el.addEventListener('pointerleave', e => { if (active.has(k)) { el.classList.remove('active'); noteOff(k); } });
   }
-
-  // ===== Knobs (drag vertically to change) =====
   function applyParam(name, value){
     params[name] = value;
     if (!ctx) return;
@@ -1840,9 +1626,7 @@ setTimeout(markReady, 3000);
       wetGain.gain.setTargetAtTime(value, ctx.currentTime, 0.02);
       dryGain.gain.setTargetAtTime(1 - value*0.7, ctx.currentTime, 0.02);
     }
-    // detune / wave / envelope applied to new notes
   }
-
   document.querySelectorAll('#synthModal .p900-knob').forEach(knob => {
     const min = parseFloat(knob.dataset.min);
     const max = parseFloat(knob.dataset.max);
@@ -1880,15 +1664,11 @@ setTimeout(markReady, 3000);
       knob.addEventListener('pointerup', up);
     });
   });
-
-  // Envelope sliders
   document.querySelectorAll('#synthModal .p900-slider').forEach(sl => {
     sl.addEventListener('input', () => {
       params[sl.dataset.param] = parseFloat(sl.value);
     });
   });
-
-  // Wave selectors
   document.querySelectorAll('#synthModal .p900-wave').forEach(w => {
     w.addEventListener('click', () => {
       document.querySelectorAll('#synthModal .p900-wave').forEach(x => x.classList.remove('selected'));
@@ -1896,8 +1676,6 @@ setTimeout(markReady, 3000);
       params.wave = w.dataset.wave;
     });
   });
-
-  // Keyboard input
   const held = new Set();
   function onKD(e){
     if (modal.style.display !== 'flex') return;
@@ -1925,10 +1703,7 @@ setTimeout(markReady, 3000);
   }
   window.addEventListener('keydown', onKD);
   window.addEventListener('keyup', onKU);
-
   buildKeys();
-
-  // ---- Memory presets (visual + a light param sweep) ----
   const presetConfigs = {
     kiln:  { name:'KILN BASS',    wave:'sawtooth', cutoff:900,  reso:6,  vol:0.55 },
     frost: { name:'FROSTLINE',    wave:'sine',     cutoff:5200, reso:2,  vol:0.5 },
@@ -1942,7 +1717,6 @@ setTimeout(markReady, 3000);
       const cfg = presetConfigs[btn.dataset.preset]; if (!cfg) return;
       const scopeName = document.getElementById('p900ScopeName');
       if (scopeName) scopeName.textContent = cfg.name;
-      // Select wave button
       document.querySelectorAll('#synthModal .p900-wave').forEach(w => {
         w.classList.toggle('selected', w.dataset.wave === cfg.wave);
       });
@@ -1952,8 +1726,6 @@ setTimeout(markReady, 3000);
       applyParam('volume', cfg.vol);
     });
   });
-
-  // ---- 8-step sequencer (visual/audio) ----
   const stepValues = ['ROOT','+7','+3','+10','ROOT','+12','+7','-2'];
   const semiOffsets = [0, 7, 3, 10, 0, 12, 7, -2];
   const stepOn = [true,true,false,true,true,false,true,true];
@@ -1998,8 +1770,6 @@ setTimeout(markReady, 3000);
       }
     });
   }
-
-  // ---- Trace monitor scope ----
   const scopeCanvas = document.getElementById('p900Scope');
   if (scopeCanvas) {
     const sctx = scopeCanvas.getContext('2d');
@@ -2009,11 +1779,9 @@ setTimeout(markReady, 3000);
       if (modal.style.display !== 'flex') { requestAnimationFrame(drawScope); return; }
       t0 += 0.06;
       sctx.clearRect(0,0,SW,SH);
-      // grid
       sctx.strokeStyle = 'rgba(127, 216, 143, 0.08)'; sctx.lineWidth = 1;
       for (let x=0; x<=SW; x+=SW/8) { sctx.beginPath(); sctx.moveTo(x,0); sctx.lineTo(x,SH); sctx.stroke(); }
       for (let y=0; y<=SH; y+=SH/4) { sctx.beginPath(); sctx.moveTo(0,y); sctx.lineTo(SW,y); sctx.stroke(); }
-      // waveform
       const activeCount = active.size + (seqRunning ? 1 : 0);
       const amp = activeCount > 0 ? 22 + activeCount*4 : 3;
       sctx.strokeStyle = '#7fd88f';
@@ -2028,13 +1796,11 @@ setTimeout(markReady, 3000);
         else if (params.wave === 'sawtooth') y = (((p + t0) / Math.PI) % 2 - 1) * amp;
         else if (params.wave === 'triangle') y = Math.abs(((p + t0)/Math.PI) % 2 - 1) * amp*2 - amp;
         else y = Math.sin(p + t0) * amp;
-        // gentle wobble
         y += Math.sin(x*0.11 + t0*0.6) * 1.4;
         if (x === 0) sctx.moveTo(x, SH/2 + y); else sctx.lineTo(x, SH/2 + y);
       }
       sctx.stroke();
       sctx.shadowBlur = 0;
-      // VU meter
       const vu = document.querySelectorAll('#synthModal .p900-vu span');
       const level = Math.min(1, activeCount * 0.22 + Math.random()*0.05);
       vu.forEach((s, i) => s.classList.toggle('on', i/vu.length < level));
@@ -2042,7 +1808,6 @@ setTimeout(markReady, 3000);
     }
     requestAnimationFrame(drawScope);
   }
-
   function open(){ modal.style.display = 'flex'; window.desktopSfx?.open(); ensureAudio(); if (ctx?.state === 'suspended') ctx.resume(); }
   function close(){ modal.style.display = 'none'; active.forEach((_,k) => noteOff(k)); }
   closeBtn.addEventListener('click', close);
@@ -2050,15 +1815,12 @@ setTimeout(markReady, 3000);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.style.display === 'flex') close(); });
   if (openIcon) {
     openIcon.addEventListener('dblclick', e => { e.stopPropagation(); open(); });
-    // mobile: single tap opens (matches other collection nodes on touch)
     let lastTap = 0;
     openIcon.addEventListener('click', e => {
       if (window.matchMedia('(hover: none)').matches) { e.stopPropagation(); open(); }
     });
   }
 })();
-
-/* ============ Artboard — Marbling Atelier ============ */
 (function initArtboard(){
   const modal = document.getElementById('artboardModal');
   if (!modal) return;
@@ -2066,19 +1828,18 @@ setTimeout(markReady, 3000);
   const closeBtn = document.getElementById('artboardClose');
   const canvas = document.getElementById('mbCanvas');
   if (!canvas) return;
+  const canvasWrap = canvas.closest('.mb-canvas-wrap');
+  const brushEl = canvasWrap ? canvasWrap.querySelector('.mb-brush') : null;
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
   const captionEl = document.getElementById('mbCaption');
   const hintEl = document.getElementById('mbToolHint');
   const sizeEl = document.getElementById('mbSize');
   const sizeValEl = document.getElementById('mbSizeVal');
-
   const paperFill = '#f6f0dc';
   function fillPaper(){
-    // slightly warm paper with subtle noise
     ctx.fillStyle = paperFill;
     ctx.fillRect(0,0,W,H);
-    // very subtle grain
     const img = ctx.getImageData(0,0,W,H);
     for (let i=0; i<img.data.length; i+=4) {
       const n = (Math.random()-0.5) * 6;
@@ -2088,8 +1849,6 @@ setTimeout(markReady, 3000);
     }
     ctx.putImageData(img, 0, 0);
   }
-
-  // History (simple snapshot stack, capped)
   const history = [];
   const HIST_MAX = 20;
   function snapshot(){
@@ -2102,12 +1861,10 @@ setTimeout(markReady, 3000);
     img.onload = () => { ctx.clearRect(0,0,W,H); ctx.drawImage(img, 0, 0); };
     img.src = url;
   }
-
   let currentTool = 'dropper';
   let currentColor = '#1e3a7a';
   let currentColorName = 'Ultramarine';
   let dropSize = 62;
-
   const captions = {
     dropper: 'The water is clear and still.',
     stylus:  'A single point drags the ink already on the water.',
@@ -2122,7 +1879,6 @@ setTimeout(markReady, 3000);
     rake:    'Sweep through drops to smear broad bands of colour.',
     breath:  'Hover and drag — a soft diffusion.',
   };
-
   function setTool(t){
     currentTool = t;
     document.querySelectorAll('#artboardModal .mb-tool').forEach(el => el.classList.toggle('active', el.dataset.tool === t));
@@ -2133,7 +1889,6 @@ setTimeout(markReady, 3000);
   document.querySelectorAll('#artboardModal .mb-tool').forEach(el => {
     el.addEventListener('click', () => setTool(el.dataset.tool));
   });
-
   document.querySelectorAll('#artboardModal .mb-swatch').forEach(el => {
     el.addEventListener('click', () => {
       document.querySelectorAll('#artboardModal .mb-swatch').forEach(x => x.classList.remove('active'));
@@ -2145,81 +1900,42 @@ setTimeout(markReady, 3000);
       updateBrushCursor();
     });
   });
-
   sizeEl?.addEventListener('input', () => {
     dropSize = parseInt(sizeEl.value, 10);
     if (sizeValEl) sizeValEl.textContent = dropSize;
     updateBrushCursor();
   });
-
-// ---- Tool icon cursors (real SVGs, no native cursor anywhere in this modal) ----
-  const TOOL_ICON_SVG = {
-    dropper: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.06 122.88"><path d="M95.19,57.99l-4.2-4.2l6.98-6.98c6.22,0.18,12.49-2.1,17.24-6.84c9.14-9.14,9.14-23.97,0-33.11 c-9.14-9.14-23.97-9.14-33.11,0c-4.75,4.75-7.02,11.02-6.84,17.24l-6.98,6.98l-4.51-4.51c-1.51-1.51-3.96-1.51-5.47,0l-2.19,2.19 c-1.51,1.51-1.51,3.96,0,5.47l4.51,4.51l-53.5,53.5L0,122.88l29.82-7.93l53.5-53.5l4.2,4.2c1.51,1.51,3.96,1.51,5.47,0l2.19-2.19 C96.7,61.95,96.7,59.5,95.19,57.99L95.19,57.99z M28.37,108.97l-20.83,6.01l5.45-21.38L59.38,47.2l15.38,15.38L28.37,108.97 L28.37,108.97z"/></svg>`,
-    stylus: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M73.293,28.879l-2.172-2.172c-1.17-1.17-3.072-1.17-4.242,0l-38.05,38.05C26.36,67.227,25,70.509,25,74c0,0.552,0.448,1,1,1c3.491,0,6.774-1.359,9.243-3.829l38.05-38.05C74.463,31.952,74.463,30.048,73.293,28.879z M33.829,69.757c-1.842,1.843-4.219,2.955-6.78,3.194c0.239-2.561,1.352-4.938,3.194-6.78L47.5,48.914l3.586,3.586L33.829,69.757z M71.879,31.707L52.5,51.086L48.914,47.5l19.379-19.379c0.393-0.39,1.021-0.39,1.414,0l2.172,2.172C72.269,30.686,72.269,31.314,71.879,31.707z"/></svg>`,
-    comb: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><path d="M90.221,30.228C86.82,25.704,81.408,23,75.752,23H20.248c-5.624,0-11.012,2.676-14.412,7.152c-3.404,4.48-4.532,10.388-3.024,15.804l7.124,25.576c0.056,0.14,0.116,0.256,0.196,0.383c0.088,0.1,0.192,0.172,0.3,0.256c0.112,0.057,0.236,0.084,0.36,0.121c0.128,0.035,0.252,0.075,0.392,0.084c0.096,0,0.18-0.04,0.272-0.061c0.088-0.012,0.176,0.004,0.264-0.02c0.136-0.048,0.252-0.116,0.376-0.196c0.104-0.064,0.208-0.116,0.296-0.195c0.096-0.084,0.172-0.192,0.252-0.297c0.076-0.096,0.152-0.195,0.208-0.304c0.056-0.112,0.084-0.236,0.116-0.353c0.036-0.131,0.072-0.256,0.08-0.399v-28h4v28c0,1.1,0.896,2,2,2s2-0.9,2-2v-28h4v28c0,1.1,0.896,2,2,2s2-0.9,2-2v-28h4v28c0,1.1,0.896,2,2,2s2-0.9,2-2v-28h4v28c0,1.1,0.896,2,2,2s2-0.9,2-2v-28h4v28c0,1.1,0.896,2,2,2c1.1,0,2-0.9,2-2v-28h4v28c0,1.1,0.896,2,2,2c1.1,0,2-0.9,2-2v-28h4v28c0,1.1,0.896,2,2,2c1.1,0,2-0.9,2-2v-28h4v28c0,1.1,0.896,2,2,2c1.1,0,2-0.9,2-2v-28h4v28c0.008,0.145,0.043,0.272,0.084,0.408c0.031,0.124,0.06,0.24,0.111,0.344c0.057,0.117,0.133,0.213,0.204,0.313c0.084,0.104,0.147,0.212,0.252,0.296c0.084,0.084,0.196,0.14,0.3,0.204c0.112,0.076,0.232,0.148,0.364,0.196c0.188,0.057,0.375,0.08,0.56,0.08c0.403,0,0.752-0.148,1.075-0.352c0.064-0.041,0.113-0.072,0.173-0.116c0.288-0.236,0.508-0.54,0.632-0.908l7.356-25.42C94.712,40.692,93.616,34.752,90.221,30.228z"/></svg>`,
-    rake: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><rect x="0" y="8" width="96" height="14" rx="4"/><rect x="0" y="22" width="12" height="68" rx="3"/><rect x="21" y="22" width="12" height="68" rx="3"/><rect x="42" y="22" width="12" height="68" rx="3"/><rect x="63" y="22" width="12" height="68" rx="3"/><rect x="84" y="22" width="12" height="68" rx="3"/></svg>`,
-    breath: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M0 0 C6.03228065 -0.07424697 12.06429432 -0.1286483 18.09692383 -0.16479492 C20.14840326 -0.17986622 22.19985056 -0.20032682 24.2512207 -0.22631836 C27.20271748 -0.26277424 30.15378763 -0.27974306 33.10546875 -0.29296875 C34.47761787 -0.31619453 34.47761787 -0.31619453 35.87748718 -0.33988953 C40.74088272 -0.34117017 44.06853822 -0.20797889 48 3 C50.70867441 7.01376299 50.67655958 11.32255102 50 16 C48.20726402 19.12068856 46.75740595 20.54965052 43.6875 22.375 C40.04992671 23.22094728 37.60960985 22.96685978 34 22 C31 19.75 31 19.75 29 17 C29.1875 14.1875 29.1875 14.1875 30 12 C33.79588866 12.54226981 35.47211993 14.20127563 38 17 C39.98 16.34 41.96 15.68 44 15 C44.16677282 11.58343976 44.16677282 11.58343976 44 8 C40.02683055 4.02683055 34.62999284 4.7935546 29.296875 4.68359375 C24.08882644 4.5553745 21.41943902 4.49635642 18.75 4.4375 C16.93749016 4.39429106 15.12498995 4.35067601 13.3125 4.30664062 C8.87509791 4.19971871 4.43759932 4.09838134 0 4 C0 2.68 0 1.36 0 0 Z" transform="translate(0,23)"/><path d="M0 0 C2.1640625 0.3359375 2.1640625 0.3359375 4.7265625 1.7734375 C6.81486431 5.49606246 7.28920338 9.19178507 6.1640625 13.3359375 C3.5151747 16.63564557 2.07452916 18.18034507 -2.1574707 18.90356445 C-3.38812256 18.87738037 -4.61877441 18.85119629 -5.88671875 18.82421875 C-9.97273784 18.77494729 -12.05962226 18.71224569 -14.1484375 18.6484375 C-21.89020611 18.52516196 -25.362803 18.43897435 -28.8359375 18.3359375 C-28.8359375 17.0159375 -28.8359375 15.6959375 -28.8359375 14.3359375 C-23.26461694 14.18055922 -19.92536111 14.07090754 -16.5859375 13.9609375 C-11.95917969 13.82851562 -10.84414063 13.78984375 -9.6953125 13.75 C-6.58496094 13.65478516 -6.58496094 13.65478516 -6.58496094 13.65478516 C-3.86726677 13.33957125 -2.16669315 12.72561399 0.1640625 11.3359375 C0.1640625 9.6859375 0.1640625 8.0359375 0.1640625 6.3359375 C-1.4859375 6.3359375 -3.1359375 6.3359375 -4.8359375 6.3359375 C-5.1659375 6.9959375 -5.4959375 7.6559375 -5.8359375 8.3359375 C-7.4859375 8.3359375 -9.1359375 8.3359375 -10.8359375 8.3359375 C-9.86148132 1.12496175 -6.89683625 -0.29204844 0 0 Z" transform="translate(28.8359375,0.6640625)"/><path d="M0 0 C2.89740622 -0.13539281 5.78845621 -0.23426829 8.6875 -0.3125 C9.50412109 -0.35439453 10.32074219 -0.39628906 11.16210938 -0.43945312 C15.52818777 -0.52783528 17.42222745 -0.42369987 21.046875 2.234375 C23.56316415 5.79744044 23.68751878 7.68721833 23.40625 11.90625 C23 14 23 14 21.5625 16.5625 C17.76084146 18.69513772 14.2576538 18.81246972 10 18 C7.4375 16 7.4375 16 6 14 C6.66 12.68 7.32 11.36 8 10 C8.8353125 10.495 8.8353125 10.495 9.6875 11 C12.30284522 12.1309601 14.1806646 12.15662974 17 12 C17 10.35 17 8.7 17 7 C13.46813168 4.84940691 10.33712007 4.6202272 6.25 4.375 C5.07953125 4.30023438 3.9090625 4.22546875 2.703125 4.1484375 C1.81109375 4.09945312 0.9190625 4.05046875 0 4 C0 2.68 0 1.36 0 0 Z" transform="translate(0,30)"/></svg>`
-  };
-
-  function svgToMaskUrl(svgMarkup) {
-    const encoded = encodeURIComponent(svgMarkup).replace(/'/g, '%27').replace(/"/g, '%22');
-    return `url("data:image/svg+xml,${encoded}")`;
-  }
-
-  // Single fixed-position element that stands in for the cursor across the
-  // WHOLE modal (toolbar, swatches, hint text, canvas — everywhere), so the
-  // native hand/pointer cursor never has a chance to show through.
-  const brushIcon = document.createElement('div');
-  brushIcon.className = 'mb-brush-icon';
-  document.body.appendChild(brushIcon);
-
-  const brushRing = document.createElement('div');
-  brushRing.className = 'mb-brush-ring';
-  document.body.appendChild(brushRing);
-
   function updateBrushCursor(){
-    const svg = TOOL_ICON_SVG[currentTool] || TOOL_ICON_SVG.dropper;
-    const maskUrl = svgToMaskUrl(svg);
-    brushIcon.style.webkitMaskImage = maskUrl;
-    brushIcon.style.maskImage = maskUrl;
-    brushIcon.style.backgroundColor = currentColor;
-
-    // brush-size ring only makes sense over the canvas, sized to dropSize
-    const ringSize = Math.max(10, Math.min(120, dropSize));
-    brushRing.style.width = ringSize + 'px';
-    brushRing.style.height = ringSize + 'px';
-    brushRing.style.marginLeft = (-ringSize/2) + 'px';
-    brushRing.style.marginTop = (-ringSize/2) + 'px';
-    brushRing.style.borderColor = currentColor;
+    if (!brushEl) return;
+    brushEl.className = 'mb-brush tool-' + currentTool;
+    const size = Math.max(10, Math.min(120, dropSize)) * 0.9;
+    brushEl.style.width = size + 'px';
+    brushEl.style.height = size + 'px';
+    brushEl.style.marginLeft = (-size/2) + 'px';
+    brushEl.style.marginTop = (-size/2) + 'px';
+    brushEl.style.borderColor = currentColor;
+    brushEl.style.background = withAlpha(currentColor, 0.16);
   }
-
   function moveBrushCursor(e){
-    brushIcon.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
-    brushRing.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-    const overCanvas = !!(e.target && e.target.closest && e.target.closest('#mbCanvas'));
-    brushRing.style.display = overCanvas ? 'block' : 'none';
+    if (!brushEl || !canvasWrap) return;
+    const r = canvasWrap.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const y = e.clientY - r.top;
+    brushEl.style.transform = `translate(${x}px, ${y}px)`;
   }
-
-  function showBrushCursor(){ brushIcon.style.display = 'block'; }
-  function hideBrushCursor(){ brushIcon.style.display = 'none'; brushRing.style.display = 'none'; }
-
-  // Track pointer across the WHOLE modal, not just the canvas wrap, so the
-  // icon replaces the native cursor everywhere inside this window.
-  modal.addEventListener('pointerenter', showBrushCursor);
-  modal.addEventListener('pointerleave', hideBrushCursor);
-  modal.addEventListener('pointermove', moveBrushCursor);
-  modal.addEventListener('mouseenter', showBrushCursor);
-  modal.addEventListener('mouseleave', hideBrushCursor);
-  modal.addEventListener('mousemove', moveBrushCursor);
+  if (canvasWrap) {
+    canvasWrap.addEventListener('pointerenter', () => { canvasWrap.classList.add('mb-hover'); });
+    canvasWrap.addEventListener('pointerleave', () => { canvasWrap.classList.remove('mb-hover'); });
+    canvasWrap.addEventListener('pointermove', moveBrushCursor);
+    canvasWrap.addEventListener('mouseenter', () => { canvasWrap.classList.add('mb-hover'); });
+    canvasWrap.addEventListener('mouseleave', () => { canvasWrap.classList.remove('mb-hover'); });
+    canvasWrap.addEventListener('mousemove', moveBrushCursor);
   }
-
-  // --- Drawing helpers ---
   function withAlpha(hex, a){
     const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
     return `rgba(${r},${g},${b},${a})`;
   }
   function bloom(x, y, radius, color){
-    // Layered soft radial bloom for water-color feel
     const passes = 5;
     for (let i = 0; i < passes; i++) {
       const r = radius * (0.5 + i*0.18) * (0.85 + Math.random()*0.3);
@@ -2229,11 +1945,9 @@ setTimeout(markReady, 3000);
       g.addColorStop(0.6, withAlpha(color, alpha*0.5));
       g.addColorStop(1, withAlpha(color, 0));
       ctx.fillStyle = g;
-      // slight organic offset
       const ox = (Math.random()-0.5) * radius*0.3;
       const oy = (Math.random()-0.5) * radius*0.3;
       ctx.beginPath();
-      // wobbly polygon
       const pts = 14;
       for (let p=0; p<pts; p++){
         const a = (p/pts) * Math.PI*2;
@@ -2246,10 +1960,6 @@ setTimeout(markReady, 3000);
       ctx.fill();
     }
   }
-  // Smudge/smear: displaces existing pigment along the stroke direction
-  // by clipping to a circle at the destination and drawing the canvas
-  // shifted from the source. Repeated in small sub-steps so the ink
-  // "drags" continuously rather than teleporting.
   function smearStep(from, to, radius, alpha){
     const dx = to.x - from.x, dy = to.y - from.y;
     const dist = Math.hypot(dx, dy);
@@ -2266,7 +1976,6 @@ setTimeout(markReady, 3000);
       ctx.beginPath();
       ctx.arc(tx, ty, radius, 0, Math.PI * 2);
       ctx.clip();
-      // draw the canvas onto itself, offset so pixels at (sx,sy) land at (tx,ty)
       ctx.drawImage(canvas, tx - sx, ty - sy);
       ctx.restore();
     }
@@ -2287,7 +1996,6 @@ setTimeout(markReady, 3000);
     }
   }
   function breathAt(x, y){
-    // sample and blur locally by averaging pixels with paper
     const r = Math.max(20, dropSize * 0.9);
     const x0 = Math.max(0, Math.floor(x - r));
     const y0 = Math.max(0, Math.floor(y - r));
@@ -2296,16 +2004,14 @@ setTimeout(markReady, 3000);
     if (w <= 0 || h <= 0) return;
     const img = ctx.getImageData(x0, y0, w, h);
     const d = img.data;
-    // simple box blur pass with paper mix
     const cx = x - x0, cy = y - y0;
     for (let yy = 0; yy < h; yy++) {
       for (let xx = 0; xx < w; xx++) {
         const dx = xx - cx, dy = yy - cy;
         const dist = Math.hypot(dx, dy);
         if (dist > r) continue;
-        const t = 1 - dist / r; // stronger at center
+        const t = 1 - dist / r; 
         const i = (yy*w + xx) * 4;
-        // pull toward paper color slightly
         d[i]   = d[i]   + (246 - d[i])   * 0.05 * t;
         d[i+1] = d[i+1] + (240 - d[i+1]) * 0.05 * t;
         d[i+2] = d[i+2] + (220 - d[i+2]) * 0.05 * t;
@@ -2313,8 +2019,6 @@ setTimeout(markReady, 3000);
     }
     ctx.putImageData(img, x0, y0);
   }
-
-  // --- Pointer handling ---
   let drawing = false;
   let last = null;
   function toCanvasXY(e){
@@ -2371,7 +2075,6 @@ setTimeout(markReady, 3000);
   canvas.addEventListener('pointerup', endDraw);
   canvas.addEventListener('pointercancel', endDraw);
   canvas.addEventListener('pointerleave', endDraw);
-
   function moveDraw(e){
     if (!drawing) return;
     const p = toCanvasXY(e);
@@ -2397,25 +2100,16 @@ setTimeout(markReady, 3000);
     }
     last = p;
   }
-
-  // Belt-and-suspenders: if Pointer Events are missing/blocked in this
-  // browser/embed for any reason, fall back to plain mouse events so
-  // drawing still responds to the real mouse.
   if (!window.PointerEvent) {
     canvas.addEventListener('mousedown', startDraw);
     canvas.addEventListener('mousemove', moveDraw);
     window.addEventListener('mouseup', endDraw);
     canvas.addEventListener('mouseleave', endDraw);
   }
-
   updateBrushCursor();
-
-  // Toolbar buttons
   document.getElementById('mbClear')?.addEventListener('click', () => { snapshot(); fillPaper(); if (captionEl) captionEl.textContent = 'The water is clear and still.'; });
   document.getElementById('mbUndo')?.addEventListener('click', restoreLast);
   document.getElementById('mbSave')?.addEventListener('click', () => { snapshot(); });
-
-  // Make print — snapshot into an impression slot
   const impStrip = document.getElementById('mbImpressions');
   document.getElementById('mbMakePrint')?.addEventListener('click', () => {
     if (!impStrip) return;
@@ -2423,12 +2117,9 @@ setTimeout(markReady, 3000);
     const slot = document.createElement('div');
     slot.className = 'mb-impression-slot';
     slot.innerHTML = `<img src="${url}" alt="print">`;
-    // keep 5 slots max
     impStrip.appendChild(slot);
     while (impStrip.children.length > 5) impStrip.removeChild(impStrip.firstElementChild);
   });
-
-  // Keyboard shortcuts
   window.addEventListener('keydown', e => {
     if (modal.style.display !== 'flex') return;
     if (e.key >= '1' && e.key <= '5') {
@@ -2438,7 +2129,6 @@ setTimeout(markReady, 3000);
       e.preventDefault(); restoreLast();
     }
   });
-
   function open(){ modal.style.display = 'flex'; window.desktopSfx?.open(); }
   function close(){ modal.style.display = 'none'; }
   closeBtn.addEventListener('click', close);
@@ -2450,19 +2140,14 @@ setTimeout(markReady, 3000);
       if (window.matchMedia('(hover: none)').matches) { e.stopPropagation(); open(); }
     });
   }
-
-  // Initial paper
   fillPaper();
 })();
-
-/* ============ This PC (device info, read live from the visitor's browser) ============ */
 (function initThisPC(){
   const modal = document.getElementById('thisPcModal');
   const openIcon = document.getElementById('n-thispc');
   const closeBtn = document.getElementById('thisPcClose');
   const body = document.getElementById('thisPcBody');
   if (!modal || !openIcon || !body) return;
-
   function row(label, value) {
     return `<div class="spec-row"><span class="spec-label">${label}</span><span class="spec-value">${value}</span></div>`;
   }
@@ -2499,14 +2184,12 @@ setTimeout(markReady, 3000);
       return renderer || 'Unknown';
     } catch (e) { return 'Not available'; }
   }
-
   function render() {
     const dpr = window.devicePixelRatio || 1;
     const cores = navigator.hardwareConcurrency;
     const ram = navigator.deviceMemory;
     const touch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
     const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-
     let html = '';
     html += section('System');
     html += row('Operating system', detectOS());
@@ -2514,29 +2197,24 @@ setTimeout(markReady, 3000);
     html += row('Platform string', navigator.platform || 'Unknown');
     html += row('Language', navigator.language || 'Unknown');
     html += row('Timezone', (Intl.DateTimeFormat().resolvedOptions().timeZone) || 'Unknown');
-
     html += section('Hardware');
     html += row('CPU cores (logical)', cores || 'Not available in this browser');
     html += row('Memory (approx.)', ram ? (ram + ' GB') : 'Not available in this browser');
     html += row('Graphics (GPU)', getGPU());
     html += row('Touch support', touch ? 'Yes' : 'No');
-
     html += section('Display');
     html += row('Screen resolution', screen.width + ' × ' + screen.height);
     html += row('Available area', screen.availWidth + ' × ' + screen.availHeight);
     html += row('Pixel ratio', dpr + '×');
     html += row('Color depth', (screen.colorDepth || 24) + '-bit');
-
     html += section('Connection');
     html += row('Status', navigator.onLine ? 'Online' : 'Offline');
     html += row('Network type', conn && conn.effectiveType ? conn.effectiveType : 'Not available in this browser');
     if (conn && conn.downlink) html += row('Downlink', conn.downlink + ' Mbps (est.)');
-
     html += section('More');
     html += `<div class="spec-row"><span class="spec-label">Battery</span><span class="spec-value" id="thisPcBattery">Checking…</span></div>`;
     html += `<div class="spec-row"><span class="spec-label">Storage estimate</span><span class="spec-value" id="thisPcStorage">Checking…</span></div>`;
     body.innerHTML = html;
-
     if (navigator.getBattery) {
       navigator.getBattery().then(b => {
         const el = document.getElementById('thisPcBattery');
@@ -2549,7 +2227,6 @@ setTimeout(markReady, 3000);
       const el = document.getElementById('thisPcBattery');
       if (el) el.textContent = 'Not available in this browser';
     }
-
     if (navigator.storage && navigator.storage.estimate) {
       navigator.storage.estimate().then(est => {
         const el = document.getElementById('thisPcStorage');
@@ -2566,7 +2243,6 @@ setTimeout(markReady, 3000);
       if (el) el.textContent = 'Not available in this browser';
     }
   }
-
   const open = () => { render(); modal.style.display = 'flex'; window.desktopSfx?.open(); };
   const close = () => { modal.style.display = 'none'; };
   closeBtn?.addEventListener('click', close);
@@ -2577,21 +2253,16 @@ setTimeout(markReady, 3000);
     if (window.matchMedia('(hover: none)').matches) { e.stopPropagation(); open(); }
   });
 })();
-
-/* ============ My IP (public network info, via a free IP lookup API) ============ */
 (function initMyIP(){
   const modal = document.getElementById('myIpModal');
   const openIcon = document.getElementById('n-myip');
   const closeBtn = document.getElementById('myIpClose');
   const body = document.getElementById('myIpBody');
   if (!modal || !openIcon || !body) return;
-
   let fetched = false;
-
   function row(label, value) {
     return `<div class="spec-row"><span class="spec-label">${label}</span><span class="spec-value mono">${value}</span></div>`;
   }
-
   async function load() {
     body.innerHTML = `<div class="spec-loading">Looking up your IP…</div>`;
     try {
@@ -2621,7 +2292,6 @@ setTimeout(markReady, 3000);
       }
     }
   }
-
   const open = () => {
     modal.style.display = 'flex';
     window.desktopSfx?.open();
@@ -2636,14 +2306,11 @@ setTimeout(markReady, 3000);
     if (window.matchMedia('(hover: none)').matches) { e.stopPropagation(); open(); }
   });
 })();
-
-/* ============ Bricks game (monochrome brick-breaker — widget + fullscreen modal) ============ */
 (function initBricks(){
   const BEST_KEY = 'bricksBestV1';
   const widget = document.getElementById('snake-widget');
   const modal = document.getElementById('snakeModal');
   let best = Number(localStorage.getItem(BEST_KEY) || 0);
-
   function makeGame(canvas, overlay, opts){
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
@@ -2657,7 +2324,6 @@ setTimeout(markReady, 3000);
     const paddleW = opts.paddleW, paddleH = opts.paddleH;
     const ballR = opts.ballR;
     const speed = opts.speed;
-
     const state = {
       running:false, launched:false, over:false,
       paddleX: W/2 - paddleW/2,
@@ -2666,7 +2332,6 @@ setTimeout(markReady, 3000);
       score: 0,
       raf: null,
     };
-
     function buildBricks(){
       state.bricks = [];
       for (let r=0; r<rows; r++){
@@ -2688,7 +2353,7 @@ setTimeout(markReady, 3000);
     function launch(){
       if (state.launched || state.over) return;
       state.launched = true;
-      const angle = (Math.random()*0.6 - 0.3) - Math.PI/2; // upward
+      const angle = (Math.random()*0.6 - 0.3) - Math.PI/2; 
       state.ball.vx = Math.cos(angle) * speed;
       state.ball.vy = Math.sin(angle) * speed;
     }
@@ -2712,14 +2377,11 @@ setTimeout(markReady, 3000);
       const bg = isNight() ? '#0b0c0f' : '#fafaf8';
       const dim = isNight() ? 'rgba(234,234,234,0.18)' : 'rgba(17,17,17,0.14)';
       ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
-      // dashed baseline
       ctx.strokeStyle = dim; ctx.setLineDash([2,4]); ctx.beginPath();
       ctx.moveTo(sidePad, H - paddleH - 6); ctx.lineTo(W - sidePad, H - paddleH - 6); ctx.stroke();
       ctx.setLineDash([]);
-      // bricks
       state.bricks.forEach(b => {
         if (!b.alive) return;
-        // Alternate outlined vs filled per row for aesthetic
         if (b.row % 2 === 0){
           ctx.fillStyle = fg;
           ctx.fillRect(b.x, b.y, b.w, b.h);
@@ -2728,10 +2390,8 @@ setTimeout(markReady, 3000);
           ctx.strokeRect(b.x+0.5, b.y+0.5, b.w-1, b.h-1);
         }
       });
-      // paddle
       ctx.fillStyle = fg;
       ctx.fillRect(state.paddleX, H - paddleH - 4, paddleW, paddleH);
-      // ball
       ctx.beginPath();
       ctx.arc(state.ball.x, state.ball.y, ballR, 0, Math.PI*2);
       ctx.fill();
@@ -2740,11 +2400,9 @@ setTimeout(markReady, 3000);
       if (state.launched){
         state.ball.x += state.ball.vx;
         state.ball.y += state.ball.vy;
-        // walls
         if (state.ball.x < ballR){ state.ball.x = ballR; state.ball.vx *= -1; }
         if (state.ball.x > W - ballR){ state.ball.x = W - ballR; state.ball.vx *= -1; }
         if (state.ball.y < ballR){ state.ball.y = ballR; state.ball.vy *= -1; }
-        // paddle
         const py = H - paddleH - 4;
         if (state.ball.y + ballR >= py && state.ball.y + ballR <= py + paddleH + 6 &&
             state.ball.x >= state.paddleX && state.ball.x <= state.paddleX + paddleW &&
@@ -2756,7 +2414,6 @@ setTimeout(markReady, 3000);
           state.ball.vx = Math.cos(angle) * sp;
           state.ball.vy = Math.sin(angle) * sp;
         }
-        // bricks
         for (const b of state.bricks){
           if (!b.alive) continue;
           if (state.ball.x > b.x - ballR && state.ball.x < b.x + b.w + ballR &&
@@ -2772,12 +2429,10 @@ setTimeout(markReady, 3000);
             break;
           }
         }
-        // lose
         if (state.ball.y - ballR > H){
           state.over = true;
           setTimeout(() => { newGame(); }, 600);
         }
-        // win → new wave
         if (state.bricks.every(b => !b.alive)){
           buildBricks();
           resetBall();
@@ -2809,7 +2464,6 @@ setTimeout(markReady, 3000);
       const localX = (clientX - rect.left) * scale;
       state.paddleX = Math.max(0, Math.min(W - paddleW, localX - paddleW/2));
     }
-    // controls
     canvas.addEventListener('pointermove', e => {
       setPaddleFromClientX(e.clientX);
     });
@@ -2821,12 +2475,9 @@ setTimeout(markReady, 3000);
     });
     canvas.addEventListener('touchstart', e => { e.preventDefault(); }, {passive:false});
     canvas.addEventListener('touchmove', e => { e.preventDefault(); }, {passive:false});
-
-    // initial paint
     newGame();
     return { start, stop, newGame };
   }
-
   const small = makeGame(
     document.getElementById('brickCanvas'),
     document.getElementById('brickOverlay'),
@@ -2837,7 +2488,6 @@ setTimeout(markReady, 3000);
     document.getElementById('brickOverlayBig'),
     { cols:9, rows:5, brickPadding:5, brickH:16, topPad:26, sidePad:14, paddleW:78, paddleH:8, ballR:5, speed:3.8, big:true }
   );
-
   function openBig(){ modal.classList.add('open'); big.newGame(); }
   function closeBig(){ modal.classList.remove('open'); big.stop(); }
   document.getElementById('snakeExpand').addEventListener('click', openBig);
@@ -2848,8 +2498,6 @@ setTimeout(markReady, 3000);
     if (e.key === 'Escape' && modal.classList.contains('open')) closeBig();
   });
 })();
-
-/* ============ Bookshelf + Watchlist collections ============ */
 (function initCollections(){
   const BOOKS = [
     { title: "Rich Dad Poor Dad", sub: "Robert T. Kiyosaki · 1997", isbn: "1612680194" },
@@ -2873,7 +2521,6 @@ setTimeout(markReady, 3000);
     { title:"Gosick", sub:"2011 ‧ Mystery ‧ 2 seasons", poster:"https://i.pinimg.com/1200x/21/d6/30/21d630064f6b58da23b175e1523ebf81.jpg" },
     { title:"Plastic Memories", sub:"2015 ‧ Sci-fi ‧ 1 season", poster:"https://i.pinimg.com/736x/78/27/af/7827af7c1055d6001e9e79fd8721d967.jpg" },
   ];
-
   const modal = document.getElementById('collectionModal');
   const title = document.getElementById('cmTitle');
   const body  = document.getElementById('cmBody');
@@ -2881,25 +2528,19 @@ setTimeout(markReady, 3000);
   document.getElementById('cmClose').addEventListener('click', close);
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
-
 function renderBookshelf() {
-
   const rowSizes = [3, 4, 5]; 
   const rows = [];
   let currentIndex = 0;
-
   for (let size of rowSizes) {
     if (currentIndex >= BOOKS.length) break;
     rows.push(BOOKS.slice(currentIndex, currentIndex + size));
     currentIndex += size;
   }
-  
-
   while (currentIndex < BOOKS.length) {
     rows.push(BOOKS.slice(currentIndex, currentIndex + 4)); 
     currentIndex += 4;
   }
-
   const html = `<div class="bookshelf">` + rows.map(row => `
     <div class="shelf-row">
       ${row.map(b => {
@@ -2913,10 +2554,8 @@ function renderBookshelf() {
     </div>
     <div class="shelf-plank"></div>
   `).join('') + `</div>`;
-  
   body.innerHTML = html;
 }
-
   function renderWatchlist() {
     body.innerHTML = `<div class="posters">` + FILMS.map(f => `
       <div class="poster-card" title="${f.title}">
@@ -2928,7 +2567,6 @@ function renderBookshelf() {
       </div>
     `).join('') + `</div>`;
   }
-
   document.querySelectorAll('.collection-node').forEach(node => {
     node.addEventListener('dblclick', () => {
       const kind = node.getAttribute('data-collection');
@@ -2941,15 +2579,11 @@ function renderBookshelf() {
       body.scrollTop = 0;
     });
   });
-
-  // Watchlist: ▲/▼ buttons scroll the collection body (mouse wheel, trackpad,
-  // and keyboard scrolling remain native/untouched — this just adds a control).
   const cmScrollUp = document.getElementById('cmScrollUp');
   const cmScrollDown = document.getElementById('cmScrollDown');
   const scrollBody = (dir) => body.scrollBy({ top: dir * 180, behavior: 'smooth' });
   cmScrollUp?.addEventListener('click', () => scrollBody(-1));
   cmScrollDown?.addEventListener('click', () => scrollBody(1));
-
   function renderPhotos() {
     const items = [...document.querySelectorAll('.photo-node')]
       .filter(n => n.id !== 'n-resume')
@@ -2961,7 +2595,6 @@ function renderBookshelf() {
           sub: n.querySelector('.node-sub')?.textContent || ''
         };
       });
-    // iOS Photos "Library" style — dense square grid, hairline gaps, no captions
     body.innerHTML = `
       <div class="ios-photos">
         <div class="ios-photos-head">
@@ -2988,12 +2621,10 @@ function renderBookshelf() {
           </div>
         </div>
       </div>`;
-    // Attach click-to-open carousel
     body.querySelectorAll('.ios-photo').forEach(el => {
       el.addEventListener('click', () => openPhotoLightbox(items, parseInt(el.dataset.idx, 10)));
     });
   }
-
   function openPhotoLightbox(items, startIdx) {
     let lb = document.getElementById('iosLightbox');
     if (lb) lb.remove();
@@ -3043,8 +2674,6 @@ function renderBookshelf() {
     lb.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
   }
 })();
-
-/* ============ Draggable creature (Sprout) ============ */
 (function makeSproutDraggable(){
   const el = document.getElementById('hedgehog');
   if (!el) return;
@@ -3076,7 +2705,6 @@ function renderBookshelf() {
     el.classList.remove('dragging');
     if (moved) window.desktopSfx?.drop();
     else {
-      // small speech on tap
       const msgs = ['hi ✦','drag me!','wanna play snake?','try the recycle bin','pick a wallpaper ↗'];
       const b = document.getElementById('hedgeBubble');
       if (b) b.textContent = msgs[Math.floor(Math.random()*msgs.length)];
@@ -3088,8 +2716,6 @@ function renderBookshelf() {
   el.addEventListener('pointerup', end);
   el.addEventListener('pointercancel', end);
 })();
-
-/* ============ Sprout idle speech (perched, no walking) ============ */
 (function sproutTips(){
   const el = document.getElementById('hedgehog');
   if (!el) return;
@@ -3115,18 +2741,14 @@ function renderBookshelf() {
   }
   setTimeout(tip, 5000);
 })();
-
-/* ============ Mobile bottom drawer ============ */
 (function initMobileDrawer(){
   const drawer = document.getElementById('mobile-drawer');
   const handle = document.getElementById('mdHandle');
   const body   = document.getElementById('mdBody');
   if (!drawer || !body) return;
-
   const mq = window.matchMedia('(max-width: 760px)');
   const ids = ['music-widget', 'wallpaper-picker', 'snake-widget', 'awards-widget'];
   const originalParents = new Map();
-
   function moveIn(){
     ids.forEach(id => {
       const el = document.getElementById(id);
@@ -3149,12 +2771,9 @@ function renderBookshelf() {
   }
   apply();
   mq.addEventListener?.('change', apply);
-
-  // Toggle + drag to open/close
   let startY = null, startOpen = false, dragging = false, moved = false;
   const OPEN_TRANSLATE = 0;
   const height = () => drawer.getBoundingClientRect().height;
-
   handle.addEventListener('pointerdown', e => {
     if (!mq.matches) return;
     dragging = true; moved = false;
@@ -3183,7 +2802,6 @@ function renderBookshelf() {
       drawer.classList.toggle('open');
     } else {
       const dy = e.clientY - startY;
-      // If dragged up meaningfully → open; down → close
       if (startOpen) {
         if (dy > 60) drawer.classList.remove('open'); else drawer.classList.add('open');
       } else {
@@ -3194,18 +2812,12 @@ function renderBookshelf() {
   }
   handle.addEventListener('pointerup', endDrag);
   handle.addEventListener('pointercancel', endDrag);
-
-  // Sync body class with drawer state so we can hide everything behind it
   const syncBody = () => document.body.classList.toggle('drawer-open', drawer.classList.contains('open'));
   const mo = new MutationObserver(syncBody);
   mo.observe(drawer, { attributes:true, attributeFilter:['class'] });
   syncBody();
 })();
-
-
-
 (function(){
-  // Mobile iOS-style clock (matches menubar clock) — live UTC time
   const c = document.getElementById('msClock');
   function tick(){
     if(!c) return;
@@ -3214,8 +2826,6 @@ function renderBookshelf() {
     c.textContent = now.toLocaleTimeString('en-US', opts) + ' UTC';
   }
   tick(); setInterval(tick, 1000);
-
-  // Hamburger sheet
   const btn = document.getElementById('msHamburger');
   const sheet = document.getElementById('mobile-sheet');
   const scrim = document.getElementById('mshScrim');
@@ -3225,7 +2835,6 @@ function renderBookshelf() {
   btn?.addEventListener('click', () => sheet.classList.contains('open') ? close() : open());
   scrim?.addEventListener('click', close);
   closeBtn?.addEventListener('click', close);
-  // Route sheet actions to existing menubar buttons
   sheet.querySelectorAll('[data-sheet]').forEach(el => {
     el.addEventListener('click', () => {
       const key = el.getAttribute('data-sheet');
@@ -3237,8 +2846,6 @@ function renderBookshelf() {
   });
   sheet.querySelectorAll('a[href]').forEach(a => a.addEventListener('click', () => setTimeout(close, 80)));
 })();
-
-/* ============ Window manager: minimize / maximize / close + taskbar ============ */
 (function initWindowManager(){
   const APP_CONFIG = [
     { id:'about',      modalId:'aboutModal',      closeId:'aboutClose',      label:'About' },
@@ -3251,25 +2858,19 @@ function renderBookshelf() {
     { id:'snake',      modalId:'snakeModal',      closeId:'snakeModalClose',label:'Bricks' },
     { id:'trash',      modalId:'trashModal',      closeId:'trashClose',     label:'Recycle Bin' }
   ];
-
   const CLASS_BASED = new Set(['collection', 'snake', 'trash']);
-
   const taskbarItems = document.getElementById('taskbarItems');
   const taskbar = document.getElementById('taskbar');
   if (!taskbarItems || !taskbar) return;
-
   let zCounter = 9000;
   const apps = [];
-
   function isVisible(modal){
     return getComputedStyle(modal).display !== 'none';
   }
-
   function buildControls(app){
     const closeBtn = document.getElementById(app.closeId);
     if (!closeBtn) return null;
     const header = closeBtn.parentElement;
-    // Try to reuse two existing decorative dot siblings right after close (macOS traffic-light pattern)
     let minBtn = null, maxBtn = null;
     const s1 = closeBtn.nextElementSibling;
     const s2 = s1 ? s1.nextElementSibling : null;
@@ -3284,12 +2885,10 @@ function renderBookshelf() {
       minBtn.setAttribute('aria-label','Minimize');
       maxBtn.setAttribute('aria-label','Maximize');
     } else {
-      // Match the injected buttons' size to this modal's actual close button,
-      // so they never look oversized/undersized relative to the app's own chrome.
       const cs = getComputedStyle(closeBtn);
       const w = parseFloat(cs.width) || 13;
       const h = parseFloat(cs.height) || 13;
-      const dim = Math.min(w, h, 16) + 'px'; // cap so it never balloons past a normal traffic-light dot
+      const dim = Math.min(w, h, 16) + 'px'; 
       minBtn = document.createElement('button');
       minBtn.type = 'button';
       minBtn.className = 'wm-btn wm-min-btn';
@@ -3304,7 +2903,6 @@ function renderBookshelf() {
     }
     return { header, closeBtn, minBtn, maxBtn };
   }
-
   function renderTaskbar(){
     const running = apps.filter(a => a.state === 'open' || a.state === 'minimized');
     taskbarItems.innerHTML = '';
@@ -3322,12 +2920,10 @@ function renderBookshelf() {
     });
     taskbar.classList.toggle('has-apps', running.length > 0);
   }
-
   function setState(app, state){
     app.state = state;
     renderTaskbar();
   }
-
   function showModal(app){
     if (app.usesClass) app.modal.classList.add('open');
     else app.modal.style.display = 'flex';
@@ -3336,12 +2932,6 @@ function renderBookshelf() {
     if (app.usesClass) app.modal.classList.remove('open');
     else app.modal.style.display = 'none';
   }
-
-  // When a window is at normal (non-maximized) size, it should behave like a
-  // real desktop window: no full-screen dimming, and clicks on the empty
-  // area around the card pass straight through to the desktop/other apps
-  // underneath. When maximized it covers the whole screen anyway, so the
-  // normal blocking backdrop is restored (nothing behind it to reach).
   function setBackdropMode(app){
     const card = app.modal.firstElementChild;
     if (app.maximized) {
@@ -3356,14 +2946,12 @@ function renderBookshelf() {
       if (card) card.style.pointerEvents = 'auto';
     }
   }
-
   function minimizeApp(app){
     app.suppressObserver = true;
     hideModal(app);
     setState(app, 'minimized');
     setTimeout(() => { app.suppressObserver = false; }, 0);
   }
-
   function restoreApp(app){
     app.suppressObserver = true;
     showModal(app);
@@ -3372,14 +2960,10 @@ function renderBookshelf() {
     setState(app, 'open');
     setTimeout(() => { app.suppressObserver = false; }, 0);
   }
-
   function closeApp(app){
     if (app.controls?.closeBtn) app.controls.closeBtn.click();
     else hideModal(app);
   }
-
-  // Clears any manual drag position so the window falls back to its normal
-  // centered spot (used on close, and when there was nothing to restore to).
   function resetWindowPosition(app){
     const card = app.modal.firstElementChild;
     if (!card) return;
@@ -3390,15 +2974,12 @@ function renderBookshelf() {
     card.style.margin = '';
     app.draggedPos = null;
   }
-
   function toggleMaximize(app){
     const card = app.modal.firstElementChild;
     if (!card) return;
     app.maximized = !app.maximized;
     card.classList.toggle('wm-maximized', app.maximized);
     if (!app.maximized) {
-      // Coming back down from fullscreen: restore wherever it was dragged to,
-      // or fall back to centered if it was never moved.
       if (app.draggedPos) {
         card.style.position = 'fixed';
         card.style.margin = '0';
@@ -3412,8 +2993,6 @@ function renderBookshelf() {
     setBackdropMode(app);
     if (app.controls?.maxBtn) app.controls.maxBtn.setAttribute('aria-pressed', app.maximized ? 'true' : 'false');
   }
-
-  // Drag a window by its title bar, like a real desktop window.
   function enableDragging(app){
     const header = app.controls?.header;
     if (!header) return;
@@ -3421,8 +3000,6 @@ function renderBookshelf() {
     header.addEventListener('pointerdown', (e) => {
       if (e.button !== 0) return;
       if (app.maximized) return;
-      // Don't hijack clicks meant for buttons/inputs inside the title bar
-      // (close/min/max, undo/redo, tabs, etc).
       if (e.target.closest('button, input, a, select, textarea')) return;
       const card = app.modal.firstElementChild;
       if (!card) return;
@@ -3466,7 +3043,6 @@ function renderBookshelf() {
       header.addEventListener('pointercancel', onUp);
     });
   }
-
   APP_CONFIG.forEach(cfg => {
     const modal = document.getElementById(cfg.modalId);
     if (!modal) return;
@@ -3479,12 +3055,9 @@ function renderBookshelf() {
       enableDragging(app);
     }
     apps.push(app);
-
-    // Clicking into a window's content brings it above other open windows.
     modal.addEventListener('mousedown', () => {
       if (app.state === 'open') app.modal.style.zIndex = ++zCounter;
     });
-
     const observer = new MutationObserver(() => {
       if (app.suppressObserver) return;
       const visible = isVisible(modal);
@@ -3498,8 +3071,6 @@ function renderBookshelf() {
         if (app.state === 'open') {
           setState(app, 'closed');
         }
-        // if state was already 'minimized' or 'closed', nothing to do
-        // reset maximize + dragged position once an app is actually closed (not minimized)
         if (app.state === 'closed' && (app.maximized || app.draggedPos)) {
           const card = app.modal.firstElementChild;
           if (card) card.classList.remove('wm-maximized');
@@ -3514,6 +3085,5 @@ function renderBookshelf() {
     });
     observer.observe(modal, { attributes:true, attributeFilter:['style','class'] });
   });
-
   window.desktopWM = { minimizeApp, restoreApp, closeApp, toggleMaximize, apps };
 })();
