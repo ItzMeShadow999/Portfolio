@@ -1094,7 +1094,80 @@ const dock = document.getElementById('dock');
     });
     requestAnimationFrame(()=>{ if (typeof drawLines==='function') drawLines(); });
   }
+  /* ---- Right-click-drag marquee (rubber-band) selection ---- */
+  let marqueeBox = null;
+  let marqueeStart = null;
+  let marqueeDragging = false;
+  let suppressNextContextMenu = false;
+
+  function ensureMarqueeBox(){
+    if (marqueeBox) return marqueeBox;
+    marqueeBox = document.createElement('div');
+    marqueeBox.id = 'marquee-select';
+    document.body.appendChild(marqueeBox);
+    return marqueeBox;
+  }
+
+  function applyMarqueeSelection(rect){
+    nodes.forEach(n => {
+      if (n.classList.contains('trashed')) return;
+      const r = n.getBoundingClientRect();
+      const hit = !(rect.right < r.left || rect.left > r.right || rect.bottom < r.top || rect.top > r.bottom);
+      n.classList.toggle('selected', hit);
+    });
+  }
+
+  stage.addEventListener('mousedown', e => {
+    if (e.button !== 2) return;
+    // Only start a marquee when the drag begins on empty desktop space —
+    // not on an icon, the toolbar, dock, or any open modal/menu.
+    if (e.target.closest('#widget-rail, #dock, #topbar, #ctx-menu, .modal, .preview-modal, #collectionModal, .node')) return;
+    marqueeStart = { x: e.clientX, y: e.clientY };
+    marqueeDragging = false;
+    const onMove = (ev) => {
+      const dx = ev.clientX - marqueeStart.x;
+      const dy = ev.clientY - marqueeStart.y;
+      if (!marqueeDragging) {
+        if (Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
+        marqueeDragging = true;
+        document.body.classList.add('marquee-active');
+        ensureMarqueeBox().style.display = 'block';
+      }
+      const left = Math.min(marqueeStart.x, ev.clientX);
+      const top = Math.min(marqueeStart.y, ev.clientY);
+      const width = Math.abs(dx);
+      const height = Math.abs(dy);
+      marqueeBox.style.left = left + 'px';
+      marqueeBox.style.top = top + 'px';
+      marqueeBox.style.width = width + 'px';
+      marqueeBox.style.height = height + 'px';
+      applyMarqueeSelection({ left, top, right: left + width, bottom: top + height });
+    };
+    const onUp = () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      if (marqueeDragging) {
+        // A drag happened — swallow the contextmenu event that's about to fire.
+        suppressNextContextMenu = true;
+        if (marqueeBox) marqueeBox.style.display = 'none';
+        document.body.classList.remove('marquee-active');
+        window.desktopSfx?.select();
+      }
+      marqueeDragging = false;
+      marqueeStart = null;
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+
   stage.addEventListener('contextmenu', e => {
+    // A right-click-drag just finished making a marquee selection — don't
+    // also pop the context menu for that same gesture.
+    if (suppressNextContextMenu) {
+      suppressNextContextMenu = false;
+      e.preventDefault();
+      return;
+    }
     // Skip when right-clicking inside toolbar/widgets/dock
     if (e.target.closest('#widget-rail, #dock, #topbar, #ctx-menu, .modal, .preview-modal, #collectionModal')) return;
     e.preventDefault();
