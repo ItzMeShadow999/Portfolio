@@ -2257,6 +2257,182 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
   fillPaper();
 })();
 
+/* ============ This PC (device info, read live from the visitor's browser) ============ */
+(function initThisPC(){
+  const modal = document.getElementById('thisPcModal');
+  const openIcon = document.getElementById('n-thispc');
+  const closeBtn = document.getElementById('thisPcClose');
+  const body = document.getElementById('thisPcBody');
+  if (!modal || !openIcon || !body) return;
+
+  function row(label, value) {
+    return `<div class="spec-row"><span class="spec-label">${label}</span><span class="spec-value">${value}</span></div>`;
+  }
+  function section(title) {
+    return `<div class="spec-section">${title}</div>`;
+  }
+  function detectBrowser() {
+    const ua = navigator.userAgent;
+    if (/Edg\//.test(ua)) return 'Microsoft Edge';
+    if (/OPR\//.test(ua)) return 'Opera';
+    if (/Chrome\//.test(ua) && !/Chromium/.test(ua)) return 'Chrome';
+    if (/Firefox\//.test(ua)) return 'Firefox';
+    if (/Safari\//.test(ua) && /Version\//.test(ua)) return 'Safari';
+    return 'Unknown';
+  }
+  function detectOS() {
+    const ua = navigator.userAgent;
+    const plat = navigator.platform || '';
+    if (/Windows NT 10/.test(ua)) return 'Windows 10 / 11';
+    if (/Windows/.test(ua)) return 'Windows';
+    if (/Mac OS X/.test(ua)) return 'macOS';
+    if (/Android/.test(ua)) return 'Android';
+    if (/iPhone|iPad|iPod/.test(ua)) return 'iOS';
+    if (/Linux/.test(plat)) return 'Linux';
+    return plat || 'Unknown';
+  }
+  function getGPU() {
+    try {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      if (!gl) return 'Not available';
+      const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+      const renderer = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+      return renderer || 'Unknown';
+    } catch (e) { return 'Not available'; }
+  }
+
+  function render() {
+    const dpr = window.devicePixelRatio || 1;
+    const cores = navigator.hardwareConcurrency;
+    const ram = navigator.deviceMemory;
+    const touch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+
+    let html = '';
+    html += section('System');
+    html += row('Operating system', detectOS());
+    html += row('Browser', detectBrowser());
+    html += row('Platform string', navigator.platform || 'Unknown');
+    html += row('Language', navigator.language || 'Unknown');
+    html += row('Timezone', (Intl.DateTimeFormat().resolvedOptions().timeZone) || 'Unknown');
+
+    html += section('Hardware');
+    html += row('CPU cores (logical)', cores || 'Not available in this browser');
+    html += row('Memory (approx.)', ram ? (ram + ' GB') : 'Not available in this browser');
+    html += row('Graphics (GPU)', getGPU());
+    html += row('Touch support', touch ? 'Yes' : 'No');
+
+    html += section('Display');
+    html += row('Screen resolution', screen.width + ' × ' + screen.height);
+    html += row('Available area', screen.availWidth + ' × ' + screen.availHeight);
+    html += row('Pixel ratio', dpr + '×');
+    html += row('Color depth', (screen.colorDepth || 24) + '-bit');
+
+    html += section('Connection');
+    html += row('Status', navigator.onLine ? 'Online' : 'Offline');
+    html += row('Network type', conn && conn.effectiveType ? conn.effectiveType : 'Not available in this browser');
+    if (conn && conn.downlink) html += row('Downlink', conn.downlink + ' Mbps (est.)');
+
+    html += section('More');
+    html += `<div class="spec-row"><span class="spec-label">Battery</span><span class="spec-value" id="thisPcBattery">Checking…</span></div>`;
+    html += `<div class="spec-row"><span class="spec-label">Storage estimate</span><span class="spec-value" id="thisPcStorage">Checking…</span></div>`;
+    body.innerHTML = html;
+
+    if (navigator.getBattery) {
+      navigator.getBattery().then(b => {
+        const el = document.getElementById('thisPcBattery');
+        if (el) el.textContent = Math.round(b.level * 100) + '%' + (b.charging ? ' (charging)' : '');
+      }).catch(() => {
+        const el = document.getElementById('thisPcBattery');
+        if (el) el.textContent = 'Not available';
+      });
+    } else {
+      const el = document.getElementById('thisPcBattery');
+      if (el) el.textContent = 'Not available in this browser';
+    }
+
+    if (navigator.storage && navigator.storage.estimate) {
+      navigator.storage.estimate().then(est => {
+        const el = document.getElementById('thisPcStorage');
+        if (!el) return;
+        const usedMB = ((est.usage || 0) / (1024 * 1024)).toFixed(1);
+        const quotaGB = ((est.quota || 0) / (1024 * 1024 * 1024)).toFixed(1);
+        el.textContent = `${usedMB} MB used of ~${quotaGB} GB`;
+      }).catch(() => {
+        const el = document.getElementById('thisPcStorage');
+        if (el) el.textContent = 'Not available';
+      });
+    } else {
+      const el = document.getElementById('thisPcStorage');
+      if (el) el.textContent = 'Not available in this browser';
+    }
+  }
+
+  const open = () => { render(); modal.style.display = 'flex'; window.desktopSfx?.open(); };
+  const close = () => { modal.style.display = 'none'; };
+  closeBtn?.addEventListener('click', close);
+  modal.addEventListener('click', e => { if (e.target === modal) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  openIcon.addEventListener('click', e => { e.stopPropagation(); open(); });
+})();
+
+/* ============ My IP (public network info, via a free IP lookup API) ============ */
+(function initMyIP(){
+  const modal = document.getElementById('myIpModal');
+  const openIcon = document.getElementById('n-myip');
+  const closeBtn = document.getElementById('myIpClose');
+  const body = document.getElementById('myIpBody');
+  if (!modal || !openIcon || !body) return;
+
+  let fetched = false;
+
+  function row(label, value) {
+    return `<div class="spec-row"><span class="spec-label">${label}</span><span class="spec-value mono">${value}</span></div>`;
+  }
+
+  async function load() {
+    body.innerHTML = `<div class="spec-loading">Looking up your IP…</div>`;
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      if (!res.ok) throw new Error('bad response');
+      const d = await res.json();
+      if (d.error) throw new Error(d.reason || 'lookup failed');
+      let html = `<div class="spec-ip-hero">${d.ip || 'Unknown'}</div>`;
+      html += row('City', d.city || 'Unknown');
+      html += row('Region', d.region || 'Unknown');
+      html += row('Country', d.country_name || 'Unknown');
+      html += row('Postal code', d.postal || 'Unknown');
+      html += row('ISP / Org', d.org || 'Unknown');
+      html += row('Timezone', d.timezone || 'Unknown');
+      html += row('ASN', d.asn || 'Unknown');
+      body.innerHTML = html;
+      fetched = true;
+    } catch (e) {
+      try {
+        const res2 = await fetch('https://api.ipify.org?format=json');
+        const d2 = await res2.json();
+        body.innerHTML = `<div class="spec-ip-hero">${d2.ip}</div>` +
+          `<div class="spec-row"><span class="spec-label">Detail lookup</span><span class="spec-value">Unavailable right now</span></div>`;
+        fetched = true;
+      } catch (e2) {
+        body.innerHTML = `<div class="spec-loading">Couldn't reach the IP lookup service — check your connection and try again.</div>`;
+      }
+    }
+  }
+
+  const open = () => {
+    modal.style.display = 'flex';
+    window.desktopSfx?.open();
+    if (!fetched) load();
+  };
+  const close = () => { modal.style.display = 'none'; };
+  closeBtn?.addEventListener('click', close);
+  modal.addEventListener('click', e => { if (e.target === modal) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  openIcon.addEventListener('click', e => { e.stopPropagation(); open(); });
+})();
+
 /* ============ Bricks game (monochrome brick-breaker — widget + fullscreen modal) ============ */
 (function initBricks(){
   const BEST_KEY = 'bricksBestV1';
