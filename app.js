@@ -3173,24 +3173,105 @@ function renderBookshelf() {
     else hideModal(app);
   }
 
+  // Clears any manual drag position so the window falls back to its normal
+  // centered spot (used on close, and when there was nothing to restore to).
+  function resetWindowPosition(app){
+    const card = app.modal.firstElementChild;
+    if (!card) return;
+    card.style.position = '';
+    card.style.left = '';
+    card.style.top = '';
+    card.style.right = '';
+    card.style.margin = '';
+    app.draggedPos = null;
+  }
+
   function toggleMaximize(app){
     const card = app.modal.firstElementChild;
     if (!card) return;
     app.maximized = !app.maximized;
     card.classList.toggle('wm-maximized', app.maximized);
+    if (!app.maximized) {
+      // Coming back down from fullscreen: restore wherever it was dragged to,
+      // or fall back to centered if it was never moved.
+      if (app.draggedPos) {
+        card.style.position = 'fixed';
+        card.style.margin = '0';
+        card.style.left = app.draggedPos.left + 'px';
+        card.style.top = app.draggedPos.top + 'px';
+        card.style.right = 'auto';
+      } else {
+        resetWindowPosition(app);
+      }
+    }
     setBackdropMode(app);
     if (app.controls?.maxBtn) app.controls.maxBtn.setAttribute('aria-pressed', app.maximized ? 'true' : 'false');
+  }
+
+  // Drag a window by its title bar, like a real desktop window.
+  function enableDragging(app){
+    const header = app.controls?.header;
+    if (!header) return;
+    header.style.cursor = 'move';
+    header.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      if (app.maximized) return;
+      // Don't hijack clicks meant for buttons/inputs inside the title bar
+      // (close/min/max, undo/redo, tabs, etc).
+      if (e.target.closest('button, input, a, select, textarea')) return;
+      const card = app.modal.firstElementChild;
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      card.style.position = 'fixed';
+      card.style.margin = '0';
+      card.style.right = 'auto';
+      card.style.left = rect.left + 'px';
+      card.style.top = rect.top + 'px';
+      app.modal.style.zIndex = ++zCounter;
+      const startX = e.clientX, startY = e.clientY;
+      const startLeft = rect.left, startTop = rect.top;
+      const cardW = rect.width, cardH = rect.height;
+      let dragging = true;
+      header.setPointerCapture(e.pointerId);
+      document.body.style.userSelect = 'none';
+      function onMove(ev){
+        if (!dragging) return;
+        const minLeft = -(cardW - 80);
+        const maxLeft = window.innerWidth - 80;
+        const minTop = 38;
+        const maxTop = window.innerHeight - 32;
+        let left = startLeft + (ev.clientX - startX);
+        let top = startTop + (ev.clientY - startY);
+        left = Math.max(minLeft, Math.min(maxLeft, left));
+        top = Math.max(minTop, Math.min(maxTop, top));
+        card.style.left = left + 'px';
+        card.style.top = top + 'px';
+        app.draggedPos = { left, top };
+      }
+      function onUp(ev){
+        dragging = false;
+        header.releasePointerCapture(ev.pointerId);
+        document.body.style.userSelect = '';
+        header.removeEventListener('pointermove', onMove);
+        header.removeEventListener('pointerup', onUp);
+        header.removeEventListener('pointercancel', onUp);
+      }
+      header.addEventListener('pointermove', onMove);
+      header.addEventListener('pointerup', onUp);
+      header.addEventListener('pointercancel', onUp);
+    });
   }
 
   APP_CONFIG.forEach(cfg => {
     const modal = document.getElementById(cfg.modalId);
     if (!modal) return;
     const usesClass = CLASS_BASED.has(cfg.id);
-    const app = { ...cfg, modal, usesClass, state: 'closed', maximized:false, suppressObserver:false };
+    const app = { ...cfg, modal, usesClass, state: 'closed', maximized:false, draggedPos:null, suppressObserver:false };
     app.controls = buildControls(app);
     if (app.controls) {
       app.controls.minBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); minimizeApp(app); });
       app.controls.maxBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); toggleMaximize(app); });
+      enableDragging(app);
     }
     apps.push(app);
 
@@ -3213,8 +3294,8 @@ function renderBookshelf() {
           setState(app, 'closed');
         }
         // if state was already 'minimized' or 'closed', nothing to do
-        // reset maximize state once an app is actually closed (not minimized)
-        if (app.state === 'closed' && app.maximized) {
+        // reset maximize + dragged position once an app is actually closed (not minimized)
+        if (app.state === 'closed' && (app.maximized || app.draggedPos)) {
           const card = app.modal.firstElementChild;
           if (card) card.classList.remove('wm-maximized');
           app.maximized = false;
@@ -3222,6 +3303,7 @@ function renderBookshelf() {
           app.modal.style.backdropFilter = '';
           app.modal.style.pointerEvents = '';
           if (card) card.style.pointerEvents = '';
+          resetWindowPosition(app);
         }
       }
     });
