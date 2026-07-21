@@ -536,6 +536,30 @@ body[data-theme="night"] .node-label { color:rgba(220,228,240,0.75); }
   transition: transform .18s ease;
 }
 .icon-tile > img, .icon-tile > svg { width:100%; height:100%; object-fit:contain; display:block; }
+#n-thispc .icon-tile { background:linear-gradient(160deg,#f5f7fb 0%,#e5eaf3 55%,#cfd8e8 100%); border-color:rgba(130,150,180,0.32); box-shadow:0 8px 18px rgba(120,140,175,0.18), inset 0 1.5px 0 rgba(255,255,255,0.95), inset 0 -6px 14px rgba(140,160,195,0.12); }
+#n-myip .icon-tile   { background:linear-gradient(160deg,#f3faf6 0%,#e2f3ea 55%,#c9e8d6 100%); border-color:rgba(110,175,130,0.32); box-shadow:0 8px 18px rgba(110,175,130,0.18), inset 0 1.5px 0 rgba(255,255,255,0.95), inset 0 -6px 14px rgba(120,180,140,0.12); }
+
+/* This PC / My IP modal content */
+.spec-grid { display:flex; flex-direction:column; gap:0; font-size:12.5px; }
+.spec-row {
+  display:flex; align-items:baseline; justify-content:space-between; gap:14px;
+  padding:9px 2px; border-bottom:1px solid rgba(0,0,0,0.07);
+}
+.spec-row:last-child { border-bottom:0; }
+.spec-label { color:rgba(20,24,32,0.55); flex:none; }
+.spec-value { text-align:right; font-weight:600; word-break:break-word; }
+.spec-value.mono { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px; }
+.spec-section {
+  margin:14px 0 4px; padding-top:10px; font-size:10.5px; font-weight:700;
+  letter-spacing:0.08em; text-transform:uppercase; color:rgba(20,24,32,0.4);
+  border-top:1px solid rgba(0,0,0,0.08);
+}
+.spec-section:first-child { margin-top:0; padding-top:0; border-top:0; }
+.spec-loading { padding:20px 2px; font-size:12.5px; opacity:0.6; }
+.spec-ip-hero {
+  font-size:26px; font-weight:700; letter-spacing:0.01em; padding:6px 2px 14px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; word-break:break-all;
+}
 body[data-theme="night"] .icon-tile { background:linear-gradient(180deg,#2a2a30,#161619); border-color:rgba(255,255,255,0.18); }
 /* App-specific tile colors — soft pastel/neumorphic on-brand gradients */
 /* Soft, airy, on-brand tile backgrounds. Barely tinted whites so app glyphs pop. */
