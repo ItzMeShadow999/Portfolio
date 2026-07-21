@@ -2819,12 +2819,23 @@ function renderBookshelf() {
   document.querySelectorAll('.collection-node').forEach(node => {
     node.addEventListener('dblclick', () => {
       const kind = node.getAttribute('data-collection');
+      modal.classList.remove('kind-books', 'kind-films', 'kind-photos');
       if (kind === 'books') { title.textContent = 'Bookshelf'; renderBookshelf(); }
       else if (kind === 'films') { title.textContent = 'Watchlist'; renderWatchlist(); }
       else if (kind === 'photos') { title.textContent = 'Photos'; renderPhotos(); }
+      modal.classList.add('kind-' + kind);
       modal.classList.add('open');
+      body.scrollTop = 0;
     });
   });
+
+  // Watchlist: ▲/▼ buttons scroll the collection body (mouse wheel, trackpad,
+  // and keyboard scrolling remain native/untouched — this just adds a control).
+  const cmScrollUp = document.getElementById('cmScrollUp');
+  const cmScrollDown = document.getElementById('cmScrollDown');
+  const scrollBody = (dir) => body.scrollBy({ top: dir * 180, behavior: 'smooth' });
+  cmScrollUp?.addEventListener('click', () => scrollBody(-1));
+  cmScrollDown?.addEventListener('click', () => scrollBody(1));
 
   function renderPhotos() {
     const items = [...document.querySelectorAll('.photo-node')]
