@@ -313,6 +313,21 @@ const SITE_BG_VIDEO = 'images/Background.mp4';
 const DYN_WALLPAPER_KEY = 'l5e_dynamic_wallpaper';
 let dynamicWallpaper = localStorage.getItem(DYN_WALLPAPER_KEY) === '1';
 
+// Warm the browser cache for every theme's wallpaper right away so switching
+// themes (or first paint) never has to wait on a network fetch.
+(function preloadWallpapers(){
+  Object.values(THEMES).forEach(t => {
+    if (!t.image) return;
+    const img = new Image();
+    img.src = t.image;
+  });
+  if (dynamicWallpaper) {
+    const v = document.createElement('video');
+    v.preload = 'auto';
+    v.src = SITE_BG_VIDEO;
+  }
+})();
+
 const SCRIM = {
   sky:    'linear-gradient(rgba(255,255,255,0.10),rgba(255,255,255,0.18))',
   night:  'linear-gradient(rgba(0,0,0,0.35),rgba(0,0,0,0.45))',
