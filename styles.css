@@ -223,28 +223,18 @@ body[data-theme="night"] .tech-grid {
   background-size: 160px 160px, 160px 160px, 32px 32px, 32px 32px;
 }
 
-#layer-wrap { position:absolute; top:72px; left:0; right:0; bottom:102px; overflow:hidden; }
+#layer-wrap { position:absolute; top:38px; left:0; right:0; bottom:102px; overflow:hidden; }
 
-/* ============ TASKBAR (shows running apps, below menubar) ============ */
-#taskbar {
-  position:fixed; top:38px; left:0; right:0; height:34px; z-index:199;
-  display:flex; align-items:center; gap:8px;
-  padding:0 16px; white-space:nowrap;
-  background:rgba(255,255,255,0.38);
-  backdrop-filter:blur(16px) saturate(160%);
-  border-bottom:1px solid rgba(0,0,0,0.06);
-  font-size:11px; letter-spacing:0.02em; color:rgba(40,40,40,0.85);
-  transition:background 0.6s, color 0.6s;
-}
-body[data-theme="night"] #taskbar { background:rgba(0,0,0,0.5); color:rgba(220,228,240,0.9); border-bottom:1px solid rgba(255,255,255,0.08); }
-#taskbar .tb-empty { opacity:0.45; font-style:italic; font-size:10.5px; letter-spacing:0.03em; }
+/* ============ TASKBAR (lives inline inside the menubar's center slot) ============ */
+#taskbar { gap:8px; max-width:46vw; overflow:hidden; font-size:11px; letter-spacing:0.02em; color:inherit; }
+#taskbar .tb-empty { opacity:0.4; font-style:italic; font-size:10.5px; letter-spacing:0.03em; }
 #taskbar.has-apps .tb-empty { display:none; }
-#taskbarItems { display:flex; align-items:center; gap:6px; overflow-x:auto; scrollbar-width:none; }
+#taskbarItems { display:flex; align-items:center; gap:6px; overflow-x:auto; scrollbar-width:none; max-width:46vw; }
 .tb-item {
   display:flex; align-items:center; gap:6px;
-  padding:4px 10px 4px 8px; border-radius:8px; border:1px solid rgba(0,0,0,0.1);
-  background:rgba(255,255,255,0.55); cursor:pointer; font-size:11px; font-weight:600;
-  color:inherit; max-width:150px;
+  padding:3px 8px 3px 7px; border-radius:7px; border:1px solid rgba(0,0,0,0.1);
+  background:rgba(255,255,255,0.5); cursor:pointer; font-size:10.5px; font-weight:600;
+  color:inherit; max-width:130px; flex-shrink:0;
 }
 body[data-theme="night"] .tb-item { background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.14); }
 .tb-item:hover { background:rgba(255,255,255,0.85); }
@@ -639,7 +629,7 @@ body[data-theme="night"] .icon-tile { background:linear-gradient(180deg,#2a2a30,
 }
 #collectionModal .cm-head .dot.close {
   position:relative; z-index:2;
-  width:20px; height:20px; border-radius:50%;
+  width:13px; height:13px; border-radius:50%;
   background:#ff5f57; border:1px solid rgba(0,0,0,0.18);
   cursor:pointer; padding:0; display:inline-flex; align-items:center; justify-content:center;
   color:transparent; transition: color .12s ease;
@@ -1080,7 +1070,7 @@ body[data-theme="night"] .photo-node[data-kind="resume"] .thumb {
 #trashModal.open { display:flex; }
 #trashModal .trash-card { width:min(520px,92vw); max-height:78vh; background:#f6f3ee; border-radius:16px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(0,0,0,0.12); font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif; }
 #trashModal .trash-head { height:38px; background:linear-gradient(#ececef,#dcdce0); border-bottom:1px solid rgba(0,0,0,0.12); display:flex; align-items:center; padding:0 14px; gap:8px; position:relative; }
-#trashModal .trash-close { width:20px; height:20px; border-radius:50%; background:#ff5f57; border:1px solid rgba(0,0,0,0.18); padding:0; }
+#trashModal .trash-close { width:13px; height:13px; border-radius:50%; background:#ff5f57; border:1px solid rgba(0,0,0,0.18); padding:0; }
 #trashModal .trash-title { position:absolute; left:0; right:0; text-align:center; font-size:13px; color:#333; font-weight:600; pointer-events:none; }
 #trashModal .trash-body { padding:16px; overflow:auto; max-height:calc(78vh - 38px); }
 .trash-empty { padding:34px 16px; text-align:center; color:#777; font-size:13px; }
