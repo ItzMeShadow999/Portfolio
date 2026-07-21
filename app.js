@@ -2374,7 +2374,10 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
   closeBtn?.addEventListener('click', close);
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
-  openIcon.addEventListener('click', e => { e.stopPropagation(); open(); });
+  openIcon.addEventListener('dblclick', e => { e.stopPropagation(); open(); });
+  openIcon.addEventListener('click', e => {
+    if (window.matchMedia('(hover: none)').matches) { e.stopPropagation(); open(); }
+  });
 })();
 
 /* ============ My IP (public network info, via a free IP lookup API) ============ */
@@ -2430,7 +2433,10 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
   closeBtn?.addEventListener('click', close);
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
-  openIcon.addEventListener('click', e => { e.stopPropagation(); open(); });
+  openIcon.addEventListener('dblclick', e => { e.stopPropagation(); open(); });
+  openIcon.addEventListener('click', e => {
+    if (window.matchMedia('(hover: none)').matches) { e.stopPropagation(); open(); }
+  });
 })();
 
 /* ============ Bricks game (monochrome brick-breaker — widget + fullscreen modal) ============ */
