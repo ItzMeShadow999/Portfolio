@@ -770,6 +770,33 @@ body[data-theme="night"] .ios-photos-tabs { background:rgba(30,32,38,0.75); colo
 .node.selected .selection-ring { opacity:1; }
 body[data-theme="night"] .node .selection-ring { background:rgba(180,190,205,0.28); }
 .photo-node .thumb::after { display:none; }
+
+/* ---- Right-click-drag marquee (rubber-band) selection box ---- */
+:root {
+  --marquee-border: rgba(24,119,230,0.9);
+  --marquee-fill: rgba(24,119,230,0.14);
+}
+body[data-theme="sky"]    { --marquee-border: rgba(24,119,230,0.9);  --marquee-fill: rgba(24,119,230,0.14); }
+body[data-theme="forest"] { --marquee-border: rgba(86,168,96,0.92);  --marquee-fill: rgba(86,168,96,0.16); }
+body[data-theme="desert"] { --marquee-border: rgba(196,132,58,0.92); --marquee-fill: rgba(196,132,58,0.17); }
+body[data-theme="night"]  { --marquee-border: rgba(150,178,255,0.92); --marquee-fill: rgba(150,178,255,0.16); }
+#marquee-select {
+  position: fixed;
+  left: 0; top: 0; width: 0; height: 0;
+  display: none;
+  border: 1px solid var(--marquee-border);
+  background: var(--marquee-fill);
+  border-radius: 2px;
+  z-index: 9000;
+  pointer-events: none;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.15) inset;
+}
+body.marquee-active,
+body.marquee-active * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+body.marquee-active { cursor: crosshair; }
 .node.selected .node-label { background:#1877e6; color:#fff; border-radius:6px; padding:2px 9px; text-shadow:none; }
 .node.selected .node-sub { color:rgba(255,255,255,0.9); background:#1877e6; border-radius:6px; padding:1px 7px; }
 .node.trashed { display:none !important; }
