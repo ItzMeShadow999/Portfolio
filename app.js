@@ -1118,10 +1118,11 @@ const dock = document.getElementById('dock');
   }
 
   stage.addEventListener('mousedown', e => {
-    if (e.button !== 2) return;
+    if (e.button !== 0 && e.button !== 2) return;
     // Only start a marquee when the drag begins on empty desktop space —
     // not on an icon, the toolbar, dock, or any open modal/menu.
     if (e.target.closest('#widget-rail, #dock, #topbar, #ctx-menu, .modal, .preview-modal, #collectionModal, .node')) return;
+    const button = e.button;
     marqueeStart = { x: e.clientX, y: e.clientY };
     marqueeDragging = false;
     const onMove = (ev) => {
@@ -1147,8 +1148,15 @@ const dock = document.getElementById('dock');
       document.removeEventListener('mousemove', onMove);
       document.removeEventListener('mouseup', onUp);
       if (marqueeDragging) {
-        // A drag happened — swallow the contextmenu event that's about to fire.
-        suppressNextContextMenu = true;
+        if (button === 2) {
+          // A right-click drag just finished — swallow the contextmenu
+          // event that's about to fire for this same gesture.
+          suppressNextContextMenu = true;
+        } else {
+          // A left-click drag just finished — swallow the click event
+          // that's about to fire, so it doesn't clear the new selection.
+          suppressNextStageClick = true;
+        }
         if (marqueeBox) marqueeBox.style.display = 'none';
         document.body.classList.remove('marquee-active');
         window.desktopSfx?.select();
