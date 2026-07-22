@@ -2145,11 +2145,26 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
   position:absolute;
   width:150px; height:150px;
   border-radius:50%;
-  display:none;
   pointer-events:none;
   z-index:10;
   border:3px solid rgba(255,255,255,0.9);
-  box-shadow:0 6px 18px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(0,0,0,0.15);
+  box-shadow:0 8px 32px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(0,0,0,0.15);
   background-repeat:no-repeat;
   background-color:#fff;
+  opacity:0;
+  transform:scale(0.58);
+  transition:opacity .3s ease, transform .3s ease, left .06s linear, top .06s linear;
+  will-change:opacity, transform, left, top;
+}
+.pv-lens.pv-lens-show{
+  opacity:1;
+  transform:scale(1);
+}
+.pv-lens::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:radial-gradient(circle at center, transparent 60%, rgba(255,255,255,0.1) 70%, rgba(255,255,255,0.2) 80%, transparent 100%);
+  pointer-events:none;
 }
