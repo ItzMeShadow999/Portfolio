@@ -105,11 +105,11 @@
     <div class="dp-hgroup">
       <label class="dp-check-row" style="gap:6px;">
         <span>Grid</span>
-        <span class="dp-toggle" id="toggleGrid"><span class="dp-knob"></span></span>
+        <button type="button" class="dp-toggle" id="toggleGrid"><span class="dp-knob"></span></button>
       </label>
       <label class="dp-check-row" style="gap:6px; margin-left:8px;">
         <span>Symmetry</span>
-        <span class="dp-toggle" id="toggleSym"><span class="dp-knob"></span></span>
+        <button type="button" class="dp-toggle" id="toggleSym"><span class="dp-knob"></span></button>
       </label>
     </div>
 
@@ -223,7 +223,7 @@
       <div class="dp-plabel">Canvas</div>
       <div class="dp-check-row">
         <span>Snap to grid</span>
-        <span class="dp-toggle" id="toggleSnap"><span class="dp-knob"></span></span>
+        <button type="button" class="dp-toggle" id="toggleSnap"><span class="dp-knob"></span></button>
       </div>
       <div class="dp-slider-row">
         <div class="dp-srow-top"><span>Grid size</span><b id="gridSizeVal">20px</b></div>
@@ -278,6 +278,23 @@
 </div>
 
 <input type="file" id="fileOpenInput" accept="application/json" style="display:none">
+
+<!-- Right-click context menu -->
+<div class="dp-ctxmenu" id="dpCtxMenu"></div>
+
+<!-- About modal -->
+<div class="dp-modal-back" id="dpAboutModalBack">
+  <div class="dp-modal">
+    <h3>Drawing Pad</h3>
+    <p style="margin:0 0 14px; font-size:12px; line-height:1.6; color:var(--ivory-dim);">
+      Studio Edition — a full-featured drawing pad with layers, brushes, shapes, gradients, symmetry, and PNG export, built right into this desktop.
+    </p>
+    <div class="dp-actions">
+      <button class="dp-hbtn dp-primary" id="dpAboutClose">Close</button>
+    </div>
+  </div>
+</div>
+
   </div>
 </div>
 
