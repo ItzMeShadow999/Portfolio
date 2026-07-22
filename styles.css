@@ -107,6 +107,7 @@ a, button, .di, .wp-swatch, .mp-btn, .node, .folder, .photo-node .thumb, .book, 
   #mobile-statusbar .ms-signal { width:17px; height:11px; fill:currentColor; }
   #mobile-statusbar .ms-wifi   { width:15px; height:11px; fill:currentColor; }
   #mobile-statusbar .ms-bat    { width:26px; height:12px; }
+  #mobile-statusbar .ms-bat-pct { font-size:13px; font-weight:600; font-variant-numeric:tabular-nums; }
   #mobile-statusbar .ms-hamburger {
     margin-left:8px; width:28px; height:28px; border-radius:0;
     background:transparent; border:0; padding:0; cursor:pointer;
@@ -302,6 +303,7 @@ body[data-theme="night"] #copyright { color:rgba(220,228,240,0.55); }
 #menubar .menu-item { opacity:0.6; cursor:default; }
 #menubar .right { display:flex; align-items:center; gap:14px; opacity:0.85; }
 #menubar .status-dot { width:5px; height:5px; border-radius:50%; background:#5aa06a; box-shadow:0 0 0 2px rgba(90,160,106,0.2); }
+#menubar .mb-battery { font-size:12px; font-variant-numeric:tabular-nums; letter-spacing:0.01em; }
 
 /* ============ macOS-style menubar dropdowns ============ */
 #menubar .center { gap:2px; }
