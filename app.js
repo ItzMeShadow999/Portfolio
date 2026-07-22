@@ -85,6 +85,7 @@ ${CURSOR_INTERACTIVE_SELECTOR} { cursor: url('${handGif}') 0 0, auto !important;
   // that's outside any web page's control.
   document.addEventListener('mouseleave', () => { cursorFollower.style.display = 'none'; });
   document.addEventListener('mouseenter', () => { if (activeCursorTheme) cursorFollower.style.display = 'block'; });
+  const cursorPicker = document.getElementById('cursor-picker');
   function applyCursorTheme(theme) {
     if (!CURSOR_THEMES.includes(theme)) { theme = DEFAULT_CURSOR_THEME; }
     activeCursorTheme = theme;
@@ -115,7 +116,6 @@ ${CURSOR_INTERACTIVE_SELECTOR} { cursor: url('${handGif}') 0 0, auto !important;
     applyCursorTheme(DEFAULT_CURSOR_THEME);
   }
   window.__resetCursor = resetCursorStyle;
-  const cursorPicker = document.getElementById('cursor-picker');
   const openCursorPicker = () => { cursorPicker.classList.add('show'); };
   const closeCursorPicker = () => cursorPicker.classList.remove('show');
   document.getElementById('cursorPickerClose').addEventListener('click', closeCursorPicker);
