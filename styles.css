@@ -1998,6 +1998,7 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
   .dp-toggle{
     width:34px; height:19px; border-radius:20px; background:rgba(0,0,0,.35);
     border:1px solid var(--line-light); position:relative; cursor:pointer; flex:none;
+    padding:0; margin:0; -webkit-appearance:none; appearance:none; font:inherit; outline:none;
   }
   .dp-toggle .dp-knob{
     position:absolute; top:1px; left:1px; width:15px; height:15px; border-radius:50%;
@@ -2086,6 +2087,25 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
   }
   .dp-modal .dp-presets button:hover{color:var(--ivory); background:rgba(255,255,255,.1);}
   .dp-modal .dp-actions{display:flex; justify-content:flex-end; gap:8px; margin-top:6px;}
+
+  /* ===================== CONTEXT MENU ===================== */
+  .dp-ctxmenu{
+    position:fixed; z-index:6530; display:none;
+    min-width:180px; padding:5px; border-radius:9px;
+    background:linear-gradient(180deg, var(--rail-2), var(--rail));
+    border:1px solid var(--line-light);
+    box-shadow:0 14px 34px rgba(0,0,0,.5), 0 0 0 1px rgba(0,0,0,.3);
+  }
+  .dp-ctxmenu.dp-show{display:block;}
+  .dp-ctxmenu button{
+    display:flex; align-items:center; gap:9px; width:100%;
+    padding:8px 10px; border-radius:6px; border:none; background:transparent;
+    color:var(--ivory); font-size:12.5px; font-family:var(--font-body);
+    cursor:pointer; text-align:left;
+  }
+  .dp-ctxmenu button:hover{background:rgba(255,255,255,.08);}
+  .dp-ctxmenu button svg{width:14px; height:14px; flex:none; color:var(--brass-light);}
+  .dp-ctxmenu .dp-ctxsep{height:1px; background:var(--line-light); margin:4px 6px;}
 
   .dp-textedit{
     position:absolute; background:transparent; border:1px dashed var(--clay);
