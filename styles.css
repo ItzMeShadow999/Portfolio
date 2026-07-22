@@ -2197,10 +2197,8 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
 /* ===== About Window Scrollbar ===== */
 
 .about-card {
-  overflow: auto;
-
-  --sb-track-color: #c4e4f3;
-  --sb-thumb-color: #3f9bff;
+  --sb-track-color: #d4f1ff;
+  --sb-thumb-color: #9ac9fd;
   --sb-size: 4px;
 
   scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
@@ -2222,6 +2220,7 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
 
 @supports not selector(::-webkit-scrollbar) {
   .about-card {
-    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+    scrollbar-color: var(--sb-thumb-color)
+                     var(--sb-track-color);
   }
 }
