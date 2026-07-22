@@ -2193,3 +2193,29 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
 .wm-max-btn {
   background: #28c840; /* Green for maximize */
 }
+
+/* ===== About Window Scrollbar ===== */
+
+.about-card{
+    scrollbar-width: thin;
+    scrollbar-color: rgba(90,100,120,.45) transparent;
+}
+
+.about-card::-webkit-scrollbar{
+    width:10px;
+}
+
+.about-card::-webkit-scrollbar-track{
+    background:transparent;
+}
+
+.about-card::-webkit-scrollbar-thumb{
+    background:rgba(90,100,120,.35);
+    border-radius:999px;
+    border:2px solid transparent;
+    background-clip:padding-box;
+}
+
+.about-card::-webkit-scrollbar-thumb:hover{
+    background:rgba(90,100,120,.6);
+}
