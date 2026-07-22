@@ -627,7 +627,15 @@
     <div id="taskbarItems"></div>
   </div>
   <div class="right">
-    <span id="menubarBattery" class="mb-battery" style="display:none;"></span>
+    <span id="menubarBattery" class="mb-battery" style="display:none;">
+      <svg class="mb-bat-icon" viewBox="0 0 26 14" aria-hidden="true">
+        <rect x="1" y="1" width="21" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="22.5" y="4.5" width="2" height="5" rx="1" fill="currentColor"/>
+        <rect id="menubarBatFill" class="bat-fill" x="3" y="3" width="0" height="8" rx="1.3"/>
+        <path id="menubarBatBolt" class="bat-bolt" d="M12 2.2L7.2 8.2H10.4L9 13L15 6.4H11.4L12 2.2Z" style="display:none"/>
+      </svg>
+      <span id="menubarBatteryPct" class="mb-battery-pct"></span>
+    </span>
     <span id="datebox">—</span>
     <span id="clock">--:--</span>
   </div>
@@ -737,7 +745,12 @@
     <svg class="ms-ic ms-signal icon" viewBox="0 0 17 11" aria-hidden="true"><use href="./images/icons.svg#icon-status-signal"></use></svg>
     <svg class="ms-ic ms-wifi icon" viewBox="0 0 16 12" aria-hidden="true"><use href="./images/icons.svg#icon-status-wifi"></use></svg>
     <span class="ms-bat-pct" id="msBatteryPct"></span>
-    <svg class="ms-ic ms-bat icon" viewBox="0 0 26 12" aria-hidden="true"><use href="./images/icons.svg#icon-status-battery"></use></svg>
+    <svg class="ms-ic ms-bat icon" viewBox="0 0 26 14" aria-hidden="true">
+      <rect x="1" y="1" width="21" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <rect x="22.5" y="4.5" width="2" height="5" rx="1" fill="currentColor"/>
+      <rect id="msBatFill" class="bat-fill" x="3" y="3" width="0" height="8" rx="1.3"/>
+      <path id="msBatBolt" class="bat-bolt" d="M12 2.2L7.2 8.2H10.4L9 13L15 6.4H11.4L12 2.2Z" style="display:none"/>
+    </svg>
     <button type="button" class="ms-hamburger" id="msHamburger" aria-label="Menu" aria-expanded="false">
       <span></span><span></span><span></span><span></span>
     </button>
