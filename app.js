@@ -123,15 +123,43 @@
     });
   });
 })();
-const clockEl = document.getElementById('clock');
-const dateEl = document.getElementById('datebox');
-function tick() {
-  const d = new Date();
-  const time = d.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', second:'2-digit', hour12:false });
-  clockEl.textContent = time;
-  dateEl.textContent = d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+const desktopClock = document.getElementById('clock');
+const desktopDate = document.getElementById('datebox');
+const lockClock = document.getElementById('lockClock');
+
+function updateClocks() {
+  const now = new Date();
+
+  // Desktop clock (HH:MM:SS)
+  if (desktopClock) {
+    desktopClock.textContent = now.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+  }
+
+  // Desktop date
+  if (desktopDate) {
+    desktopDate.textContent = now.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric'
+    });
+  }
+
+  // Lock screen clock (HH:MM)
+  if (lockClock) {
+    lockClock.textContent = now.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  }
 }
-tick(); setInterval(tick, 1000);
+
+updateClocks();
+setInterval(updateClocks, 1000);
 (function initBatteryIndicators(){
   if (!navigator.getBattery) return;
   const TARGETS = [
