@@ -1894,11 +1894,18 @@ interact.addEventListener('pointerdown', e=>{
   if(!l.visible){ showToast('Active layer is hidden'); }
 
   switch(state.tool){
-    case 'brush': case 'pencil': case 'eraser': {
+    case 'brush': case 'pencil': {
       pushHistory();
       beginStrokeBuffer();
       lastX=x; lastY=y;
       paintDab(x,y);
+      refreshStrokePreview();
+      break;
+    }
+    case 'eraser': {
+      pushHistory();
+      lastX=x; lastY=y;
+      eraseDab(x,y);
       break;
     }
     case 'spray': {
@@ -1956,8 +1963,14 @@ interact.addEventListener('pointermove', e=>{
   const l = activeLayer();
 
   switch(state.tool){
-    case 'brush': case 'pencil': case 'eraser': {
+    case 'brush': case 'pencil': {
       paintLine(lastX,lastY,x,y);
+      lastX=x; lastY=y;
+      refreshStrokePreview();
+      break;
+    }
+    case 'eraser': {
+      eraseLine(lastX,lastY,x,y);
       lastX=x; lastY=y;
       break;
     }
@@ -2019,15 +2032,19 @@ function endStroke(e){
   const l = activeLayer();
 
   switch(state.tool){
-    case 'brush': case 'pencil': case 'eraser': {
+    case 'brush': case 'pencil': {
       if(strokeLayerCtx){
         l.ctx.save();
         l.ctx.globalAlpha = state.opacity/100;
-        if(state.tool==='eraser') l.ctx.globalCompositeOperation='destination-out';
         l.ctx.drawImage(strokeLayerCanvas,0,0);
         l.ctx.restore();
         strokeLayerCanvas=null; strokeLayerCtx=null;
       }
+      octx.clearRect(0,0,overlay.width,overlay.height);
+      renderLayerList();
+      break;
+    }
+    case 'eraser': {
       renderLayerList();
       break;
     }
@@ -2124,6 +2141,33 @@ function paintLine(x0,y0,x1,y1){
   for(let i=0;i<=n;i++){
     const t=i/n;
     paintDab(x0+(x1-x0)*t, y0+(y1-y0)*t);
+  }
+}
+function refreshStrokePreview(){
+  if(!strokeLayerCtx) return;
+  octx.clearRect(0,0,overlay.width,overlay.height);
+  octx.save();
+  octx.globalAlpha = state.opacity/100;
+  octx.drawImage(strokeLayerCanvas,0,0);
+  octx.restore();
+}
+function eraseDab(x,y){
+  const l = activeLayer();
+  l.ctx.save();
+  l.ctx.globalCompositeOperation = 'destination-out';
+  l.ctx.globalAlpha = state.opacity/100;
+  symmetryPoints(x,y).forEach(p=>{
+    stampBrush(l.ctx, p.x, p.y, state.size, '#000000', state.hardness);
+  });
+  l.ctx.restore();
+}
+function eraseLine(x0,y0,x1,y1){
+  const dist = Math.hypot(x1-x0,y1-y0);
+  const step = Math.max(1, state.size/4);
+  const n = Math.max(1, Math.floor(dist/step));
+  for(let i=0;i<=n;i++){
+    const t=i/n;
+    eraseDab(x0+(x1-x0)*t, y0+(y1-y0)*t);
   }
 }
 function sprayAt(x,y){
