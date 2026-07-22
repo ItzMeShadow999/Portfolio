@@ -1883,6 +1883,7 @@ function clearSelectionMarquee(){ selRect=null; octx.clearRect(0,0,overlay.width
 let dragStart=null, movingSelection=false, selMoveOffset=null, selBuffer=null, selOriginRect=null;
 
 interact.addEventListener('pointerdown', e=>{
+  if(e.button !== undefined && e.button !== 0) return;
   if(spaceHeld){ startPan(e); return; }
   interact.setPointerCapture(e.pointerId);
   const {x,y} = getPos(e);
@@ -2392,6 +2393,71 @@ document.addEventListener('keydown', e => {
 });
 const dpNode = document.getElementById('n-drawpad');
 if (dpNode) dpNode.addEventListener('dblclick', e => { e.stopPropagation(); dpOpen(); });
+/* ============================================================
+   RIGHT-CLICK CONTEXT MENU
+   ============================================================ */
+const ctxMenu = document.getElementById('dpCtxMenu');
+const aboutBack = document.getElementById('dpAboutModalBack');
+
+function ctxIcon(d){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`; }
+const CTX_ICONS = {
+  save: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>',
+  brush: '<path d="M4 20L14 10M14 10L20 4L21 5.5C21.5 6 21.5 6.8 21 7.3L15.5 12.5M14 10L18.5 14.5"/><path d="M4 20L6.5 19.5L7 17L4 20Z"/>',
+  info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+};
+
+function hideCtxMenu(){ ctxMenu.classList.remove('dp-show'); }
+
+function showCtxMenu(x, y, items){
+  ctxMenu.innerHTML = items.map(it => {
+    if(it === '-') return '<div class="dp-ctxsep"></div>';
+    return `<button type="button" data-action="${it.action}">${ctxIcon(CTX_ICONS[it.icon]||'')}${it.label}</button>`;
+  }).join('');
+  ctxMenu.querySelectorAll('button[data-action]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      hideCtxMenu();
+      runCtxAction(btn.dataset.action);
+    });
+  });
+  ctxMenu.classList.add('dp-show');
+  // keep menu on-screen
+  const mw = ctxMenu.offsetWidth || 190, mh = ctxMenu.offsetHeight || 90;
+  const vw = window.innerWidth, vh = window.innerHeight;
+  ctxMenu.style.left = Math.min(x, vw - mw - 8) + 'px';
+  ctxMenu.style.top = Math.min(y, vh - mh - 8) + 'px';
+}
+
+function runCtxAction(action){
+  if(action==='save'){ $('btnExport').click(); }
+  else if(action==='brush'){ selectTool('brush'); showToast('Switched to Brush'); }
+  else if(action==='about'){ aboutBack.classList.add('dp-show'); }
+}
+
+canvasFrame.addEventListener('contextmenu', e=>{
+  e.preventDefault();
+  showCtxMenu(e.clientX, e.clientY, [
+    {label:'Save Image', icon:'save', action:'save'},
+    {label:'Change Brush', icon:'brush', action:'brush'},
+  ]);
+});
+
+drawpadModal.addEventListener('contextmenu', e=>{
+  if(e.target.closest('#canvasFrame')) return; // handled above
+  e.preventDefault();
+  showCtxMenu(e.clientX, e.clientY, [
+    {label:'About App', icon:'info', action:'about'},
+  ]);
+});
+
+window.addEventListener('click', e=>{
+  if(!ctxMenu.contains(e.target)) hideCtxMenu();
+});
+window.addEventListener('blur', hideCtxMenu);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') hideCtxMenu(); });
+
+document.getElementById('dpAboutClose')?.addEventListener('click', ()=>aboutBack.classList.remove('dp-show'));
+aboutBack.addEventListener('click', e=>{ if(e.target===aboutBack) aboutBack.classList.remove('dp-show'); });
+
 window.__openDrawpad = dpOpen;
 
 })();
