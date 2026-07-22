@@ -132,13 +132,32 @@ function tick() {
   dateEl.textContent = d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
 }
 tick(); setInterval(tick, 1000);
-(function initMenubarBattery(){
-  const el = document.getElementById('menubarBattery');
-  if (!el || !navigator.getBattery) return;
+(function initBatteryIndicators(){
+  if (!navigator.getBattery) return;
+  const TARGETS = [
+    { wrap:'menubarBattery', fill:'menubarBatFill', bolt:'menubarBatBolt', pct:'menubarBatteryPct', showDisplay:'inline-flex' },
+    { wrap:null,             fill:'msBatFill',       bolt:'msBatBolt',      pct:'msBatteryPct',      showDisplay:null },
+  ];
+  const FILL_MAX = 16; // matches the SVG's inner fill-area width (x=3 to x=19)
+  function colorFor(level){
+    if (level <= 0.2) return '#c0392b'; // red — low
+    if (level <= 0.5) return '#c79a4b'; // amber — medium
+    return '#5aa06a';                   // green — good
+  }
   navigator.getBattery().then(b => {
     function render(){
-      el.textContent = (b.charging ? '⚡ ' : '') + Math.round(b.level*100) + '%';
-      el.style.display = '';
+      const pct = Math.round(b.level * 100);
+      const color = colorFor(b.level);
+      TARGETS.forEach(t => {
+        const fillEl = document.getElementById(t.fill);
+        const boltEl = document.getElementById(t.bolt);
+        const pctEl  = document.getElementById(t.pct);
+        const wrapEl = t.wrap ? document.getElementById(t.wrap) : null;
+        if (fillEl){ fillEl.setAttribute('width', Math.max(0, b.level * FILL_MAX).toFixed(1)); fillEl.style.fill = color; }
+        if (boltEl) boltEl.style.display = b.charging ? '' : 'none';
+        if (pctEl)  pctEl.textContent = pct + '%';
+        if (wrapEl && t.showDisplay) wrapEl.style.display = t.showDisplay;
+      });
     }
     render();
     b.addEventListener('levelchange', render);
@@ -3931,16 +3950,6 @@ function renderBookshelf() {
     c.textContent = now.toLocaleTimeString('en-US', opts);
   }
   tick(); setInterval(tick, 1000);
-  (function initMobileBattery(){
-    const el = document.getElementById('msBatteryPct');
-    if (!el || !navigator.getBattery) return;
-    navigator.getBattery().then(b => {
-      function render(){ el.textContent = Math.round(b.level*100) + '%'; }
-      render();
-      b.addEventListener('levelchange', render);
-      b.addEventListener('chargingchange', render);
-    }).catch(()=>{});
-  })();
   const btn = document.getElementById('msHamburger');
   const sheet = document.getElementById('mobile-sheet');
   const scrim = document.getElementById('mshScrim');
