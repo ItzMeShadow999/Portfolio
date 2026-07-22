@@ -4395,3 +4395,41 @@ function renderBookshelf() {
   });
   window.desktopWM = { minimizeApp, restoreApp, closeApp, toggleMaximize, apps };
 })();
+
+/* ============================================================
+   Right-click / DevTools deterrent (Discord-web style)
+   - Blocks the native browser context menu everywhere EXCEPT
+     places that already show a custom in-app context menu
+     (those call e.preventDefault() themselves above, so this
+     is just a catch-all for every other element on the page).
+   - Blocks common devtools/view-source keyboard shortcuts.
+   - Note: this is a deterrent only. Anyone can still open
+     DevTools via the browser's own menu bar (e.g. Chrome menu
+     > More tools > Developer tools), so treat this as UX
+     polish, not real security.
+   ============================================================ */
+(function () {
+  document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+  }, false);
+
+  document.addEventListener('keydown', function (e) {
+    const key = e.key;
+    const k = typeof key === 'string' ? key.toLowerCase() : '';
+
+    // F12
+    if (key === 'F12') { e.preventDefault(); return; }
+
+    // Ctrl/Cmd + Shift + I / J / C  (DevTools / console / inspect element)
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (k === 'i' || k === 'j' || k === 'c')) {
+      e.preventDefault();
+      return;
+    }
+
+    // Ctrl/Cmd + U (view source)
+    if ((e.ctrlKey || e.metaKey) && k === 'u') {
+      e.preventDefault();
+      return;
+    }
+  }, false);
+})();
