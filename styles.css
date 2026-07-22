@@ -2141,20 +2141,27 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
 
 
 /* ===================== IMAGE PREVIEW — MAGNIFYING LENS ===================== */
-.pv-lens{
+.pv-lens-pos{
   position:absolute;
+  left:0; top:0;
   width:150px; height:150px;
-  border-radius:50%;
   pointer-events:none;
   z-index:10;
+  transform:translate3d(-9999px,-9999px,0);
+}
+.pv-lens{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  pointer-events:none;
   border:3px solid rgba(255,255,255,0.9);
   box-shadow:0 8px 32px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(0,0,0,0.15);
   background-repeat:no-repeat;
   background-color:#fff;
   opacity:0;
   transform:scale(0.58);
-  transition:opacity .3s ease, transform .3s ease, left .06s linear, top .06s linear;
-  will-change:opacity, transform, left, top;
+  transition:opacity .25s ease, transform .25s ease;
+  will-change:opacity, transform;
 }
 .pv-lens.pv-lens-show{
   opacity:1;
