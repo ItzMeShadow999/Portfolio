@@ -2139,3 +2139,17 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
 
   #drawpadModal ::selection{background:var(--brass); color:#1a1509;}
 
+
+/* ===================== IMAGE PREVIEW — MAGNIFYING LENS ===================== */
+.pv-lens{
+  position:absolute;
+  width:150px; height:150px;
+  border-radius:50%;
+  display:none;
+  pointer-events:none;
+  z-index:10;
+  border:3px solid rgba(255,255,255,0.9);
+  box-shadow:0 6px 18px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(0,0,0,0.15);
+  background-repeat:no-repeat;
+  background-color:#fff;
+}
