@@ -1323,6 +1323,7 @@ dItems.forEach(item => {
   });
   document.querySelectorAll('.photo-node').forEach(node => {
     node.addEventListener('dblclick', () => {
+      isMaximized = false;
       const isResume = node.id === 'n-resume';
       modal.querySelector('#pvImg').style.maxHeight = isResume ? 'none' : '44vh';
       modal.querySelector('#pvImg').style.width = isResume ? '100%' : '';
@@ -1456,7 +1457,56 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
   if (!modal) return;
   const open = () => { modal.style.display = 'flex'; window.desktopSfx?.open(); };
   const close = () => { modal.style.display = 'none'; };
+
+  const pvContainer = modal.querySelector('#pvContainer');
+  let isMaximized = false;
+
+  modal.querySelector('#pvMinimize')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    close(); 
+  });
+
+  modal.querySelector('#pvMaximize')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    isMaximized = !isMaximized;
+    if (isMaximized) {
+      pvContainer.style.width = '100vw';
+      pvContainer.style.height = '100vh';
+      pvContainer.style.maxHeight = '100vh';
+      pvContainer.style.borderRadius = '0px';
+    } else {
+      const isResume = modal.classList.contains('resume-preview');
+      pvContainer.style.width = isResume ? 'min(760px, 94vw)' : 'min(460px, 92vw)';
+      pvContainer.style.height = '';
+      pvContainer.style.maxHeight = '92vh';
+      pvContainer.style.borderRadius = '14px';
+    }
+  });
   document.getElementById('aboutClose').addEventListener('click', close);
+  
+  const aboutContainer = modal.firstElementChild;
+  
+  document.getElementById('aboutMinimize')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    close();
+  });
+
+  let aboutMaximized = false;
+  document.getElementById('aboutMaximize')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    aboutMaximized = !aboutMaximized;
+    if (aboutMaximized) {
+      aboutContainer.style.width = '100vw';
+      aboutContainer.style.height = '100vh';
+      aboutContainer.style.maxHeight = '100vh';
+      aboutContainer.style.borderRadius = '0px';
+    } else {
+      aboutContainer.style.width = ''; 
+      aboutContainer.style.height = ''; 
+      aboutContainer.style.maxHeight = ''; 
+      aboutContainer.style.borderRadius = '14px'; 
+    }
+  });
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
   const more = document.getElementById('aboutMore');
@@ -3828,6 +3878,7 @@ function renderBookshelf() {
   }
   document.querySelectorAll('.collection-node').forEach(node => {
     node.addEventListener('dblclick', () => {
+      isMaximized = false;
       const kind = node.getAttribute('data-collection');
       modal.classList.remove('kind-books', 'kind-films', 'kind-photos');
       if (kind === 'books') { title.textContent = 'Bookshelf'; renderBookshelf(); }
