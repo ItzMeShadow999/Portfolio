@@ -23,30 +23,198 @@ a, button, .di, .wp-swatch, .mp-btn, .node, .folder, .photo-node .thumb, .book, 
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.9'/></svg>");
   background-size:240px 240px; opacity:0.28; mix-blend-mode:overlay;
 }
-#loader > * { position:relative; z-index:1; }
-#loader.hide { opacity:0; pointer-events:none; }
-#loader .logo { width:88px; height:88px; object-fit:contain; opacity:1; animation:loaderSpin 4s linear infinite; transform-origin:50% 50%; filter:brightness(0) invert(1) drop-shadow(0 6px 18px rgba(20,40,70,0.45)); }
-#loader .lock-name { font-size:22px; font-weight:600; letter-spacing:-0.01em; color:#ffffff; margin-top:-6px; text-shadow:0 1px 16px rgba(20,40,70,0.35); }
-#loader .lock-role { font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.75); margin-top:-18px; }
-#loader .lock-cta { display:inline-flex; align-items:center; gap:10px; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.9); padding:12px 20px; border:1px solid rgba(255,255,255,0.35); border-radius:999px; background:rgba(255,255,255,0.12); backdrop-filter:blur(6px); user-select:none; }
-#loader .lock-cta svg { width:12px; height:12px; }
-#loader .lock-hint { position:absolute; bottom:28px; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.6); z-index:1; }
-/* Slide-to-unlock (mobile/tablet only) */
-#loader .lock-slider { display:none; width:min(320px, 78vw); margin-top:4px; user-select:none; -webkit-user-select:none; }
-#loader .lock-slider-track { position:relative; height:64px; border-radius:999px; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.3); backdrop-filter:blur(6px); overflow:hidden; }
-#loader .lock-slider-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding-left:56px; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.55); pointer-events:none; background:linear-gradient(90deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0.35) 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; background-size:200% 100%; animation: lockShimmer 2.6s linear infinite; }
-#loader .lock-slider-knob { position:absolute; top:4px; left:4px; width:56px; height:56px; border-radius:50%; background:#fff; color:#222; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,0.28); touch-action:none; cursor:grab; transition:transform 0.28s ease; }
-#loader .lock-slider-knob.dragging { transition:none; cursor:grabbing; }
-#loader .lock-slider-knob svg { width:22px; height:22px; }
-@keyframes lockShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+#loader > * {
+  position: relative;
+  z-index: 1;
+}
+
+#loader.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Loading / logo image */
+#loader .logo {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+  display: block;
+  opacity: 1;
+  animation: loaderSpin 4s linear infinite;
+  transform-origin: center;
+  filter: drop-shadow(0 6px 18px rgba(20, 40, 70, 0.45));
+}
+
+/* Identity */
+#loader .lock-name {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  margin-top: -6px;
+  text-shadow: 0 1px 16px rgba(20, 40, 70, 0.35);
+}
+
+#loader .lock-role {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: -18px;
+}
+
+/* Desktop unlock button */
+#loader .lock-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
+  padding: 12px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+  user-select: none;
+}
+
+#loader .lock-cta svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Bottom hint */
+#loader .lock-hint {
+  position: absolute;
+  bottom: 28px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  z-index: 1;
+}
+
+/* Slide-to-unlock */
+#loader .lock-slider {
+  display: none;
+  width: min(320px, 78vw);
+  margin-top: 4px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#loader .lock-slider-track {
+  position: relative;
+  height: 64px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+}
+
+#loader .lock-slider-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 56px;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 255, 255, 0.35) 100%
+  );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 100%;
+  animation: lockShimmer 2.6s linear infinite;
+}
+
+#loader .lock-slider-knob {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #222222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+  touch-action: none;
+  cursor: grab;
+  transition: transform 0.28s ease;
+}
+
+#loader .lock-slider-knob.dragging {
+  transition: none;
+  cursor: grabbing;
+}
+
+#loader .lock-slider-knob svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Slider text animation */
+@keyframes lockShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Mobile and tablet */
 @media (max-width: 1024px), (pointer: coarse) {
-  #loader .lock-cta { display:none; }
-  #loader .lock-slider { display:block; position:absolute; left:50%; bottom:calc(env(safe-area-inset-bottom, 0px) + 48px); transform:translateX(-50%); margin-top:0; z-index:2; }
-  #loader .lock-hint { bottom:20px; }
-  /* Keep the spinning logo + identity visible underneath the clock */
-  #loader .logo { width:64px; height:64px; margin-top:22vh; }
-  #loader .lock-name { font-size:18px; }
-  #loader .lock-role { font-size:10px; }
+  #loader .lock-cta {
+    display: none;
+  }
+
+  #loader .lock-slider {
+    display: block;
+    position: absolute;
+    left: 50%;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 48px);
+    transform: translateX(-50%);
+    margin-top: 0;
+    z-index: 2;
+  }
+
+  #loader .lock-hint {
+    bottom: 20px;
+  }
+
+  #loader .logo {
+    width: 64px;
+    height: 64px;
+    margin-top: 22vh;
+  }
+
+  #loader .lock-name {
+    font-size: 18px;
+  }
+
+  #loader .lock-role {
+    font-size: 10px;
+  }
+}
 }
 /* iPhone/iPad-style lock clock (all viewports) */
 #loader .lock-clock {
