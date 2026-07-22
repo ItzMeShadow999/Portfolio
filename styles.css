@@ -2196,32 +2196,34 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
 
 /* ===== About Window Scrollbar ===== */
 
-body {
-  --sb-track-color: #c4e4f3;
-  --sb-thumb-color: #3f9bff;
-  --sb-size: 4px;
+.about-card {
+  --sb-track-color: transparent;
+  --sb-thumb-color: rgba(90, 100, 120, 0.35);
+  --sb-size: 8px;
+
+  scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
 }
 
-body::-webkit-scrollbar {
-  width: var(--sb-size)
+.about-card::-webkit-scrollbar {
+  width: var(--sb-size);
 }
 
-body::-webkit-scrollbar-track {
+.about-card::-webkit-scrollbar-track {
   background: var(--sb-track-color);
-  border-radius: 10px;
+  border-radius: 999px;
 }
 
-body::-webkit-scrollbar-thumb {
+.about-card::-webkit-scrollbar-thumb {
   background: var(--sb-thumb-color);
-  border-radius: 10px;
-  
+  border-radius: 999px;
+}
+
+.about-card::-webkit-scrollbar-thumb:hover {
+  --sb-thumb-color: rgba(90, 100, 120, 0.6);
 }
 
 @supports not selector(::-webkit-scrollbar) {
-  body {
-    scrollbar-color: var(--sb-thumb-color)
-                     var(--sb-track-color);
+  .about-card {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
   }
-}
-    background:rgba(90,100,120,.6);
 }
