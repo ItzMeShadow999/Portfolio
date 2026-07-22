@@ -1915,8 +1915,27 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
     overflow-y:auto; padding:14px 12px 20px;
     display:flex; flex-direction:column; gap:16px;
   }
-  .dp-panel::-webkit-scrollbar{width:6px;}
-  .dp-panel::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12); border-radius:4px;}
+  /* ===================== THEMED SCROLLBARS (Drawing Pad only) ===================== */
+  .dp-canvas-zone, .dp-layer-list, .dp-panel{
+    scrollbar-width:thin;
+    scrollbar-color:var(--brass-dim) rgba(0,0,0,.28);
+  }
+  .dp-canvas-zone::-webkit-scrollbar, .dp-layer-list::-webkit-scrollbar, .dp-panel::-webkit-scrollbar{
+    width:10px; height:10px;
+  }
+  .dp-canvas-zone::-webkit-scrollbar-track, .dp-layer-list::-webkit-scrollbar-track, .dp-panel::-webkit-scrollbar-track{
+    background:rgba(0,0,0,.28);
+  }
+  .dp-canvas-zone::-webkit-scrollbar-thumb, .dp-layer-list::-webkit-scrollbar-thumb, .dp-panel::-webkit-scrollbar-thumb{
+    background:linear-gradient(180deg, var(--brass-light), var(--brass-dim));
+    border-radius:20px; border:2px solid transparent; background-clip:padding-box;
+  }
+  .dp-canvas-zone::-webkit-scrollbar-thumb:hover, .dp-layer-list::-webkit-scrollbar-thumb:hover, .dp-panel::-webkit-scrollbar-thumb:hover{
+    background:var(--brass);
+  }
+  .dp-canvas-zone::-webkit-scrollbar-corner, .dp-panel::-webkit-scrollbar-corner{
+    background:transparent;
+  }
 
   .dp-pblock{display:flex; flex-direction:column; gap:9px;}
   .dp-plabel{
