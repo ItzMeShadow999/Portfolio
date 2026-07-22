@@ -1190,12 +1190,42 @@ dItems.forEach(item => {
     lensToggle.style.color      = lensEnabled ? '#fff' : '#555';
     lensToggle.setAttribute('aria-pressed', String(lensEnabled));
   };
-  const hideLens = () => { lensGlass.classList.remove('pv-lens-show'); };
+  const hideLens = () => {
+    lensGlass.classList.remove('pv-lens-show');
+    if (lensRafId != null) { cancelAnimationFrame(lensRafId); lensRafId = null; }
+    lensPrimed = false;
+  };
   const setLensEnabled = (on) => {
     lensEnabled = on;
     setLensToggleVisual();
     lensImg.style.cursor = on ? 'none' : '';
     if (!on) hideLens();
+  };
+
+  // Smooth trailing motion: the lens eases toward the cursor each frame
+  // instead of snapping straight to it, via translate3d (GPU-accelerated,
+  // no layout thrash) + linear interpolation.
+  const LENS_EASE = 0.22;
+  let lensTargetX = 0, lensTargetY = 0;
+  let lensCurX = 0, lensCurY = 0;
+  let lensRafId = null;
+  let lensPrimed = false;
+
+  const renderLens = () => {
+    lensCurX += (lensTargetX - lensCurX) * LENS_EASE;
+    lensCurY += (lensTargetY - lensCurY) * LENS_EASE;
+    lensGlass.style.transform = `translate3d(${lensCurX}px, ${lensCurY}px, 0) scale(1)`;
+
+    const closeEnough = Math.abs(lensTargetX - lensCurX) < 0.4 && Math.abs(lensTargetY - lensCurY) < 0.4;
+    if (!closeEnough) {
+      lensRafId = requestAnimationFrame(renderLens);
+    } else {
+      lensRafId = null;
+    }
+  };
+
+  const kickLensLoop = () => {
+    if (lensRafId == null) lensRafId = requestAnimationFrame(renderLens);
   };
 
   const moveLens = (clientX, clientY) => {
@@ -1208,12 +1238,23 @@ dItems.forEach(item => {
     }
     const size = lensGlass.offsetWidth || 150;
     lensGlass.classList.add('pv-lens-show');
-    lensGlass.style.left = (lensImg.offsetLeft + relX - size / 2) + 'px';
-    lensGlass.style.top  = (lensImg.offsetTop  + relY - size / 2) + 'px';
     lensGlass.style.backgroundImage = `url("${lensImg.currentSrc || lensImg.src}")`;
     lensGlass.style.backgroundSize = `${rect.width * LENS_ZOOM}px ${rect.height * LENS_ZOOM}px`;
     lensGlass.style.backgroundPosition =
       `${-(relX * LENS_ZOOM - size / 2)}px ${-(relY * LENS_ZOOM - size / 2)}px`;
+
+    lensTargetX = lensImg.offsetLeft + relX - size / 2;
+    lensTargetY = lensImg.offsetTop  + relY - size / 2;
+
+    if (!lensPrimed) {
+      // First appearance this hover: jump straight there, no easing-in from a stale spot.
+      lensCurX = lensTargetX;
+      lensCurY = lensTargetY;
+      lensGlass.style.transform = `translate3d(${lensCurX}px, ${lensCurY}px, 0) scale(1)`;
+      lensPrimed = true;
+    } else {
+      kickLensLoop();
+    }
   };
 
   lensToggle.addEventListener('click', (e) => {
