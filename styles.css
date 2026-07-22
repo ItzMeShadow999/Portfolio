@@ -25,7 +25,15 @@ a, button, .di, .wp-swatch, .mp-btn, .node, .folder, .photo-node .thumb, .book, 
 }
 #loader > * { position:relative; z-index:1; }
 #loader.hide { opacity:0; pointer-events:none; }
-#loader .logo { width:88px; height:88px; object-fit:contain; opacity:1; animation:loaderSpin 4s linear infinite; transform-origin:50% 50%; filter:brightness(0) invert(1) drop-shadow(0 6px 18px rgba(20,40,70,0.45)); }
+#loader .logo {
+  width:88px;
+  height:88px;
+  object-fit:contain;
+  opacity:1;
+  animation:loaderSpin 4s linear infinite;
+  transform-origin:50% 50%;
+  filter:drop-shadow(0 6px 18px rgba(20,40,70,0.45));
+}
 #loader .lock-name { font-size:22px; font-weight:600; letter-spacing:-0.01em; color:#ffffff; margin-top:-6px; text-shadow:0 1px 16px rgba(20,40,70,0.35); }
 #loader .lock-role { font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.75); margin-top:-18px; }
 #loader .lock-cta { display:inline-flex; align-items:center; gap:10px; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.9); padding:12px 20px; border:1px solid rgba(255,255,255,0.35); border-radius:999px; background:rgba(255,255,255,0.12); backdrop-filter:blur(6px); user-select:none; }
