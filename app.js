@@ -1190,7 +1190,7 @@ dItems.forEach(item => {
     lensToggle.style.color      = lensEnabled ? '#fff' : '#555';
     lensToggle.setAttribute('aria-pressed', String(lensEnabled));
   };
-  const hideLens = () => { lensGlass.style.display = 'none'; };
+  const hideLens = () => { lensGlass.classList.remove('pv-lens-show'); };
   const setLensEnabled = (on) => {
     lensEnabled = on;
     setLensToggleVisual();
@@ -1207,7 +1207,7 @@ dItems.forEach(item => {
       return;
     }
     const size = lensGlass.offsetWidth || 150;
-    lensGlass.style.display = 'block';
+    lensGlass.classList.add('pv-lens-show');
     lensGlass.style.left = (lensImg.offsetLeft + relX - size / 2) + 'px';
     lensGlass.style.top  = (lensImg.offsetTop  + relY - size / 2) + 'px';
     lensGlass.style.backgroundImage = `url("${lensImg.currentSrc || lensImg.src}")`;
