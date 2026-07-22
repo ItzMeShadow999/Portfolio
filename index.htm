@@ -73,42 +73,211 @@
   </div>
 </div>
 
-<!-- ============ Stickies modal (draw a little sticky note) ============ -->
-<div id="stickiesModal" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6420;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.5);backdrop-filter:blur(8px);">
-  <div style="width:min(640px,94vw);max-height:94vh;background:#fff8a8;border-radius:10px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,0.4),0 0 0 1px rgba(0,0,0,0.14);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;color:#3a2f10;display:flex;flex-direction:column;">
-    <div style="height:38px;background:#f2df76;border-bottom:1px solid rgba(0,0,0,0.12);display:flex;align-items:center;padding:0 12px;gap:10px;flex-shrink:0;">
-      <button type="button" id="stickiesClose" aria-label="Close" style="width:14px;height:14px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.22);padding:0;cursor:pointer;"></button>
-      <span style="font-size:13px;color:#5b4d10;font-weight:650;">Stickies</span>
-      <div style="margin-left:14px;display:flex;gap:2px;">
-        <button type="button" class="st-tab active" data-tab="draw" style="padding:4px 12px;border-radius:6px;border:0;background:rgba(0,0,0,0.12);font:600 11px inherit;color:#3a2f10;cursor:pointer;">✏️ Draw</button>
-        <button type="button" class="st-tab" data-tab="wall" style="padding:4px 12px;border-radius:6px;border:0;background:transparent;font:600 11px inherit;color:#5b4d10;cursor:pointer;">🧱 Wall</button>
+<!-- ============ Drawing Pad modal ============ -->
+<div id="drawpadModal" role="dialog" aria-modal="true">
+  <div class="dp-card">
+<div class="dp-app" id="app">
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="dp-header">
+    <button type="button" id="drawpadClose" aria-label="Close" style="width:14px;height:14px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.2);padding:0;cursor:pointer;flex:none;"></button>
+    <div class="dp-brand">
+      <span class="dp-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20L14 10M14 10L20 4L21 5.5C21.5 6 21.5 6.8 21 7.3L15.5 12.5M14 10L18.5 14.5" stroke="#2a2013" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L6.5 19.5L7 17L4 20Z" fill="#2a2013"/></svg></span>
+      <span>Drawing Pad<br><small>Studio Edition</small></span>
+    </div>
+
+    <div class="dp-hgroup">
+      <button class="dp-hbtn" id="btnUndo" title="Undo (Ctrl+Z)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+      </button>
+      <button class="dp-hbtn" id="btnRedo" title="Redo (Ctrl+Shift+Z)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg>
+      </button>
+    </div>
+
+    <div class="dp-hgroup">
+      <button class="dp-hbtn" id="btnZoomOut" title="Zoom out">−</button>
+      <span class="dp-zoom-readout" id="zoomReadout">100%</span>
+      <button class="dp-hbtn" id="btnZoomIn" title="Zoom in">+</button>
+      <button class="dp-hbtn" id="btnZoomReset" title="Fit / Reset zoom">Fit</button>
+    </div>
+
+    <div class="dp-hgroup">
+      <label class="dp-check-row" style="gap:6px;">
+        <span>Grid</span>
+        <span class="dp-toggle" id="toggleGrid"><span class="dp-knob"></span></span>
+      </label>
+      <label class="dp-check-row" style="gap:6px; margin-left:8px;">
+        <span>Symmetry</span>
+        <span class="dp-toggle" id="toggleSym"><span class="dp-knob"></span></span>
+      </label>
+    </div>
+
+    <div class="dp-header-spacer"></div>
+
+    <div class="dp-hgroup">
+      <button class="dp-hbtn" id="btnNew" title="New canvas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+        New
+      </button>
+      <button class="dp-hbtn" id="btnSaveProject" title="Save project (.json)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+        Save
+      </button>
+      <button class="dp-hbtn" id="btnOpenProject" title="Open project (.json)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
+        Open
+      </button>
+      <button class="dp-hbtn dp-primary" id="btnExport" title="Export PNG">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+        Export
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================== TOOL RAIL ===================== -->
+  <div class="dp-rail" id="toolRail">
+    <!-- populated by JS -->
+  </div>
+
+  <!-- ===================== CANVAS ZONE ===================== -->
+  <div class="dp-canvas-zone" id="canvasZone">
+    <div class="dp-canvas-viewport" id="canvasViewport">
+      <div class="dp-canvas-frame" id="canvasFrame">
+        <span class="dp-tape dp-tl"></span><span class="dp-tape dp-br"></span>
+        <div id="layerStack"></div>
+        <canvas id="overlayCanvas"></canvas>
+        <div class="dp-grid-overlay" id="gridOverlay"></div>
+        <canvas id="interactSurface"></canvas>
       </div>
-      <div id="stDrawTools" style="margin-left:auto;display:flex;gap:6px;align-items:center;">
-        <button type="button" class="st-color" data-c="#3a2f10" aria-label="Ink" style="width:18px;height:18px;border-radius:50%;background:#3a2f10;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.2);cursor:pointer;padding:0;"></button>
-        <button type="button" class="st-color" data-c="#c96b4a" aria-label="Peach" style="width:18px;height:18px;border-radius:50%;background:#c96b4a;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.2);cursor:pointer;padding:0;"></button>
-        <button type="button" class="st-color" data-c="#3068C4" aria-label="Blue" style="width:18px;height:18px;border-radius:50%;background:#3068C4;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.2);cursor:pointer;padding:0;"></button>
-        <button type="button" class="st-color" data-c="#5aa06a" aria-label="Green" style="width:18px;height:18px;border-radius:50%;background:#5aa06a;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.2);cursor:pointer;padding:0;"></button>
-        <button type="button" id="stClear" style="margin-left:6px;padding:4px 10px;border-radius:6px;border:1px solid rgba(0,0,0,0.18);background:#fff9df;font:600 11px inherit;cursor:pointer;">Clear</button>
+    </div>
+  </div>
+  <div class="dp-brush-cursor" id="brushCursor"></div>
+
+  <!-- ===================== SIDE PANEL ===================== -->
+  <div class="dp-panel" id="panel">
+
+    <div class="dp-pblock">
+      <div class="dp-plabel">Color</div>
+      <div class="dp-color-main">
+        <div class="dp-color-pair">
+          <div class="dp-csmall" id="bgSwatch" style="background:#ffffff"></div>
+          <div class="dp-cbig" id="fgSwatch" style="background:#1c1f1a">
+            <input type="color" id="fgPicker" value="#1c1f1a">
+          </div>
+          <input type="color" id="bgPicker" style="opacity:0; position:absolute; width:1px; height:1px;">
+        </div>
+        <button class="dp-color-swap" id="btnSwapColor" title="Swap foreground / background">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3l4 4-4 4"/><path d="M21 7H9a4 4 0 0 0-4 4"/><path d="M7 21l-4-4 4-4"/><path d="M3 17h12a4 4 0 0 0 4-4"/></svg>
+        </button>
+      </div>
+      <div class="dp-hexval" id="hexReadout">#1C1F1A</div>
+      <div class="dp-swatch-row" id="swatchRow"></div>
+    </div>
+
+    <div class="dp-pblock" id="brushControls">
+      <div class="dp-plabel">Brush <span class="dp-mini" id="toolNameReadout">Brush</span></div>
+      <div class="dp-slider-row">
+        <div class="dp-srow-top"><span>Size</span><b id="sizeVal">14px</b></div>
+        <input type="range" id="sizeSlider" min="1" max="300" value="14">
+      </div>
+      <div class="dp-slider-row">
+        <div class="dp-srow-top"><span>Opacity</span><b id="opacityVal">100%</b></div>
+        <input type="range" id="opacitySlider" min="1" max="100" value="100">
+      </div>
+      <div class="dp-slider-row">
+        <div class="dp-srow-top"><span>Hardness</span><b id="hardnessVal">100%</b></div>
+        <input type="range" id="hardnessSlider" min="0" max="100" value="100">
+      </div>
+      <div class="dp-seg" id="shapeFillSeg">
+        <button data-v="stroke" class="dp-on">Outline</button>
+        <button data-v="fill">Filled</button>
+        <button data-v="both">Both</button>
+      </div>
+      <div class="dp-slider-row" id="sidesRow" style="display:none;">
+        <div class="dp-srow-top"><span>Sides</span><b id="sidesVal">5</b></div>
+        <input type="range" id="sidesSlider" min="3" max="12" value="5">
+      </div>
+      <div class="dp-check-row" id="fillToleranceRow" style="display:none; flex-direction:column; align-items:stretch; gap:4px;">
+        <div class="dp-srow-top"><span>Tolerance</span><b id="toleranceVal">32</b></div>
+        <input type="range" id="toleranceSlider" min="0" max="255" value="32">
       </div>
     </div>
 
-    <div id="stDrawPane" style="display:flex;flex-direction:column;overflow:auto;">
-      <canvas id="stCanvas" width="1120" height="820" style="display:block;width:100%;height:auto;background:#fff8a8;cursor:crosshair;touch-action:none;"></canvas>
-      <div style="padding:10px 14px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#fff5a0;border-top:1px solid rgba(0,0,0,0.08);">
-        <input type="text" id="stName" placeholder="Your name (optional)" maxlength="40" style="flex:1;min-width:140px;padding:7px 10px;border-radius:6px;border:1px solid rgba(0,0,0,0.16);background:#fff9df;font:500 12px inherit;color:#3a2f10;">
-        <input type="text" id="stMessage" placeholder="Say hi 👋 (optional)" maxlength="200" style="flex:2;min-width:180px;padding:7px 10px;border-radius:6px;border:1px solid rgba(0,0,0,0.16);background:#fff9df;font:500 12px inherit;color:#3a2f10;">
-        <button type="button" id="stPost" style="padding:8px 16px;border-radius:8px;border:0;background:#3a2f10;color:#fff8a8;font:700 12px inherit;cursor:pointer;letter-spacing:0.02em;">Post to wall ↗</button>
+    <div class="dp-pblock">
+      <div class="dp-plabel">Layers <span class="dp-mini" id="layerCountReadout">1</span></div>
+      <div class="dp-layer-list" id="layerList"></div>
+      <div class="dp-layer-tools">
+        <button class="dp-ltbtn" id="btnAddLayer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add</button>
+        <button class="dp-ltbtn" id="btnDupLayer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="1"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg>Dup</button>
+        <button class="dp-ltbtn" id="btnMergeLayer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v6a2 2 0 0 0 2 2h12M4 4h4M4 4v4"/><path d="M20 20v-6a2 2 0 0 0-2-2H6"/><path d="M20 20h-4M20 20v-4"/></svg>Merge</button>
+        <button class="dp-ltbtn" id="btnDelLayer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V6h12z"/></svg>Del</button>
       </div>
-      <div id="stPostStatus" style="padding:0 14px 10px;font-size:11px;color:#8a7a3a;min-height:16px;">Draw a little sticky · pick a color · add a name and say hi.</div>
+      <div class="dp-slider-row">
+        <div class="dp-srow-top"><span>Layer opacity</span><b id="layerOpacityVal">100%</b></div>
+        <input type="range" id="layerOpacitySlider" min="0" max="100" value="100">
+      </div>
     </div>
 
-    <div id="stWallPane" style="display:none;flex-direction:column;overflow:hidden;background:#fff5a0;">
-      <div id="stWallMeta" style="padding:10px 14px;font-size:11px;color:#8a7a3a;border-bottom:1px solid rgba(0,0,0,0.08);display:flex;justify-content:space-between;align-items:center;gap:8px;">
-        <span>A little wall of hellos from everyone who's passed through.</span>
-        <button type="button" id="stRefresh" style="padding:4px 10px;border-radius:6px;border:1px solid rgba(0,0,0,0.18);background:#fff9df;font:600 11px inherit;cursor:pointer;">Refresh</button>
+    <div class="dp-pblock">
+      <div class="dp-plabel">Canvas</div>
+      <div class="dp-check-row">
+        <span>Snap to grid</span>
+        <span class="dp-toggle" id="toggleSnap"><span class="dp-knob"></span></span>
       </div>
-      <div id="stWallGrid" style="padding:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;overflow:auto;max-height:60vh;background:#fff5a0;"></div>
+      <div class="dp-slider-row">
+        <div class="dp-srow-top"><span>Grid size</span><b id="gridSizeVal">20px</b></div>
+        <input type="range" id="gridSizeSlider" min="5" max="100" value="20">
+      </div>
+      <button class="dp-hbtn" id="btnClearLayer" style="width:100%; justify-content:center;">Clear active layer</button>
     </div>
+
+  </div>
+
+  <!-- ===================== FOOTER ===================== -->
+  <div class="dp-footer">
+    <span>Tool: <b id="statusTool">Brush</b></span>
+    <span>Pos: <b id="statusPos">—, —</b></span>
+    <span>Canvas: <b id="statusSize">1200 × 800</b></span>
+    <span>Zoom: <b id="statusZoom">100%</b></span>
+    <div class="dp-fspacer"></div>
+    <div class="dp-fkeys">
+      <span><kbd>B</kbd>Brush</span>
+      <span><kbd>E</kbd>Eraser</span>
+      <span><kbd>V</kbd>Select</span>
+      <span><kbd>T</kbd>Text</span>
+      <span><kbd>Ctrl+Z</kbd>Undo</span>
+      <span><kbd>Space</kbd>Pan</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="dp-toast" id="toast"></div>
+
+<!-- New canvas modal -->
+<div class="dp-modal-back" id="newModalBack">
+  <div class="dp-modal">
+    <h3>New Canvas</h3>
+    <div class="dp-row">
+      <label>Width<input type="number" id="newW" value="1200" min="16" max="4000"></label>
+      <label>Height<input type="number" id="newH" value="800" min="16" max="4000"></label>
+    </div>
+    <div class="dp-presets">
+      <button data-w="1200" data-h="800">1200×800</button>
+      <button data-w="1920" data-h="1080">1920×1080</button>
+      <button data-w="1080" data-h="1080">Square</button>
+      <button data-w="800" data-h="1200">Portrait</button>
+      <button data-w="2480" data-h="3508">A4</button>
+    </div>
+    <div class="dp-actions">
+      <button class="dp-hbtn" id="btnNewCancel">Cancel</button>
+      <button class="dp-hbtn dp-primary" id="btnNewCreate">Create</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fileOpenInput" accept="application/json" style="display:none">
   </div>
 </div>
 
@@ -721,9 +890,9 @@
       </div>
       <div class="node-label">photos</div><div class="node-sub">Library</div>
     </div>
-    <div class="node" id="n-stickies" style="left:24px; top:940px; --rot:0deg;">
-      <div class="note-thumb" style="background:linear-gradient(160deg,#fff6c9 0%,#ffe89a 55%,#f5d270 100%); box-shadow:0 8px 16px rgba(180,150,60,0.25), inset 0 1.5px 0 rgba(255,255,255,0.8), inset 0 -4px 10px rgba(180,140,50,0.15);"><span>✏️</span></div>
-      <div class="node-label">stickies</div><div class="node-sub">Draw a note</div>
+    <div class="node" id="n-drawpad" style="left:24px; top:940px; --rot:0deg;">
+      <div class="note-thumb" style="background:linear-gradient(160deg,#fff6c9 0%,#ffe89a 55%,#f5d270 100%); box-shadow:0 8px 16px rgba(180,150,60,0.25), inset 0 1.5px 0 rgba(255,255,255,0.8), inset 0 -4px 10px rgba(180,140,50,0.15);"><span>🎨</span></div>
+      <div class="node-label">drawing pad</div><div class="node-sub">Studio edition</div>
     </div>
     <div class="node" id="n-artboard" style="left:24px; top:790px; --rot:-2deg;">
       <div class="note-thumb artboard-thumb" aria-hidden="true">
