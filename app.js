@@ -1417,6 +1417,11 @@ TOOLS.forEach(t=>{
   toolRail.appendChild(btn);
 });
 
+/* ============================================================
+   SELECTION MARQUEE STATE (declared early â referenced by selectTool)
+   ============================================================ */
+let selRect = null; // {x,y,w,h}
+
 function selectTool(id){
   state.tool = id;
   document.querySelectorAll('.dp-tool').forEach(b=>b.classList.toggle('dp-active', b.dataset.tool===id));
@@ -1870,7 +1875,6 @@ function drawShapePath(ctx, tool, x0,y0,x1,y1, sides){
 /* ============================================================
    SELECTION MARQUEE
    ============================================================ */
-let selRect = null; // {x,y,w,h}
 function clearSelectionMarquee(){ selRect=null; octx.clearRect(0,0,overlay.width,overlay.height); }
 
 /* ============================================================
