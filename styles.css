@@ -2196,6 +2196,8 @@ body[data-theme="night"] #hedgehog .hedge-bubble { background:rgba(20,20,20,0.94
 
 /* ===== About Window Scrollbar ===== */
 
+/* ===== About Window Scrollbar ===== */
+
 .about-card {
   --sb-track-color: transparent;
   --sb-thumb-color: rgba(90, 100, 120, 0.35);
