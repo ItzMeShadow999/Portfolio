@@ -4172,40 +4172,41 @@ function renderBookshelf() {
     const closeBtn = document.getElementById(app.closeId);
     if (!closeBtn) return null;
     const header = closeBtn.parentElement;
-    let minBtn = null, maxBtn = null;
-    const s1 = closeBtn.nextElementSibling;
-    const s2 = s1 ? s1.nextElementSibling : null;
-    const looksDecorative = (el) => el && el.tagName === 'SPAN' &&
-      /border-radius\s*:\s*50%/i.test(el.getAttribute('style') || '');
-    if (looksDecorative(s1) && looksDecorative(s2)) {
-      minBtn = s1; maxBtn = s2;
-      minBtn.style.cursor = 'pointer';
-      maxBtn.style.cursor = 'pointer';
-      minBtn.setAttribute('role','button');
-      maxBtn.setAttribute('role','button');
-      minBtn.setAttribute('aria-label','Minimize');
-      maxBtn.setAttribute('aria-label','Maximize');
-    } else {
-      const cs = getComputedStyle(closeBtn);
-      const w = parseFloat(cs.width) || 13;
-      const h = parseFloat(cs.height) || 13;
-      const dim = Math.min(w, h, 16) + 'px'; 
-      minBtn = document.createElement('button');
-      minBtn.type = 'button';
-      minBtn.className = 'wm-btn wm-min-btn';
-      minBtn.style.width = dim; minBtn.style.height = dim;
-      minBtn.style.borderRadius = '50%';
-      minBtn.style.padding = '0';
-      minBtn.setAttribute('aria-label','Minimize');
-      maxBtn = document.createElement('button');
-      maxBtn.type = 'button';
-      maxBtn.className = 'wm-btn wm-max-btn';
-      maxBtn.style.width = dim; maxBtn.style.height = dim;
-      maxBtn.style.borderRadius = '50%';
-      maxBtn.style.padding = '0';
-      maxBtn.setAttribute('aria-label','Maximize');
-      closeBtn.after(minBtn, maxBtn);
+    // Every window's minimize/maximize controls are built the exact same way,
+    // regardless of what markup that window originally shipped with. We used
+    // to try to reuse existing "decorative dot" <span> elements when a window
+    // had them, but a bare <span> isn't excluded by the header's drag-start
+    // check (which only skips real button/input/a/select/textarea elements),
+    // so pointerdown on those dots kicked off a window-drag and captured the
+    // pointer before the dot's own click handler ever fired. That's why some
+    // windows' buttons worked and others silently didn't. Always creating real
+    // <button> elements here — and removing any leftover decorative dots so we
+    // don't end up with duplicates — fixes this everywhere at once.
+    const cs = getComputedStyle(closeBtn);
+    const w = parseFloat(cs.width) || 13;
+    const h = parseFloat(cs.height) || 13;
+    const dim = Math.min(w, h, 16) + 'px';
+    let sib = closeBtn.nextElementSibling;
+    while (sib && sib.tagName === 'SPAN' && /border-radius\s*:\s*50%/i.test(sib.getAttribute('style') || '')) {
+      const next = sib.nextElementSibling;
+      sib.remove();
+      sib = next;
     }
+    const minBtn = document.createElement('button');
+    minBtn.type = 'button';
+    minBtn.className = 'wm-btn wm-min-btn';
+    minBtn.style.width = dim; minBtn.style.height = dim;
+    minBtn.style.borderRadius = '50%';
+    minBtn.style.padding = '0';
+    minBtn.setAttribute('aria-label', 'Minimize');
+    const maxBtn = document.createElement('button');
+    maxBtn.type = 'button';
+    maxBtn.className = 'wm-btn wm-max-btn';
+    maxBtn.style.width = dim; maxBtn.style.height = dim;
+    maxBtn.style.borderRadius = '50%';
+    maxBtn.style.padding = '0';
+    maxBtn.setAttribute('aria-label', 'Maximize');
+    closeBtn.after(minBtn, maxBtn);
     return { header, closeBtn, minBtn, maxBtn };
   }
   function renderTaskbar(){
@@ -4305,7 +4306,7 @@ function renderBookshelf() {
     header.addEventListener('pointerdown', (e) => {
       if (e.button !== 0) return;
       if (app.maximized) return;
-      if (e.target.closest('button, input, a, select, textarea')) return;
+      if (e.target.closest('button, input, a, select, textarea, [role="button"]')) return;
       const card = app.modal.firstElementChild;
       if (!card) return;
       const rect = card.getBoundingClientRect();
