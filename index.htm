@@ -545,8 +545,10 @@
 <!-- ============ This PC (device info) modal ============ -->
 <div id="thisPcModal" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6470;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.55);backdrop-filter:blur(10px);">
   <div style="width:min(520px,94vw);max-height:90vh;background:rgba(246,248,252,0.98);border-radius:12px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,0.4),0 0 0 1px rgba(0,0,0,0.1);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;color:#1a1d24;display:flex;flex-direction:column;">
-    <div style="height:38px;background:rgba(225,230,238,0.9);border-bottom:1px solid rgba(0,0,0,0.1);display:flex;align-items:center;padding:0 12px;gap:10px;flex-shrink:0;">
+    <div style="height:38px;background:rgba(225,230,238,0.9);border-bottom:1px solid rgba(0,0,0,0.1);display:flex;align-items:center;padding:0 12px;gap:8px;flex-shrink:0;">
       <button type="button" id="thisPcClose" aria-label="Close" style="width:14px;height:14px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.22);padding:0;cursor:pointer;"></button>
+      <span style="width:13px;height:13px;border-radius:50%;background:#c8c8ce;border:1px solid rgba(0,0,0,0.18);"></span>
+      <span style="width:13px;height:13px;border-radius:50%;background:#c8c8ce;border:1px solid rgba(0,0,0,0.18);"></span>
       <span style="font-size:13px;font-weight:650;">This PC</span>
       <span style="margin-left:auto;font-size:10.5px;opacity:0.5;letter-spacing:0.04em;">READ FROM YOUR BROWSER</span>
     </div>
@@ -557,8 +559,10 @@
 <!-- ============ My IP (network info) modal ============ -->
 <div id="myIpModal" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6470;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.55);backdrop-filter:blur(10px);">
   <div style="width:min(480px,94vw);max-height:90vh;background:rgba(246,252,249,0.98);border-radius:12px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,0.4),0 0 0 1px rgba(0,0,0,0.1);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;color:#152018;display:flex;flex-direction:column;">
-    <div style="height:38px;background:rgba(220,240,230,0.9);border-bottom:1px solid rgba(0,0,0,0.1);display:flex;align-items:center;padding:0 12px;gap:10px;flex-shrink:0;">
+    <div style="height:38px;background:rgba(220,240,230,0.9);border-bottom:1px solid rgba(0,0,0,0.1);display:flex;align-items:center;padding:0 12px;gap:8px;flex-shrink:0;">
       <button type="button" id="myIpClose" aria-label="Close" style="width:14px;height:14px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.22);padding:0;cursor:pointer;"></button>
+      <span style="width:13px;height:13px;border-radius:50%;background:#c8c8ce;border:1px solid rgba(0,0,0,0.18);"></span>
+      <span style="width:13px;height:13px;border-radius:50%;background:#c8c8ce;border:1px solid rgba(0,0,0,0.18);"></span>
       <span style="font-size:13px;font-weight:650;">My IP</span>
       <span style="margin-left:auto;font-size:10.5px;opacity:0.5;letter-spacing:0.04em;">PUBLIC-FACING NETWORK INFO</span>
     </div>
@@ -576,6 +580,8 @@
       <button type="button" class="dot close" id="cmClose" title="Close" aria-label="Close">
         <svg class="icon" viewBox="0 0 10 10" width="8" height="8" aria-hidden="true"><use href="./images/icons.svg#icon-close-x"></use></svg>
       </button>
+      <span style="width:13px;height:13px;border-radius:50%;background:#c8c8ce;border:1px solid rgba(0,0,0,0.18);"></span>
+      <span style="width:13px;height:13px;border-radius:50%;background:#c8c8ce;border:1px solid rgba(0,0,0,0.18);"></span>
       <span class="cm-title" id="cmTitle">Bookshelf</span>
     </div>
     <div class="cm-body" id="cmBody" tabindex="0"></div>
@@ -731,6 +737,8 @@
   <div class="trash-card">
     <div class="trash-head">
       <button class="trash-close" id="trashClose" aria-label="Close"></button>
+      <span style="width:13px;height:13px;border-radius:50%;background:#c8c8ce;border:1px solid rgba(0,0,0,0.18);"></span>
+      <span style="width:13px;height:13px;border-radius:50%;background:#c8c8ce;border:1px solid rgba(0,0,0,0.18);"></span>
       <span class="trash-title">Recycle Bin</span>
     </div>
     <div class="trash-body" id="trashBody"></div>
