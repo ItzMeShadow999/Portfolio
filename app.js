@@ -4153,20 +4153,14 @@ function renderBookshelf() {
       minBtn.className = 'wm-btn wm-min-btn';
       minBtn.style.width = dim; minBtn.style.height = dim;
       minBtn.style.borderRadius = '50%';
-      minBtn.style.background = '#c6c6ca';
-      minBtn.style.border = '1px solid rgba(0,0,0,0.14)';
       minBtn.style.padding = '0';
-      minBtn.style.cursor = 'pointer';
       minBtn.setAttribute('aria-label','Minimize');
       maxBtn = document.createElement('button');
       maxBtn.type = 'button';
       maxBtn.className = 'wm-btn wm-max-btn';
       maxBtn.style.width = dim; maxBtn.style.height = dim;
       maxBtn.style.borderRadius = '50%';
-      maxBtn.style.background = '#c6c6ca';
-      maxBtn.style.border = '1px solid rgba(0,0,0,0.14)';
       maxBtn.style.padding = '0';
-      maxBtn.style.cursor = 'pointer';
       maxBtn.setAttribute('aria-label','Maximize');
       closeBtn.after(minBtn, maxBtn);
     }
