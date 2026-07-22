@@ -18,6 +18,7 @@
   document.addEventListener('click', () => closeAll(null));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(null); });
   const CURSOR_THEMES = ['Anime', 'Cute', 'MacOS', 'Minecraft', 'Minecraft2', 'Normal Black', 'Normal White -soft', 'RGB'];
+  const DEFAULT_CURSOR_THEME = 'Normal Black'; // what first-time visitors (and "reset") get — matches the CSS fallback in styles.css
   const CURSOR_BASE_PATH = 'cursors';
   const CURSOR_INTERACTIVE_SELECTOR = 'a, button, .di, .wp-swatch, .mp-btn, .node, .folder, .photo-node .thumb, .book, .poster-card, .snake-expand, .sm-close, .restore-btn';
   function cursorFilePath(theme, file) {
@@ -35,7 +36,30 @@
   cursorFollower.appendChild(cursorFollowerImg);
   document.body.appendChild(cursorFollower);
   let activeCursorTheme = null;
-  let cursorFollowerFrame = null; 
+  let cursorFollowerFrame = null;
+  // The floating <img> follower is only accurately positioned AFTER the
+  // first real mousemove event. Until then we must NOT blank the native
+  // cursor (cursor:none), or the visitor would see nothing at all. Instead,
+  // before that first move, we keep the browser's own cursor mechanism
+  // showing the correct themed image via CSS url() — same trick as the
+  // styles.css fallback, just swapped to match the active theme. Once we
+  // have a real position, we switch over to the crisp JS-driven follower
+  // and blank the native one. This guarantees a custom cursor is visible
+  // at every single moment, with zero gap and zero native fallback.
+  let followerReady = false;
+  function updateCursorStyleTag() {
+    if (!activeCursorTheme) return;
+    if (followerReady) {
+      cursorStyleTag.textContent = `* { cursor: none !important; }`;
+    } else {
+      const arrowPng = cursorFilePath(activeCursorTheme, 'Arrow.png');
+      const arrowGif = cursorFilePath(activeCursorTheme, 'Arrow.gif');
+      const handGif = cursorFilePath(activeCursorTheme, 'Working.gif');
+      cursorStyleTag.textContent =
+        `* { cursor: url('${arrowPng}') 0 0, url('${arrowGif}') 0 0, auto !important; }
+${CURSOR_INTERACTIVE_SELECTOR} { cursor: url('${handGif}') 0 0, auto !important; }`;
+    }
+  }
   function setCursorFollowerFrame(frame) {
     if (!activeCursorTheme || cursorFollowerFrame === frame) return;
     cursorFollowerFrame = frame;
@@ -44,38 +68,52 @@
   function onCursorFollowerMove(e) {
     if (!activeCursorTheme) return;
     cursorFollower.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    if (!followerReady) {
+      followerReady = true;
+      updateCursorStyleTag(); // safe to blank native now — follower is positioned correctly
+    }
     const overInteractive = !!(e.target && e.target.closest && e.target.closest(CURSOR_INTERACTIVE_SELECTOR));
     setCursorFollowerFrame(overInteractive ? 'hand' : 'arrow');
   }
   document.addEventListener('mousemove', onCursorFollowerMove);
+  // NOTE: we deliberately do NOT hide the follower or blank cursorStyleTag
+  // on mouseleave/mouseenter anymore — if we did, the moment the pointer
+  // left and re-entered the window (or a nested iframe/menu), there'd be a
+  // window where nothing but the native cursor was left to show. Hiding the
+  // follower div when the OS cursor is genuinely off-window is harmless
+  // because at that point the OS's own (non-web) cursor takes over anyway —
+  // that's outside any web page's control.
   document.addEventListener('mouseleave', () => { cursorFollower.style.display = 'none'; });
   document.addEventListener('mouseenter', () => { if (activeCursorTheme) cursorFollower.style.display = 'block'; });
   function applyCursorTheme(theme) {
-    if (!CURSOR_THEMES.includes(theme)) { resetCursorStyle(); return; }
+    if (!CURSOR_THEMES.includes(theme)) { theme = DEFAULT_CURSOR_THEME; }
     activeCursorTheme = theme;
     cursorFollowerFrame = null;
     setCursorFollowerFrame('arrow');
     cursorFollower.style.display = 'block';
-    cursorStyleTag.textContent = `* { cursor: none !important; }`;
+    updateCursorStyleTag();
     const label = document.getElementById('cursorStyleCurrent');
-    if (label) label.textContent = theme;
+    if (label) label.textContent = theme === DEFAULT_CURSOR_THEME ? `${theme} (Default)` : theme;
     try { localStorage.setItem('cursorThemeV1', theme); } catch(_){}
     updateActiveOption(theme);
   }
+  // "Reset" no longer means "turn the cursor off" — it means "go back to
+  // the default theme." The custom cursor must never be fully disabled, or
+  // the native browser cursor comes back, which is exactly what we're
+  // avoiding everywhere else.
   function resetCursorStyle() {
-    activeCursorTheme = null;
-    cursorFollowerFrame = null;
-    cursorFollower.style.display = 'none';
-    cursorStyleTag.textContent = '';
-    try { localStorage.removeItem('cursorThemeV1'); } catch(_){}
-    const label = document.getElementById('cursorStyleCurrent');
-    if (label) label.textContent = 'Default';
-    updateActiveOption(null);
+    applyCursorTheme(DEFAULT_CURSOR_THEME);
   }
+  // Always apply a theme on load — saved preference if valid, otherwise the
+  // default. There is no "no theme" state; a first-time visitor with no
+  // localStorage entry gets DEFAULT_CURSOR_THEME immediately, matching what
+  // styles.css already painted on first frame, so the swap is invisible.
   try {
     const saved = localStorage.getItem('cursorThemeV1');
-    if (saved && CURSOR_THEMES.includes(saved)) applyCursorTheme(saved);
-  } catch(_){}
+    applyCursorTheme((saved && CURSOR_THEMES.includes(saved)) ? saved : DEFAULT_CURSOR_THEME);
+  } catch(_) {
+    applyCursorTheme(DEFAULT_CURSOR_THEME);
+  }
   window.__resetCursor = resetCursorStyle;
   const cursorPicker = document.getElementById('cursor-picker');
   const openCursorPicker = () => { cursorPicker.classList.add('show'); };
