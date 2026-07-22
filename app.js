@@ -127,11 +127,24 @@ const clockEl = document.getElementById('clock');
 const dateEl = document.getElementById('datebox');
 function tick() {
   const d = new Date();
-  const time = d.toLocaleTimeString('en-US', { timeZone:'UTC', hour:'numeric', minute:'2-digit', second:'2-digit', hour12:false });
-  clockEl.textContent = time + ' UTC';
-  dateEl.textContent = d.toLocaleDateString('en-US', { timeZone:'UTC', month:'short', day:'numeric' });
+  const time = d.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', second:'2-digit', hour12:false });
+  clockEl.textContent = time;
+  dateEl.textContent = d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
 }
 tick(); setInterval(tick, 1000);
+(function initMenubarBattery(){
+  const el = document.getElementById('menubarBattery');
+  if (!el || !navigator.getBattery) return;
+  navigator.getBattery().then(b => {
+    function render(){
+      el.textContent = (b.charging ? '⚡ ' : '') + Math.round(b.level*100) + '%';
+      el.style.display = '';
+    }
+    render();
+    b.addEventListener('levelchange', render);
+    b.addEventListener('chargingchange', render);
+  }).catch(()=>{});
+})();
 (function initDesktopSfx(){
   let ctx, master;
   function ensure(){
@@ -1197,11 +1210,10 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
     const timeEl = document.getElementById('lockTime');
     const dateEl = document.getElementById('lockDate');
     if (!timeEl || !dateEl) return;
-    const tzOpts = { timeZone: 'UTC' };
     function update(){
       const now = new Date();
-      timeEl.textContent = now.toLocaleTimeString('en-US', { ...tzOpts, hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: false }) + ' UTC';
-      dateEl.textContent = now.toLocaleDateString('en-US', { ...tzOpts, weekday: 'short', month: 'short', day: 'numeric' });
+      timeEl.textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: false });
+      dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
     }
     update();
     setInterval(update, 1000);
@@ -3915,10 +3927,20 @@ function renderBookshelf() {
   function tick(){
     if(!c) return;
     const now = new Date();
-    const opts = { hour:'numeric', minute:'2-digit', second:'2-digit', hour12:false, timeZone:'UTC' };
-    c.textContent = now.toLocaleTimeString('en-US', opts) + ' UTC';
+    const opts = { hour:'numeric', minute:'2-digit', second:'2-digit', hour12:false };
+    c.textContent = now.toLocaleTimeString('en-US', opts);
   }
   tick(); setInterval(tick, 1000);
+  (function initMobileBattery(){
+    const el = document.getElementById('msBatteryPct');
+    if (!el || !navigator.getBattery) return;
+    navigator.getBattery().then(b => {
+      function render(){ el.textContent = Math.round(b.level*100) + '%'; }
+      render();
+      b.addEventListener('levelchange', render);
+      b.addEventListener('chargingchange', render);
+    }).catch(()=>{});
+  })();
   const btn = document.getElementById('msHamburger');
   const sheet = document.getElementById('mobile-sheet');
   const scrim = document.getElementById('mshScrim');
