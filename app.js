@@ -1367,9 +1367,9 @@ document.querySelectorAll('a.social, a[href^="http"]').forEach(a => {
     function update(){
       const now = new Date();
 timeEl.textContent = now.toLocaleTimeString('en-US', {
-  hour: '2-digit',
+  hour: 'numeric',
   minute: '2-digit',
-  hour12: false
+  hour12: true
 });
       dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
     }
