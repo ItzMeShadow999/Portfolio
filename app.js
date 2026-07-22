@@ -1123,16 +1123,17 @@ dItems.forEach(item => {
         <span style="width:13px;height:13px;border-radius:50%;background:#c6c6ca;border:1px solid rgba(0,0,0,0.14);display:inline-block;"></span>
         <div id="pvFilename" style="position:absolute;left:0;right:0;text-align:center;font-size:12px;font-weight:600;color:#333;pointer-events:none;"></div>
         <div style="margin-left:auto;display:flex;align-items:center;gap:6px;">
-          <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:22px;border-radius:6px;background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.08);font-size:11px;color:#555;box-shadow:inset 0 -1px 0 rgba(0,0,0,0.04);">−</span>
-          <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:22px;border-radius:6px;background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.08);font-size:11px;color:#555;box-shadow:inset 0 -1px 0 rgba(0,0,0,0.04);">+</span>
-          <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:22px;border-radius:6px;background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.08);color:#555;">
+          <span id="pvZoomOut" title="Zoom out" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:22px;border-radius:6px;background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.08);font-size:11px;color:#555;box-shadow:inset 0 -1px 0 rgba(0,0,0,0.04);cursor:pointer;user-select:none;transition:background .15s,color .15s,opacity .15s;">−</span>
+          <span id="pvZoomIn" title="Zoom in" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:22px;border-radius:6px;background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.08);font-size:11px;color:#555;box-shadow:inset 0 -1px 0 rgba(0,0,0,0.04);cursor:pointer;user-select:none;transition:background .15s,color .15s,opacity .15s;">+</span>
+          <span id="pvLensToggle" title="Loupe (click to enable, hover image to zoom)" role="button" tabindex="0" aria-pressed="false" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:22px;border-radius:6px;background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.08);color:#555;cursor:pointer;transition:background .15s,color .15s;">
             <svg width="12" height="12" viewBox="0 0 24 24"><use href="./images/icons.svg#icon-search"></use></svg>
           </span>
         </div>
       </div>
-      <div id="pvScroll" style="overflow-y:auto;flex:1 1 auto;min-height:0;">
-      <div style="padding:24px 32px 10px;display:flex;align-items:flex-start;justify-content:center;">
-        <img id="pvImg" alt="" style="max-width:100%;max-height:44vh;object-fit:contain;border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,0.18);">
+      <div id="pvScroll" style="overflow:auto;flex:1 1 auto;min-height:0;">
+      <div id="pvImgWrap" style="padding:24px 32px 10px;display:flex;align-items:flex-start;justify-content:center;position:relative;">
+        <img id="pvImg" alt="" style="max-width:100%;max-height:44vh;object-fit:contain;border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,0.18);transition:transform .15s ease;">
+        <div id="pvLens" class="pv-lens"></div>
       </div>
       <div style="padding:14px 32px 6px;text-align:center;">
         <div id="pvTitle" style="font-size:24px;font-weight:700;color:#111;letter-spacing:-0.01em;"></div>
@@ -1144,7 +1145,98 @@ dItems.forEach(item => {
       </div>
     </div>`;
   document.body.appendChild(modal);
-  const close = () => { modal.style.display = 'none'; };
+
+  // ---------- Zoom (+ / −) ----------
+  const zoomOutBtn = modal.querySelector('#pvZoomOut');
+  const zoomInBtn  = modal.querySelector('#pvZoomIn');
+  const pvImgEl    = modal.querySelector('#pvImg');
+  const ZOOM_MIN = 0.5, ZOOM_MAX = 3, ZOOM_STEP = 0.25;
+  let zoomLevel = 1;
+
+  const applyZoom = () => {
+    pvImgEl.style.transform = `scale(${zoomLevel})`;
+    pvImgEl.style.transformOrigin = 'center center';
+    const atMin = zoomLevel <= ZOOM_MIN;
+    const atMax = zoomLevel >= ZOOM_MAX;
+    zoomOutBtn.style.opacity = atMin ? '0.4' : '1';
+    zoomOutBtn.style.cursor  = atMin ? 'default' : 'pointer';
+    zoomInBtn.style.opacity  = atMax ? '0.4' : '1';
+    zoomInBtn.style.cursor   = atMax ? 'default' : 'pointer';
+  };
+  const resetZoom = () => { zoomLevel = 1; applyZoom(); };
+
+  zoomInBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    zoomLevel = Math.min(ZOOM_MAX, +(zoomLevel + ZOOM_STEP).toFixed(2));
+    applyZoom();
+  });
+  zoomOutBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    zoomLevel = Math.max(ZOOM_MIN, +(zoomLevel - ZOOM_STEP).toFixed(2));
+    applyZoom();
+  });
+  applyZoom();
+
+  // ---------- Magnifying lens ----------
+  const lensToggle = modal.querySelector('#pvLensToggle');
+  const lensWrap   = modal.querySelector('#pvImgWrap');
+  const lensImg    = modal.querySelector('#pvImg');
+  const lensGlass  = modal.querySelector('#pvLens');
+  const LENS_ZOOM  = 2.5;
+  let lensEnabled  = false;
+
+  const setLensToggleVisual = () => {
+    lensToggle.style.background = lensEnabled ? '#2f7bff' : 'rgba(255,255,255,0.7)';
+    lensToggle.style.color      = lensEnabled ? '#fff' : '#555';
+    lensToggle.setAttribute('aria-pressed', String(lensEnabled));
+  };
+  const hideLens = () => { lensGlass.style.display = 'none'; };
+  const setLensEnabled = (on) => {
+    lensEnabled = on;
+    setLensToggleVisual();
+    lensImg.style.cursor = on ? 'none' : '';
+    if (!on) hideLens();
+  };
+
+  const moveLens = (clientX, clientY) => {
+    const rect = lensImg.getBoundingClientRect();
+    let relX = clientX - rect.left;
+    let relY = clientY - rect.top;
+    if (relX < 0 || relY < 0 || relX > rect.width || relY > rect.height || !rect.width || !rect.height) {
+      hideLens();
+      return;
+    }
+    const size = lensGlass.offsetWidth || 150;
+    lensGlass.style.display = 'block';
+    lensGlass.style.left = (lensImg.offsetLeft + relX - size / 2) + 'px';
+    lensGlass.style.top  = (lensImg.offsetTop  + relY - size / 2) + 'px';
+    lensGlass.style.backgroundImage = `url("${lensImg.currentSrc || lensImg.src}")`;
+    lensGlass.style.backgroundSize = `${rect.width * LENS_ZOOM}px ${rect.height * LENS_ZOOM}px`;
+    lensGlass.style.backgroundPosition =
+      `${-(relX * LENS_ZOOM - size / 2)}px ${-(relY * LENS_ZOOM - size / 2)}px`;
+  };
+
+  lensToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setLensEnabled(!lensEnabled);
+  });
+  lensToggle.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLensEnabled(!lensEnabled); }
+  });
+  // Hovering the toggle itself previews the lens over the image without pinning it on.
+  lensToggle.addEventListener('mouseenter', () => { if (!lensEnabled) setLensEnabled(true); });
+
+  lensWrap.addEventListener('mousemove', (e) => {
+    if (!lensEnabled) return;
+    moveLens(e.clientX, e.clientY);
+  });
+  lensWrap.addEventListener('mouseenter', (e) => {
+    if (!lensEnabled) return;
+    moveLens(e.clientX, e.clientY);
+  });
+  lensWrap.addEventListener('mouseleave', hideLens);
+
+  const close = () => { modal.style.display = 'none'; setLensEnabled(false); resetZoom(); };
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
   modal.querySelector('#pvClose').addEventListener('click', close);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
@@ -1183,6 +1275,8 @@ dItems.forEach(item => {
       modal.querySelector('#pvMeta').innerHTML = rows.map(
         ([k,v]) => `<div style="color:#8a8a90;text-align:right;">${k}</div><div style="color:#111;">${v}</div>`
       ).join('');
+      setLensEnabled(false);
+      resetZoom();
       modal.style.display = 'flex';
     });
   });
