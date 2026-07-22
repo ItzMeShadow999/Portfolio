@@ -780,9 +780,11 @@ document.getElementById('stage').addEventListener('click', () => {
   }
   function open(){ modal?.classList.add('open'); render(); window.desktopSfx?.open(); }
   function close(){ modal?.classList.remove('open'); }
-  function move(node){
+  function move(node, originalPos){
     if (!node || node.classList.contains('trashed')) return;
-    trashed.set(node.id, { id:node.id, name:nameFor(node), left:node.style.left, top:node.style.top });
+    const left = originalPos ? (originalPos.x + 'px') : node.style.left;
+    const top  = originalPos ? (originalPos.y + 'px') : node.style.top;
+    trashed.set(node.id, { id:node.id, name:nameFor(node), left, top });
     node.classList.add('trashed');
     node.classList.remove('selected');
     render();
@@ -894,7 +896,7 @@ document.getElementById('stage').addEventListener('click', () => {
       if (moved) {
         const stopClick = ev => { ev.stopPropagation(); ev.preventDefault(); node.removeEventListener('click', stopClick, true); };
         node.addEventListener('click', stopClick, true);
-        if (overTrash) window.desktopTrash?.move(node);
+        if (overTrash) window.desktopTrash?.move(node, startPos);
         else window.desktopSfx?.drop();
       }
     }
