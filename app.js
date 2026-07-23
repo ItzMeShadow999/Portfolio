@@ -1430,6 +1430,7 @@ timeEl.textContent = now.toLocaleTimeString('en-US', {
     if (scWidget) { scWidgetReady ? onReady?.(scWidget) : scWidget.bind(SC.Widget.Events.READY, () => onReady?.(scWidget)); return; }
     scWidget = SC.Widget(iframe);
     scWidget.bind(SC.Widget.Events.READY, () => { scWidgetReady = true; onReady?.(scWidget); });
+    scWidget.bind(SC.Widget.Events.FINISH, () => cdPlayNext());
   }
   function playUnlockTrack(){
     ensureUnlockWidget(w => { try { w?.play(); } catch(_) {} });
@@ -1442,16 +1443,16 @@ timeEl.textContent = now.toLocaleTimeString('en-US', {
 
   // ---- CD → mini playlist player (kiyosumi tracks) ----
   const CD_TRACKS = [
-    { id:'2115234165', title:'repeat',                art:'https://i1.sndcdn.com/artworks-e0m01UdYC9lAJmli-trsbVg-t120x120.png' },
     { id:'1647100107', title:'disorder, disbelief', art:'https://i1.sndcdn.com/artworks-Tf0h4Snp4C6XKNIl-4I7cJg-t120x120.jpg' },
+    { id:'2115234165', title:'repeat',                art:'https://i1.sndcdn.com/artworks-e0m01UdYC9lAJmli-trsbVg-t120x120.png' },
+    { id:'1647100155', title:'certain',               art:'https://i1.sndcdn.com/artworks-Tf0h4Snp4C6XKNIl-4I7cJg-t120x120.jpg' },
     { id:'1647101973', title:'おやすみ',              art:'https://i1.sndcdn.com/artworks-qwmJ3lM2IuN6lWbU-VdZT9w-t120x120.jpg' },
     { id:'1647101952', title:'thinking of you',       art:'https://i1.sndcdn.com/artworks-qwmJ3lM2IuN6lWbU-VdZT9w-t120x120.jpg' },
-    { id:'1647100155', title:'certain',               art:'https://i1.sndcdn.com/artworks-Tf0h4Snp4C6XKNIl-4I7cJg-t120x120.jpg' },
     { id:'1647100128', title:'loose ties',            art:'https://i1.sndcdn.com/artworks-Tf0h4Snp4C6XKNIl-4I7cJg-t120x120.jpg' },
     { id:'1647100089', title:'jump off',              art:'https://i1.sndcdn.com/artworks-Tf0h4Snp4C6XKNIl-4I7cJg-t120x120.jpg' },
     { id:'1647099510', title:'眠れない',                art:'https://i1.sndcdn.com/artworks-CmicXiN9YDMq54Rw-UrJwJg-t120x120.jpg' },
   ];
-  let cdActiveIndex = 1; // 'disorder, disbelief' — matches the iframe's initial src
+  let cdActiveIndex = 0; // 'disorder, disbelief' — matches the iframe's initial src
   let cdIsPlaying = false;
   const cdPlayer   = document.getElementById('cdPlayer');
   const cdList     = document.getElementById('cdList');
@@ -1499,6 +1500,12 @@ timeEl.textContent = now.toLocaleTimeString('en-US', {
       if (!w) return;
       try { w.load(`https://api.soundcloud.com/tracks/${trackId}`, { auto_play: true }); cdSetPlayIcon(true); } catch(_) {}
     });
+  }
+  function cdPlayNext(){
+    if (!CD_TRACKS.length) return;
+    cdActiveIndex = (cdActiveIndex + 1) % CD_TRACKS.length;
+    cdRenderNow(cdActiveIndex);
+    cdLoadAndPlay(CD_TRACKS[cdActiveIndex].id);
   }
   if (cdPlayer) {
     cdBuildList();
