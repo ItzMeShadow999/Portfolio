@@ -1911,7 +1911,18 @@ function initCanvas(w,h, keepLayers){
   renderLayerList();
   fitZoom();
 }
-initCanvas(1200,800,false);
+// Default canvas now matches the user's actual screen/monitor resolution
+// (falls back to 1200x800 only if screen dimensions are unavailable).
+function getScreenCanvasSize(){
+  const dpr = window.devicePixelRatio || 1;
+  const w = Math.round((window.screen && window.screen.width  ? window.screen.width  : 1200) * dpr);
+  const h = Math.round((window.screen && window.screen.height ? window.screen.height : 800)  * dpr);
+  return { w: w || 1200, h: h || 800 };
+}
+{
+  const s = getScreenCanvasSize();
+  initCanvas(s.w, s.h, false);
+}
 
 function activeLayer(){ return state.layers[state.activeLayer]; }
 
@@ -2822,11 +2833,20 @@ $('fileOpenInput').addEventListener('change', e=>{
 $('btnNew').addEventListener('click', ()=>$('newModalBack').classList.add('dp-show'));
 $('btnNewCancel').addEventListener('click', ()=>$('newModalBack').classList.remove('dp-show'));
 document.querySelectorAll('.dp-modal .dp-presets button').forEach(b=>{
+  if(b.dataset.screen){
+    // "My Screen" preset: fill in the user's actual monitor resolution
+    b.addEventListener('click', ()=>{
+      const s = getScreenCanvasSize();
+      $('newW').value = s.w; $('newH').value = s.h;
+    });
+    return;
+  }
   b.addEventListener('click', ()=>{ $('newW').value=b.dataset.w; $('newH').value=b.dataset.h; });
 });
 $('btnNewCreate').addEventListener('click', ()=>{
-  const w = Math.max(16, +$('newW').value||1200);
-  const h = Math.max(16, +$('newH').value||800);
+  // No artificial upper bound — canvas size is only limited by the browser/device itself.
+  const w = Math.max(1, Math.round(+$('newW').value) || 1200);
+  const h = Math.max(1, Math.round(+$('newH').value) || 800);
   initCanvas(w,h,false);
   $('newModalBack').classList.remove('dp-show');
   showToast('New canvas created');
