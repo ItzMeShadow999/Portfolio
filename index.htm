@@ -649,6 +649,24 @@
     <div id="taskbarItems"></div>
   </div>
   <div class="right">
+    <span id="menubarWifi" class="mb-wifi" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Wi-Fi status and speed test">
+      <svg class="mb-wifi-icon" viewBox="0 0 24 18" aria-hidden="true">
+        <circle cx="12" cy="15.2" r="1.7" fill="currentColor"/>
+        <path d="M7 11.6a7.2 7.2 0 0 1 10 0" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+        <path d="M3.2 7.6a12.9 12.9 0 0 1 17.6 0" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+      </svg>
+      <div class="wifi-tip" id="wifiTip">Wi-Fi Connected</div>
+      <div class="wifi-pop" id="wifiPop" role="dialog" aria-label="Internet speed test">
+        <div class="wifi-pop-head">
+          <span class="wifi-pop-title">Wi-Fi</span>
+          <span class="wifi-pop-net">This Network</span>
+        </div>
+        <div class="wifi-pop-row"><span class="wifi-pop-label">Ping</span><span class="wifi-pop-val" id="wifiPing">—</span></div>
+        <div class="wifi-pop-row"><span class="wifi-pop-label">Download</span><span class="wifi-pop-val" id="wifiDown">—</span></div>
+        <div class="wifi-pop-row"><span class="wifi-pop-label">Upload</span><span class="wifi-pop-val" id="wifiUp">—</span></div>
+        <div class="wifi-pop-status" id="wifiStatus">Testing…</div>
+      </div>
+    </span>
     <span id="menubarBattery" class="mb-battery" style="display:none;">
       <svg class="mb-bat-icon" viewBox="0 0 26 14" aria-hidden="true">
         <rect x="1" y="1" width="21" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
