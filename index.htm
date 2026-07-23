@@ -277,10 +277,11 @@
   <div class="dp-modal">
     <h3>New Canvas</h3>
     <div class="dp-row">
-      <label>Width<input type="number" id="newW" value="1200" min="16" max="4000"></label>
-      <label>Height<input type="number" id="newH" value="800" min="16" max="4000"></label>
+      <label>Width<input type="number" id="newW" value="1200" min="1" step="1"></label>
+      <label>Height<input type="number" id="newH" value="800" min="1" step="1"></label>
     </div>
     <div class="dp-presets">
+      <button id="btnPresetScreen" data-screen="1">My Screen</button>
       <button data-w="1200" data-h="800">1200×800</button>
       <button data-w="1920" data-h="1080">1920×1080</button>
       <button data-w="1080" data-h="1080">Square</button>
