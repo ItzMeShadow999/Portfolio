@@ -212,16 +212,25 @@ tick(); setInterval(tick, 1000);
   const statusEl = document.getElementById('wifiStatus');
 
   // Hover: quick browser-estimated connection info (Network Information API where supported)
+  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
   function updateTip(){
-    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     if (conn && typeof conn.downlink === 'number' && conn.downlink > 0) {
       tip.textContent = `≈ ${conn.downlink.toFixed(1)} Mbps · ${conn.effectiveType ? conn.effectiveType.toUpperCase() : 'Wi-Fi'}`;
     } else {
       tip.textContent = 'Wi-Fi Connected';
     }
   }
-  wrap.addEventListener('mouseenter', updateTip);
   updateTip();
+  // Live: push updates the instant the browser reports a connection change (works even off-hover)...
+  if (conn && conn.addEventListener) conn.addEventListener('change', updateTip);
+  // ...and keep refreshing every couple seconds while actually hovered, for browsers without that event.
+  let tipTimer = null;
+  wrap.addEventListener('mouseenter', () => {
+    updateTip();
+    clearInterval(tipTimer);
+    tipTimer = setInterval(updateTip, 2000);
+  });
+  wrap.addEventListener('mouseleave', () => clearInterval(tipTimer));
 
   // A real same-origin asset to measure download throughput against (cache-busted every run).
   const DOWNLOAD_ASSET = 'images/Background.png';
@@ -255,7 +264,9 @@ tick(); setInterval(tick, 1000);
     return fmtMbps(size, seconds);
   }
 
+  const LIVE_INTERVAL_MS = 4000;
   let testing = false;
+  let liveTimer = null;
   async function runSpeedTest(){
     if (testing) return;
     testing = true;
@@ -273,8 +284,18 @@ tick(); setInterval(tick, 1000);
       const up = await measureUpload();
       upEl.textContent = up > 0 ? `${up.toFixed(1)} Mbps` : 'n/a';
     } catch(_) { upEl.textContent = 'n/a'; }
-    statusEl.textContent = 'Approximate · click to retest';
+    statusEl.textContent = 'Live · updating…';
     testing = false;
+  }
+
+  function startLive(){
+    runSpeedTest();
+    clearInterval(liveTimer);
+    liveTimer = setInterval(runSpeedTest, LIVE_INTERVAL_MS);
+  }
+  function stopLive(){
+    clearInterval(liveTimer);
+    liveTimer = null;
   }
 
   wrap.addEventListener('click', (e) => {
@@ -283,13 +304,17 @@ tick(); setInterval(tick, 1000);
     const willOpen = !wrap.classList.contains('open');
     wrap.classList.toggle('open', willOpen);
     wrap.setAttribute('aria-expanded', String(willOpen));
-    if (willOpen) runSpeedTest();
+    if (willOpen) startLive(); else stopLive();
   });
   wrap.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); wrap.click(); }
   });
-  document.addEventListener('click', () => { wrap.classList.remove('open'); wrap.setAttribute('aria-expanded', 'false'); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { wrap.classList.remove('open'); wrap.setAttribute('aria-expanded', 'false'); } });
+  document.addEventListener('click', () => {
+    wrap.classList.remove('open'); wrap.setAttribute('aria-expanded', 'false'); stopLive();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { wrap.classList.remove('open'); wrap.setAttribute('aria-expanded', 'false'); stopLive(); }
+  });
 })();
 (function initDesktopSfx(){
   let ctx, master;
