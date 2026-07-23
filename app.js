@@ -223,12 +223,13 @@ tick(); setInterval(tick, 1000);
   updateTip();
   // Live: push updates the instant the browser reports a connection change (works even off-hover)...
   if (conn && conn.addEventListener) conn.addEventListener('change', updateTip);
-  // ...and keep refreshing every couple seconds while actually hovered, for browsers without that event.
+  // ...and keep refreshing while actually hovered (slow interval — this is just a rough estimate, not the speed test).
+  const TIP_INTERVAL_MS = 10 * 60 * 1000; // 10 min
   let tipTimer = null;
   wrap.addEventListener('mouseenter', () => {
     updateTip();
     clearInterval(tipTimer);
-    tipTimer = setInterval(updateTip, 2000);
+    tipTimer = setInterval(updateTip, TIP_INTERVAL_MS);
   });
   wrap.addEventListener('mouseleave', () => clearInterval(tipTimer));
 
@@ -270,7 +271,6 @@ tick(); setInterval(tick, 1000);
   async function runSpeedTest(){
     if (testing) return;
     testing = true;
-    pingEl.textContent = downEl.textContent = upEl.textContent = '—';
     statusEl.textContent = 'Testing…';
     try {
       const ping = await measurePing();
