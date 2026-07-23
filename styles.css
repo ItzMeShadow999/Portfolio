@@ -1,6 +1,19 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 html,body { width:100%; height:100%; overflow:hidden; font-family:"Courier New",monospace; background:#0a0e14; }
 
+/* ============ Accessibility: visible keyboard focus ============
+   Nothing in this file previously drew a focus ring, so keyboard/switch
+   users had no way to see which control was active. This restores a
+   visible outline on every interactive element without disturbing the
+   custom-cursor / mouse styling above. */
+a:focus-visible, button:focus-visible, [role="button"]:focus-visible,
+[tabindex]:focus-visible, input:focus-visible, select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #5aa7ff;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
 /* ============ BASE FALLBACK CURSOR ============
    The ONLY cursor rule in plain CSS. It paints the instant the page renders
    (styles.css is render-blocking, loaded in <head>), so the native OS/browser
@@ -83,14 +96,16 @@ html,body { width:100%; height:100%; overflow:hidden; font-family:"Courier New",
 @media (max-width: 1024px), (pointer: coarse) {
   #loader .cd-panel { width:min(272px, 78vw); }
 }
-#loader .lock-role { font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.75); margin-top:-18px; }
-#loader .lock-cta { display:inline-flex; align-items:center; gap:10px; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.9); padding:12px 20px; border:1px solid rgba(255,255,255,0.35); border-radius:999px; background:rgba(255,255,255,0.12); backdrop-filter:blur(6px); user-select:none; }
-#loader .lock-cta svg { width:12px; height:12px; }
-#loader .lock-hint { position:absolute; bottom:28px; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.6); z-index:1; }
+#loader .lock-role { font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.85); margin-top:-18px; text-shadow:0 1px 12px rgba(15,25,45,0.4); }
+#loader .lock-cta { display:inline-flex; align-items:center; gap:10px; font-size:12px; font-weight:600; letter-spacing:0.22em; text-transform:uppercase; color:#ffffff; padding:14px 26px; border:1px solid rgba(255,255,255,0.55); border-radius:999px; background:rgba(15,25,45,0.55); backdrop-filter:blur(6px); user-select:none; box-shadow:0 6px 22px rgba(10,18,35,0.35), 0 0 0 1px rgba(255,255,255,0.05) inset; animation: lockCtaPulse 2.6s ease-in-out infinite; transition:background .2s ease, transform .2s ease; }
+#loader:hover .lock-cta, #loader:focus-visible .lock-cta { background:rgba(15,25,45,0.72); transform:translateY(-1px); }
+#loader .lock-cta svg { width:13px; height:13px; }
+@keyframes lockCtaPulse { 0%,100% { box-shadow:0 6px 22px rgba(10,18,35,0.35), 0 0 0 1px rgba(255,255,255,0.05) inset, 0 0 0 0 rgba(255,255,255,0.25); } 50% { box-shadow:0 6px 22px rgba(10,18,35,0.35), 0 0 0 1px rgba(255,255,255,0.05) inset, 0 0 0 8px rgba(255,255,255,0); } }
+#loader .lock-hint { position:absolute; bottom:28px; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.85); text-shadow:0 1px 10px rgba(15,25,45,0.45); z-index:1; }
 /* Slide-to-unlock (mobile/tablet only) */
 #loader .lock-slider { display:none; width:min(320px, 78vw); margin-top:4px; user-select:none; -webkit-user-select:none; }
-#loader .lock-slider-track { position:relative; height:64px; border-radius:999px; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.3); backdrop-filter:blur(6px); overflow:hidden; }
-#loader .lock-slider-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding-left:56px; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.55); pointer-events:none; background:linear-gradient(90deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0.35) 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; background-size:200% 100%; animation: lockShimmer 2.6s linear infinite; }
+#loader .lock-slider-track { position:relative; height:64px; border-radius:999px; background:rgba(15,25,45,0.45); border:1px solid rgba(255,255,255,0.4); backdrop-filter:blur(6px); overflow:hidden; }
+#loader .lock-slider-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding-left:56px; font-size:12px; font-weight:600; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.7); pointer-events:none; background:linear-gradient(90deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.6) 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; background-size:200% 100%; animation: lockShimmer 2.6s linear infinite; }
 #loader .lock-slider-knob { position:absolute; top:4px; left:4px; width:56px; height:56px; border-radius:50%; background:#fff; color:#222; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,0.28); touch-action:none; cursor:grab; transition:transform 0.28s ease; }
 #loader .lock-slider-knob.dragging { transition:none; cursor:grabbing; }
 #loader .lock-slider-knob svg { width:22px; height:22px; }
