@@ -1437,7 +1437,90 @@ timeEl.textContent = now.toLocaleTimeString('en-US', {
   function stopUnlockTrack(){
     if (!scWidget || !scWidgetReady) return;
     try { scWidget.pause(); scWidget.seekTo(0); } catch(_) {}
+    cdSetPlayIcon(false);
   }
+
+  // ---- CD → mini playlist player (kiyosumi tracks) ----
+  const CD_TRACKS = [
+    { id:'2115234165', title:'repeat',                art:'https://i1.sndcdn.com/artworks-e0m01UdYC9lAJmli-trsbVg-t120x120.png' },
+    { id:'1647100107', title:'disorder, disbelief', art:'https://i1.sndcdn.com/artworks-Tf0h4Snp4C6XKNIl-4I7cJg-t120x120.jpg' },
+    { id:'1647101973', title:'おやすみ',              art:'https://i1.sndcdn.com/artworks-qwmJ3lM2IuN6lWbU-VdZT9w-t120x120.jpg' },
+    { id:'1647101952', title:'thinking of you',       art:'https://i1.sndcdn.com/artworks-qwmJ3lM2IuN6lWbU-VdZT9w-t120x120.jpg' },
+    { id:'1647100155', title:'certain',               art:'https://i1.sndcdn.com/artworks-Tf0h4Snp4C6XKNIl-4I7cJg-t120x120.jpg' },
+    { id:'1647100128', title:'loose ties',            art:'https://i1.sndcdn.com/artworks-Tf0h4Snp4C6XKNIl-4I7cJg-t120x120.jpg' },
+    { id:'1647100089', title:'jump off',              art:'https://i1.sndcdn.com/artworks-Tf0h4Snp4C6XKNIl-4I7cJg-t120x120.jpg' },
+    { id:'1647099510', title:'眠れない',                art:'https://i1.sndcdn.com/artworks-CmicXiN9YDMq54Rw-UrJwJg-t120x120.jpg' },
+  ];
+  let cdActiveIndex = 1; // 'disorder, disbelief' — matches the iframe's initial src
+  let cdIsPlaying = false;
+  const cdPlayer   = document.getElementById('cdPlayer');
+  const cdList     = document.getElementById('cdList');
+  const cdNowArt   = document.getElementById('cdNowArt');
+  const cdNowTitle = document.getElementById('cdNowTitle');
+  const cdPlayBtn  = document.getElementById('cdPlayBtn');
+  const cdPlayIcon = document.getElementById('cdPlayIcon');
+
+  function cdSetPlayIcon(playing){
+    cdIsPlaying = playing;
+    if (!cdPlayIcon) return;
+    cdPlayIcon.innerHTML = playing
+      ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"></path>'
+      : '<path d="M8 5v14l11-7z"></path>';
+  }
+  function cdRenderNow(idx){
+    const t = CD_TRACKS[idx];
+    if (!t || !cdNowArt) return;
+    cdNowArt.src = t.art;
+    cdNowTitle.textContent = t.title;
+    cdList?.querySelectorAll('.cd-track').forEach((el, i) => el.classList.toggle('active', i === idx));
+  }
+  function cdBuildList(){
+    if (!cdList) return;
+    cdList.innerHTML = '';
+    CD_TRACKS.forEach((t, i) => {
+      const li = document.createElement('li');
+      li.className = 'cd-track' + (i === cdActiveIndex ? ' active' : '');
+      const img = document.createElement('img');
+      img.className = 'cd-track-art'; img.src = t.art; img.alt = '';
+      const span = document.createElement('span');
+      span.className = 'cd-track-name'; span.textContent = t.title;
+      li.append(img, span);
+      li.addEventListener('click', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        cdActiveIndex = i;
+        cdRenderNow(i);
+        cdLoadAndPlay(t.id);
+      });
+      cdList.appendChild(li);
+    });
+  }
+  function cdLoadAndPlay(trackId){
+    ensureUnlockWidget(w => {
+      if (!w) return;
+      try { w.load(`https://api.soundcloud.com/tracks/${trackId}`, { auto_play: true }); cdSetPlayIcon(true); } catch(_) {}
+    });
+  }
+  if (cdPlayer) {
+    cdBuildList();
+    cdRenderNow(cdActiveIndex);
+    cdSetPlayIcon(false);
+    // Clicking anywhere on the CD/player must never bubble to loader's unlock handler.
+    cdPlayer.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (e.target.closest('#cdPanel')) return; // inner controls handle themselves
+      cdPlayer.classList.toggle('expanded');
+      if (cdPlayer.classList.contains('expanded') && !cdIsPlaying) cdLoadAndPlay(CD_TRACKS[cdActiveIndex].id);
+    });
+    cdPlayBtn?.addEventListener('click', (e) => {
+      e.preventDefault(); e.stopPropagation();
+      ensureUnlockWidget(w => {
+        if (!w) return;
+        if (cdIsPlaying) { w.pause(); cdSetPlayIcon(false); }
+        else { w.play(); cdSetPlayIcon(true); }
+      });
+    });
+  }
+
   function unlock(e){
     if (!ready) return;
     playUnlockTrack();
@@ -1450,6 +1533,7 @@ timeEl.textContent = now.toLocaleTimeString('en-US', {
     loader.style.display = 'flex';
     void loader.offsetWidth;
     loader.classList.remove('hide');
+    playUnlockTrack();
   }
   loader.addEventListener('click', unlock);
   loader.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); unlock(); } });
