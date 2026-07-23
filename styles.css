@@ -295,7 +295,7 @@ body[data-theme="night"] .tech-grid {
   background-size: 160px 160px, 160px 160px, 32px 32px, 32px 32px;
 }
 
-#layer-wrap { position:absolute; top:38px; left:0; right:0; bottom:82px; overflow:hidden; }
+#layer-wrap { position:absolute; top:38px; left:0; right:0; bottom:70px; overflow:hidden; }
 
 /* ============ TASKBAR (lives inline inside the menubar's center slot) ============ */
 #taskbar { gap:8px; max-width:46vw; overflow:hidden; font-size:11px; letter-spacing:0.02em; color:inherit; }
