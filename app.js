@@ -987,12 +987,10 @@ document.getElementById('stage').addEventListener('click', () => {
       if (Math.hypot(dx,dy) > 3) moved = true;
       let nextX = startPos.x + dx;
       let nextY = startPos.y + dy;
-      if (window.matchMedia('(max-width: 760px)').matches) {
-        const b = visibleBoundsFor(node);
-        if (b) {
-          nextX = Math.min(b.maxX, Math.max(b.minX, nextX));
-          nextY = Math.min(b.maxY, Math.max(b.minY, nextY));
-        }
+      const b = visibleBoundsFor(node);
+      if (b) {
+        nextX = Math.min(b.maxX, Math.max(b.minX, nextX));
+        nextY = Math.min(b.maxY, Math.max(b.minY, nextY));
       }
       node.style.left = nextX + 'px';
       node.style.top  = nextY + 'px';
