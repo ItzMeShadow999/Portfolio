@@ -751,7 +751,7 @@ function readNodeCenters() {
   const layer = document.getElementById('layer');
   if (!layer) return;
   const layerBox = layer.getBoundingClientRect();
-  const scale = layerBox.width ? 2200 / layerBox.width : 1;
+  const scale = layerBox.width ? 2400 / layerBox.width : 1;
   const next = {};
   NODE_KEYS.forEach(key => {
     const el = document.getElementById('n-' + key);
@@ -816,8 +816,8 @@ function fitLayer() {
     return;
   }
   const pad = Math.max(40, Math.min(wrap.clientWidth, wrap.clientHeight) * 0.04);
-  const sx = (wrap.clientWidth - pad) / 2200;
-  const sy = (wrap.clientHeight - pad) / 1300;
+  const sx = (wrap.clientWidth - pad) / 2400;
+  const sy = (wrap.clientHeight - pad) / 1600;
   const minScale = 0.18;
   const s = Math.max(minScale, Math.min(sx, sy, 1.0));
   layer.style.left = (pad / 2) + 'px';
@@ -949,12 +949,13 @@ document.getElementById('stage').addEventListener('click', () => {
     const isMobile = window.matchMedia('(max-width: 760px)').matches;
     const dockSafe = isMobile ? 128 : 0;
     const edge = isMobile ? 14 : 24;
+    const bottomEdge = isMobile ? 14 : 4;
     const nodeW = (node?.offsetWidth || 170);
     const nodeH = (node?.offsetHeight || 170);
     const minX = Math.max(0, (wr.left - lr.left + edge) / s);
-    const maxX = Math.min(2200 - nodeW, (wr.right - lr.left - edge) / s - nodeW);
+    const maxX = Math.min(2400 - nodeW, (wr.right - lr.left - edge) / s - nodeW);
     const minY = Math.max(0, (wr.top - lr.top + edge) / s);
-    const maxY = (wr.bottom - lr.top - dockSafe - edge) / s - nodeH;
+    const maxY = (wr.bottom - lr.top - dockSafe - bottomEdge) / s - nodeH;
     return {
       minX,
       maxX: Math.max(minX, maxX),
@@ -1096,9 +1097,9 @@ const dock = document.getElementById('dock');
     const visible = wr ? {
       x1: Math.max(0, (safeStartX - lr.left + edge) / s),
       y1: Math.max(0, (startY - lr.top + edge) / s),
-      x2: Math.min(2200, (safeEndX - lr.left - edge) / s),
-      y2: Math.min(1300, (endY - lr.top - edge) / s)
-    } : { x1:40, y1:40, x2:2160, y2:1260 };
+      x2: Math.min(2400, (safeEndX - lr.left - edge) / s),
+      y2: Math.min(1600, (endY - lr.top - edge) / s)
+    } : { x1:40, y1:40, x2:2360, y2:1560 };
     if (visible.x2 <= visible.x1) { visible.x1 = 40; visible.x2 = 2160; }
     if (visible.y2 <= visible.y1) { visible.y1 = 40; visible.y2 = 1260; }
     const rectW = visible.x2 - visible.x1;
