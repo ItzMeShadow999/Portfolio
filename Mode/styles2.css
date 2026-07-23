@@ -184,3 +184,141 @@ body[data-theme="night"] .about-card {
   --sb-track-color: var(--dm-surface-0);
   --sb-thumb-color: var(--dm-surface-3);
 }
+
+/* ============================================================
+   Dark Mode patch v3 — closing the remaining light-mode leaks
+   Everything below is still scoped to body[data-theme="night"].
+   Three groups of targets:
+     1. This PC / My IP / About — these panels are built with
+        literal inline `style="background:#fff..."` attributes in
+        the markup, so nothing above ever touched them; they still
+        show up full-brightness even in Night. Inline styles beat
+        ordinary CSS specificity, so these rules need !important —
+        that's not being heavy-handed, it's the only way in.
+     2. Chrome we'd already started (Photos/Bookshelf/Watchlist
+        title bars, Trash, Artboard) that had some but not all of
+        its surfaces converted — finishing those out.
+     3. Left alone on purpose: the Bookshelf's wood shelf, the
+        Synth's kiln-bench brass/clay, and the Drawing Pad's paper
+        canvas. Those are deliberate material/instrument colors,
+        not light-mode chrome, so twilighting them would just make
+        them look broken rather than "dark mode."
+   ============================================================ */
+
+/* ---------- This PC (device info) — inline-styled card ---------- */
+body[data-theme="night"] #thisPcModal > div {
+  background: var(--dm-surface-1) !important;
+  color: var(--dm-text-primary) !important;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.55), 0 0 0 1px var(--dm-border) !important;
+}
+body[data-theme="night"] #thisPcModal > div > div:first-child {
+  background: var(--dm-surface-2) !important;
+  border-bottom-color: var(--dm-border) !important;
+}
+
+/* ---------- My IP (network info) — inline-styled card ---------- */
+body[data-theme="night"] #myIpModal > div {
+  background: var(--dm-surface-1) !important;
+  color: var(--dm-text-primary) !important;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.55), 0 0 0 1px var(--dm-border) !important;
+}
+body[data-theme="night"] #myIpModal > div > div:first-child {
+  background: var(--dm-surface-2) !important;
+  border-bottom-color: var(--dm-border) !important;
+}
+
+/* ---------- Shared spec-grid rows (used by both panels above) ---------- */
+body[data-theme="night"] .spec-row { border-bottom-color: var(--dm-border); }
+body[data-theme="night"] .spec-label { color: var(--dm-text-muted); }
+body[data-theme="night"] .spec-section {
+  color: var(--dm-text-muted);
+  border-top-color: var(--dm-border);
+}
+body[data-theme="night"] .spec-loading { color: var(--dm-text-secondary); }
+
+/* ---------- About window — also an inline-styled card ---------- */
+body[data-theme="night"] .about-card {
+  background: linear-gradient(180deg, var(--dm-surface-1) 0%, var(--dm-surface-0) 100%) !important;
+  color: var(--dm-text-primary) !important;
+}
+body[data-theme="night"] .about-card [style*="color:#6a7482"] { color: var(--dm-text-muted) !important; }
+body[data-theme="night"] .about-card [style*="color:#33383f"] { color: var(--dm-text-secondary) !important; }
+body[data-theme="night"] .about-card [style*="color:#8590a0"] { color: var(--dm-text-muted) !important; }
+body[data-theme="night"] #aboutMore {
+  background: var(--dm-surface-3) !important;
+  border-color: var(--dm-border-strong) !important;
+  color: var(--dm-text-primary) !important;
+}
+body[data-theme="night"] #aboutMoreBody { border-top-color: var(--dm-border) !important; }
+
+/* ---------- Collection modal (Photos/Bookshelf/Watchlist) title bar ---------- */
+body[data-theme="night"] #collectionModal .cm-head {
+  background: linear-gradient(var(--dm-surface-2), var(--dm-surface-1));
+  border-bottom-color: var(--dm-border);
+}
+body[data-theme="night"] #collectionModal .cm-title { color: var(--dm-text-primary); }
+body[data-theme="night"] .poster-title { color: var(--dm-text-primary); }
+body[data-theme="night"] .poster-sub { color: var(--dm-text-muted); }
+
+/* ---------- Trash modal — finishing the title bar and rows ---------- */
+body[data-theme="night"] #trashModal .trash-head {
+  background: linear-gradient(var(--dm-surface-2), var(--dm-surface-1));
+  border-bottom-color: var(--dm-border);
+}
+body[data-theme="night"] #trashModal .trash-title { color: var(--dm-text-primary); }
+body[data-theme="night"] .trash-empty { color: var(--dm-text-muted); }
+body[data-theme="night"] .trash-row-name { color: var(--dm-text-primary); }
+
+/* ---------- Artboard ("Make a print" studio) — remaining chrome ----------
+   The parchment canvas/impressions/pigment surfaces were already
+   twilighted in v2; this finishes the surrounding frame (title bar,
+   tool rail, sliders, footer) so it doesn't sit in a bright tan box. */
+body[data-theme="night"] .mb-card {
+  background: var(--dm-surface-0);
+  color: var(--dm-text-primary);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px var(--dm-border);
+}
+body[data-theme="night"] .mb-titlebar {
+  background: linear-gradient(180deg, var(--dm-surface-2), var(--dm-surface-1));
+  border-bottom-color: var(--dm-border);
+}
+body[data-theme="night"] .mb-crumbs,
+body[data-theme="night"] .mb-rail-head,
+body[data-theme="night"] .mb-slider-label,
+body[data-theme="night"] .mb-tool-num,
+body[data-theme="night"] .mb-footer-mid { color: var(--dm-text-muted); }
+body[data-theme="night"] .mb-title-serif { color: var(--dm-text-primary); }
+body[data-theme="night"] .mb-icon-btn { color: var(--dm-text-secondary); }
+body[data-theme="night"] .mb-icon-btn:hover { background: var(--dm-surface-2); }
+body[data-theme="night"] .mb-titlebar-sep { background: var(--dm-border-strong); }
+body[data-theme="night"] .mb-rail-left { border-right-color: var(--dm-border); }
+body[data-theme="night"] .mb-rail-right { border-left-color: var(--dm-border); }
+body[data-theme="night"] .mb-rail-sep { background: var(--dm-border); }
+body[data-theme="night"] .mb-tool { color: var(--dm-text-secondary); }
+body[data-theme="night"] .mb-tool .mb-tool-ico { color: var(--dm-text-muted); }
+body[data-theme="night"] .mb-tool.active,
+body[data-theme="night"] .mb-tool.active .mb-tool-ico { color: var(--dm-accent); border-left-color: var(--dm-accent); }
+body[data-theme="night"] .mb-slider-h { background: var(--dm-border-strong); }
+body[data-theme="night"] .mb-slider-h::-webkit-slider-thumb { background: var(--dm-accent); border-color: var(--dm-surface-0); }
+body[data-theme="night"] .mb-slider-h::-moz-range-thumb { background: var(--dm-accent); border-color: var(--dm-surface-0); }
+body[data-theme="night"] .mb-tool-hint,
+body[data-theme="night"] .mb-pigment-desc { color: var(--dm-text-secondary); }
+body[data-theme="night"] .mb-swatch-names { color: var(--dm-text-muted); }
+body[data-theme="night"] .mb-footer {
+  background: linear-gradient(180deg, var(--dm-surface-1), var(--dm-surface-0));
+  border-top-color: var(--dm-border);
+  color: var(--dm-text-secondary);
+}
+body[data-theme="night"] .artboard-thumb { background: var(--dm-surface-0) !important; }
+
+/* ---------- Bookshelf — deepen the wood without losing the material ---------- */
+body[data-theme="night"] .bookshelf {
+  background:
+    radial-gradient(ellipse at top, rgba(0,0,0,0.25), transparent 60%),
+    linear-gradient(180deg, #2a1c10 0%, #1c130b 100%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+body[data-theme="night"] .bookshelf .shelf-plank {
+  background: linear-gradient(180deg, #4a3018 0%, #34210f 50%, #211408 100%);
+}
+body[data-theme="night"] .bookshelf .book { background: var(--dm-surface-2); }
