@@ -18,6 +18,8 @@
 
 <!-- ============ Lock screen (also acts as initial load screen) ============ -->
 <div id="loader" role="button" tabindex="0" aria-label="Click to unlock">
+  <iframe id="unlockPlayer" title="" style="position:absolute;width:1px;height:1px;left:-9999px;top:-9999px;border:0;visibility:hidden;pointer-events:none;" allow="autoplay" tabindex="-1" aria-hidden="true"
+    src="https://w.soundcloud.com/player/?url=https%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F1647100107&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=false&amp;show_reposts=false&amp;show_teaser=false&amp;visual=false"></iframe>
   <div class="lock-clock" aria-hidden="true">
     <div class="lock-date" id="lockDate">—</div>
     <div class="lock-time" id="lockTime">—</div>
@@ -1050,5 +1052,6 @@
     </div>
   </div>
 </div>
+<script src="https://w.soundcloud.com/player/api.js"></script>
 <script src="app.js"></script>
 </body></html>
