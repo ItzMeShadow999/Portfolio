@@ -3252,13 +3252,13 @@ window.__openDrawpad = dpOpen;
       if (modal.style.display !== 'flex') { requestAnimationFrame(drawScope); return; }
       t0 += 0.06;
       sctx.clearRect(0,0,SW,SH);
-      sctx.strokeStyle = 'rgba(127, 216, 143, 0.08)'; sctx.lineWidth = 1;
+      sctx.strokeStyle = 'rgba(224, 162, 74, 0.10)'; sctx.lineWidth = 1;
       for (let x=0; x<=SW; x+=SW/8) { sctx.beginPath(); sctx.moveTo(x,0); sctx.lineTo(x,SH); sctx.stroke(); }
       for (let y=0; y<=SH; y+=SH/4) { sctx.beginPath(); sctx.moveTo(0,y); sctx.lineTo(SW,y); sctx.stroke(); }
       const activeCount = active.size + (seqRunning ? 1 : 0);
       const amp = activeCount > 0 ? 22 + activeCount*4 : 3;
-      sctx.strokeStyle = '#7fd88f';
-      sctx.shadowColor = '#7fd88f'; sctx.shadowBlur = 6;
+      sctx.strokeStyle = '#e0a24a';
+      sctx.shadowColor = '#e0a24a'; sctx.shadowBlur = 6;
       sctx.lineWidth = 1.4;
       sctx.beginPath();
       const freqA = params.wave === 'square' ? 3 : params.wave === 'sawtooth' ? 2.5 : params.wave === 'triangle' ? 2 : 1.5;
