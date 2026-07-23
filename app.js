@@ -202,6 +202,95 @@ tick(); setInterval(tick, 1000);
     b.addEventListener('chargingchange', render);
   }).catch(()=>{});
 })();
+(function initWifiWidget(){
+  const wrap   = document.getElementById('menubarWifi');
+  if (!wrap) return;
+  const tip    = document.getElementById('wifiTip');
+  const pingEl = document.getElementById('wifiPing');
+  const downEl = document.getElementById('wifiDown');
+  const upEl   = document.getElementById('wifiUp');
+  const statusEl = document.getElementById('wifiStatus');
+
+  // Hover: quick browser-estimated connection info (Network Information API where supported)
+  function updateTip(){
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (conn && typeof conn.downlink === 'number' && conn.downlink > 0) {
+      tip.textContent = `≈ ${conn.downlink.toFixed(1)} Mbps · ${conn.effectiveType ? conn.effectiveType.toUpperCase() : 'Wi-Fi'}`;
+    } else {
+      tip.textContent = 'Wi-Fi Connected';
+    }
+  }
+  wrap.addEventListener('mouseenter', updateTip);
+  updateTip();
+
+  // A real same-origin asset to measure download throughput against (cache-busted every run).
+  const DOWNLOAD_ASSET = 'images/Background.png';
+  const fmtMbps = (bytes, seconds) => seconds > 0 ? ((bytes * 8) / seconds / 1e6) : 0;
+
+  async function measurePing(){
+    const samples = [];
+    for (let i = 0; i < 3; i++) {
+      const t0 = performance.now();
+      try {
+        await fetch(`favicon.ico?_p=${Date.now()}_${i}`, { cache:'no-store', method:'HEAD' });
+      } catch(_) { /* ignore, still counts elapsed time */ }
+      samples.push(performance.now() - t0);
+    }
+    return Math.round(Math.min(...samples));
+  }
+  async function measureDownload(){
+    const t0 = performance.now();
+    const res = await fetch(`${DOWNLOAD_ASSET}?_d=${Date.now()}`, { cache:'no-store' });
+    const blob = await res.blob();
+    const seconds = (performance.now() - t0) / 1000;
+    return fmtMbps(blob.size, seconds);
+  }
+  async function measureUpload(){
+    const size = 400 * 1024; // 400KB sample payload
+    const bytes = new Uint8Array(size);
+    for (let off = 0; off < size; off += 65536) crypto.getRandomValues(bytes.subarray(off, Math.min(off + 65536, size)));
+    const t0 = performance.now();
+    await fetch(`?_u=${Date.now()}`, { method:'POST', cache:'no-store', body: bytes });
+    const seconds = (performance.now() - t0) / 1000;
+    return fmtMbps(size, seconds);
+  }
+
+  let testing = false;
+  async function runSpeedTest(){
+    if (testing) return;
+    testing = true;
+    pingEl.textContent = downEl.textContent = upEl.textContent = '—';
+    statusEl.textContent = 'Testing…';
+    try {
+      const ping = await measurePing();
+      pingEl.textContent = `${ping} ms`;
+    } catch(_) { pingEl.textContent = 'n/a'; }
+    try {
+      const down = await measureDownload();
+      downEl.textContent = down > 0 ? `${down.toFixed(1)} Mbps` : 'n/a';
+    } catch(_) { downEl.textContent = 'n/a'; }
+    try {
+      const up = await measureUpload();
+      upEl.textContent = up > 0 ? `${up.toFixed(1)} Mbps` : 'n/a';
+    } catch(_) { upEl.textContent = 'n/a'; }
+    statusEl.textContent = 'Approximate · click to retest';
+    testing = false;
+  }
+
+  wrap.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (e.target.closest('.wifi-pop')) return; // clicking inside the results panel shouldn't re-toggle it
+    const willOpen = !wrap.classList.contains('open');
+    wrap.classList.toggle('open', willOpen);
+    wrap.setAttribute('aria-expanded', String(willOpen));
+    if (willOpen) runSpeedTest();
+  });
+  wrap.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); wrap.click(); }
+  });
+  document.addEventListener('click', () => { wrap.classList.remove('open'); wrap.setAttribute('aria-expanded', 'false'); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { wrap.classList.remove('open'); wrap.setAttribute('aria-expanded', 'false'); } });
+})();
 (function initDesktopSfx(){
   let ctx, master;
   function ensure(){
