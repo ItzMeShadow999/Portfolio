@@ -24,7 +24,22 @@
     <div class="lock-date" id="lockDate">—</div>
     <div class="lock-time" id="lockTime">—</div>
   </div>
-  <img class="logo" src="images/LoadingCD.png" alt="Shadow">
+  <div class="cd-player" id="cdPlayer">
+    <img class="logo" src="images/LoadingCD.png" alt="Shadow" id="cdImg">
+    <div class="cd-panel" id="cdPanel">
+      <div class="cd-now">
+        <img class="cd-now-art" id="cdNowArt" src="" alt="">
+        <div class="cd-now-meta">
+          <div class="cd-now-title" id="cdNowTitle">disorder, disbelief</div>
+          <div class="cd-now-artist">kiyosumi</div>
+        </div>
+        <button class="cd-playbtn" id="cdPlayBtn" type="button" aria-label="Play or pause">
+          <svg viewBox="0 0 24 24" fill="currentColor" id="cdPlayIcon"><path d="M8 5v14l11-7z"></path></svg>
+        </button>
+      </div>
+      <ul class="cd-list" id="cdList"></ul>
+    </div>
+  </div>
   <div class="lock-name">Shadow</div>
   <div class="lock-role">Product Designer</div>
   <div class="lock-cta">
