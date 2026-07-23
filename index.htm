@@ -5,6 +5,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="styles.css">
 <link rel="preload" as="image" href="images/Background.png">
@@ -316,21 +317,21 @@
 
 <!-- ============ Synth (Programma 900) modal ============ -->
 <div id="synthModal" role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:6450;display:none;align-items:center;justify-content:center;background:rgba(10,14,22,0.62);backdrop-filter:blur(10px);">
-  <div class="synth-card" style="width:min(920px,94vw);max-height:92vh;background:linear-gradient(180deg,#141419 0%, #0d0d12 100%);border-radius:20px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.65),0 0 0 1px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.06);font-family:'SF Mono','JetBrains Mono',ui-monospace,monospace;color:#1a1a24;">
-    <div class="synth-titlebar" style="height:34px;background:linear-gradient(180deg,#242429,#16161c);border-bottom:1px solid rgba(0,0,0,0.6);display:flex;align-items:center;padding:0 12px;gap:8px;position:relative;">
+  <div class="synth-card" style="width:min(920px,94vw);max-height:92vh;background:linear-gradient(180deg,#1c150e 0%, #0f0b07 100%);border-radius:16px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.65),0 0 0 1px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.06);color:#1a1a24;">
+    <div class="synth-titlebar" style="height:34px;background:linear-gradient(180deg,#2a2118,#140f0a);border-bottom:1px solid rgba(0,0,0,0.6);display:flex;align-items:center;padding:0 12px;gap:8px;position:relative;">
       <button type="button" id="synthClose" aria-label="Close" style="width:16px;height:16px;border-radius:50%;background:#ff5f57;border:1px solid rgba(0,0,0,0.22);padding:0;cursor:pointer;"></button>
       <span style="width:12px;height:12px;border-radius:50%;background:#febc2e;border:1px solid rgba(0,0,0,0.15);"></span>
       <span style="width:12px;height:12px;border-radius:50%;background:#28c840;border:1px solid rgba(0,0,0,0.15);"></span>
-      <span style="position:absolute;left:0;right:0;text-align:center;font-size:10px;letter-spacing:0.28em;color:#8a8478;font-weight:600;pointer-events:none;text-transform:uppercase;">programma 900 · sonic plates</span>
+      <span style="position:absolute;left:0;right:0;text-align:center;font-size:10px;letter-spacing:0.28em;color:#d9b877;font-weight:600;pointer-events:none;text-transform:uppercase;">programma 900 · sonic plates</span>
     </div>
-    <div class="p900-body" style="padding:14px 16px 16px;overflow:auto;max-height:calc(92vh - 34px);color:#e8e4d8;">
+    <div class="p900-body" style="padding:14px 16px 16px;overflow:auto;max-height:calc(92vh - 34px);color:#f3ede0;">
       <!-- Memory preset strip -->
       <div class="p900-memory">
         <div class="p900-mem-label"><span style="opacity:0.55;">MEMORY</span><br><span style="letter-spacing:0.32em;">SONIC PLATES</span></div>
-        <button class="p900-preset active" data-preset="kiln"><span class="p900-preset-tag" style="background:#e85d3a;"></span><div><div class="pn">KILN BASS</div><div class="ps">warm · dark · immediate</div></div></button>
-        <button class="p900-preset" data-preset="frost"><span class="p900-preset-tag" style="background:#5aa0c8;"></span><div><div class="pn">FROSTLINE</div><div class="ps">wide · glass · suspended</div></div></button>
-        <button class="p900-preset" data-preset="brass"><span class="p900-preset-tag" style="background:#c9a84c;"></span><div><div class="pn">BRASS DUST</div><div class="ps">heavy · tactile · slow</div></div></button>
-        <button class="p900-preset" data-preset="night"><span class="p900-preset-tag" style="background:#c9c4b8;"></span><div><div class="pn">NIGHT TRANSIT</div><div class="ps">narrow · pulsed · restless</div></div></button>
+        <button class="p900-preset active" data-preset="kiln"><span class="p900-preset-tag" style="background:#c8551d;"></span><div><div class="pn">KILN BASS</div><div class="ps">warm · dark · immediate</div></div></button>
+        <button class="p900-preset" data-preset="frost"><span class="p900-preset-tag" style="background:#8fb0b4;"></span><div><div class="pn">FROSTLINE</div><div class="ps">wide · glass · suspended</div></div></button>
+        <button class="p900-preset" data-preset="brass"><span class="p900-preset-tag" style="background:#b5904f;"></span><div><div class="pn">BRASS DUST</div><div class="ps">heavy · tactile · slow</div></div></button>
+        <button class="p900-preset" data-preset="night"><span class="p900-preset-tag" style="background:#6c7880;"></span><div><div class="pn">NIGHT TRANSIT</div><div class="ps">narrow · pulsed · restless</div></div></button>
       </div>
       <div class="p900-rowmarks"><span>SOURCE</span><span>SHAPE</span><span>SPACE</span><span>OUTPUT</span></div>
 
@@ -354,7 +355,7 @@
         </div>
         <!-- TRACE MONITOR panel -->
         <div class="p900-panel">
-          <div class="p900-panel-head"><span class="p900-panel-num">02</span><span class="p900-label">TRACE MONITOR</span><span class="p900-panel-tag" style="color:#7fd88f;">● LIVE INPUT</span></div>
+          <div class="p900-panel-head"><span class="p900-panel-num">02</span><span class="p900-label">TRACE MONITOR</span><span class="p900-panel-tag" style="color:#e0a24a;">● LIVE INPUT</span></div>
           <div class="p900-scope"><canvas id="p900Scope" width="480" height="120"></canvas></div>
           <div class="p900-scope-foot"><span>NO VOICE</span><span id="p900ScopeName">KILN BASS</span></div>
         </div>
@@ -374,7 +375,7 @@
         </div>
       </div>
 
-      <!-- Second row: Envelope / Modulation / Effects / Master (orange) -->
+      <!-- Second row: Envelope / Modulation / Effects / Master (kiln-fire) -->
       <div style="display:grid;grid-template-columns:0.9fr 0.9fr 1.1fr 0.85fr;gap:8px;margin-top:8px;">
         <!-- ENVELOPE panel -->
         <div class="p900-panel">
@@ -418,7 +419,7 @@
             </div>
           </div>
         </div>
-        <!-- MASTER panel (orange highlight) -->
+        <!-- MASTER panel (kiln-fire highlight) -->
         <div class="p900-panel p900-panel-accent">
           <div class="p900-panel-head"><span class="p900-panel-num" style="color:rgba(255,255,255,0.5);">07</span><span class="p900-label" style="color:#fff;">MASTER</span><span class="p900-panel-tag" style="color:rgba(255,255,255,0.55);">0 / 0</span></div>
           <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;">
@@ -435,14 +436,14 @@
       <!-- 8-STEP SEQUENCER -->
       <div class="p900-seq">
         <div class="p900-seq-head">
-          <div class="p900-panel-head" style="margin-bottom:0;"><span class="p900-panel-num">07</span><span class="p900-label">8-STEP SEQUENCER</span><span class="p900-panel-tag" style="background:#1a1a20;color:#c9a84c;padding:2px 8px;border-radius:2px;">ROOT C4</span></div>
+          <div class="p900-panel-head" style="margin-bottom:0;"><span class="p900-panel-num">07</span><span class="p900-label">8-STEP SEQUENCER</span><span class="p900-panel-tag" style="background:#16130f;color:#d9b877;padding:2px 8px;border-radius:2px;">ROOT C4</span></div>
           <button type="button" id="p900SeqRun" class="p900-seq-run">▶ RUN</button>
         </div>
         <div class="p900-seq-grid" id="p900SeqGrid"></div>
       </div>
 
       <!-- LED strip / OLED -->
-      <div id="p900-leds" style="display:flex;gap:6px;justify-content:center;align-items:center;margin:16px 0 10px;padding:10px 14px;background:linear-gradient(180deg,#0a0a12,#1a1a24);border-radius:10px;box-shadow:inset 0 2px 8px rgba(0,0,0,0.8),0 1px 0 rgba(255,255,255,0.6);border:1px solid rgba(0,0,0,0.3);">
+      <div id="p900-leds" style="display:flex;gap:6px;justify-content:center;align-items:center;margin:16px 0 10px;padding:10px 14px;background:linear-gradient(180deg,#0f0b07,#241c14);border-radius:8px;box-shadow:inset 0 2px 8px rgba(0,0,0,0.8),0 1px 0 rgba(255,255,255,0.5);border:1px solid rgba(0,0,0,0.3);">
         <span class="p900-led" data-hue="0"></span>
         <span class="p900-led" data-hue="18"></span>
         <span class="p900-led" data-hue="30"></span>
@@ -457,11 +458,11 @@
         <span class="p900-led" data-hue="340"></span>
       </div>
 
-      <div style="font-size:8px;letter-spacing:0.28em;color:#8a8478;font-weight:600;text-transform:uppercase;margin-bottom:6px;padding-left:2px;">08 · PRESSURE KEYBED</div>
+      <div style="font-family:'Big Shoulders Display',sans-serif;font-size:10px;letter-spacing:0.18em;color:#8a7c66;font-weight:700;text-transform:uppercase;margin-bottom:6px;padding-left:2px;">08 · PRESSURE KEYBED</div>
       <!-- Keyboard -->
-      <div id="p900-keyboard" style="position:relative;height:150px;background:linear-gradient(180deg,#2a2a34,#0a0a12);border-radius:10px;padding:8px;box-shadow:inset 0 2px 10px rgba(0,0,0,0.8),0 1px 0 rgba(255,255,255,0.6);border:1px solid rgba(0,0,0,0.3);"></div>
+      <div id="p900-keyboard" style="position:relative;height:150px;background:linear-gradient(180deg,#241d14,#0d0906);border-radius:8px;padding:8px;box-shadow:inset 0 2px 10px rgba(0,0,0,0.8),0 1px 0 rgba(255,255,255,0.5);border:1px solid rgba(0,0,0,0.3);"></div>
 
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:10px;letter-spacing:0.12em;color:#8a8478;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:10px;letter-spacing:0.12em;color:#8a7c66;">
         <span style="text-transform:uppercase;">keys · a s d f g h j k l ;   ·   sharps · w e t y u o p</span>
         <span style="text-transform:uppercase;">oct · z ↓  x ↑</span>
       </div>
