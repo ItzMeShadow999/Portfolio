@@ -328,7 +328,7 @@ body[data-theme="night"] .tb-item.active { background:rgba(90,150,255,0.22); bor
 .wm-max-btn { background:#28c840; }
 .wm-maximized { position:fixed !important; inset:0 !important; width:100vw !important; height:100vh !important;
   max-width:100vw !important; max-height:100vh !important; border-radius:0 !important; margin:0 !important; top:0 !important; left:0 !important; }
-#layer { position:absolute; left:40px; top:50%; width:2200px; height:1300px; padding-top:34px; transform-origin:left center; transform:translateY(-50%); will-change:transform; }
+#layer { position:absolute; left:40px; top:50%; width:2400px; height:1600px; padding-top:34px; transform-origin:left center; transform:translateY(-50%); will-change:transform; }
 
 /* ============ TOP MENU BAR ============ */
 #menubar { display:flex; justify-content:space-between; align-items:center;
@@ -974,7 +974,7 @@ body.marquee-active { cursor: crosshair; }
 
 @keyframes drift { 0%,100% { transform:translateY(0px); } 50% { transform:translateY(-4px); } }
 
-#lineSvg { position:absolute; inset:0; width:2200px; height:1300px; z-index:3; pointer-events:none; overflow:visible; }
+#lineSvg { position:absolute; inset:0; width:2400px; height:1600px; z-index:3; pointer-events:none; overflow:visible; }
 
 /* ============ DOCK ============ */
 .dock-wrap { position:fixed; bottom:0; left:0; right:0; z-index:300; display:flex; flex-direction:column; align-items:center; padding-bottom:14px; pointer-events:none; }
