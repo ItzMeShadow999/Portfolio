@@ -1,0 +1,138 @@
+/* ============================================================
+   styles2.css — Full Dark Mode patch
+   Loaded AFTER styles.css. Everything in here is scoped to
+   body[data-theme="night"], so it only takes effect when the
+   site is in dark mode — it never touches the Sky/Forest/Desert
+   wallpaper themes. Its job is simple: styles.css already ships
+   a "Night" theme, but a handful of components were never wired
+   up to it and still render their light-mode colors even with
+   data-theme="night" set. This file closes every one of those
+   gaps so dark mode has zero light-mode remnants.
+   ============================================================ */
+
+html { color-scheme: dark; }
+
+/* ---------- Lock screen / loader ---------- */
+body[data-theme="night"] #loader {
+  background: linear-gradient(180deg, #05070d 0%, #0b0f18 40%, #12161f 75%, #181c26 100%) !important;
+}
+body[data-theme="night"] #loader .lock-slider-knob {
+  background: #1c1f28;
+  color: #eef1f6;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.55);
+}
+body[data-theme="night"] #loader .lock-slider-track {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.16);
+}
+
+/* ---------- Desktop app icon tiles (still pastel in Night theme) ---------- */
+body[data-theme="night"] #n-thispc .icon-tile,
+body[data-theme="night"] #n-myip .icon-tile,
+body[data-theme="night"] #n-synth .icon-tile,
+body[data-theme="night"] #n-bookshelf .icon-tile,
+body[data-theme="night"] #n-watchlist .icon-tile {
+  background: linear-gradient(160deg,#2a2a32 0%,#1c1c22 55%,#121216 100%);
+  border-color: rgba(255,255,255,0.14);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.45), inset 0 1.5px 0 rgba(255,255,255,0.06), inset 0 -6px 14px rgba(0,0,0,0.35);
+}
+body[data-theme="night"] #n-photos .icon-tile,
+body[data-theme="night"] #layer #n-photos .icon-tile {
+  background: #14141a !important;
+  border-color: rgba(255,255,255,0.14);
+}
+
+/* ---------- Photos collection modal ---------- */
+body[data-theme="night"] #collectionModal .cm-card {
+  background: #1a1b20;
+  color: #e8e9ee;
+}
+body[data-theme="night"] .cm-arrow-btn:hover {
+  background: #2a2b32;
+  color: #f1f2f6;
+}
+
+/* ---------- Watchlist poster cards ---------- */
+body[data-theme="night"] .poster-card {
+  background: #1a1b20;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06);
+}
+
+/* ---------- Synth mini-player ---------- */
+body[data-theme="night"] .mp-btn.mp-play {
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+}
+
+/* ---------- Bricks / Snake widget ---------- */
+body[data-theme="night"] #snake-widget .brick-wrap,
+body[data-theme="night"] #snakeModal .brick-wrap.large {
+  background: #101014;
+  border-color: rgba(255,255,255,0.1);
+}
+body[data-theme="night"] #snakeModal .sm-card {
+  background: #1a1b20;
+  color: #e8e9ee;
+  border-color: rgba(255,255,255,0.1);
+}
+
+/* ---------- Trash modal ---------- */
+body[data-theme="night"] #trashModal .trash-card {
+  background: #1a1b20;
+  color: #e8e9ee;
+}
+body[data-theme="night"] .trash-row {
+  background: #22232a;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+  color: #e8e9ee;
+}
+
+/* ---------- Drawpad / notepad paper surface ---------- */
+body[data-theme="night"] .mb-canvas-wrap {
+  background: #16161c;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.5), 0 12px 30px rgba(0,0,0,0.4);
+}
+body[data-theme="night"] .mb-impression-slot {
+  background: #1f2027;
+  border-color: rgba(255,255,255,0.12);
+}
+body[data-theme="night"] .mb-paper-swatch {
+  background: #22232b;
+  border-color: rgba(255,255,255,0.12);
+}
+body[data-theme="night"] .mb-caption,
+body[data-theme="night"] .mb-impressions-label,
+body[data-theme="night"] .mb-pigment-heading {
+  color: #d8d3c4;
+}
+body[data-theme="night"] .mb-caption-num,
+body[data-theme="night"] .mb-impressions-sub,
+body[data-theme="night"] .mb-paper-label,
+body[data-theme="night"] .mb-paper-sub,
+body[data-theme="night"] .mb-guided {
+  color: #8f8a78;
+}
+
+/* ---------- Drawpad tool chrome ---------- */
+body[data-theme="night"] .dp-color-pair .dp-csmall {
+  background: #1a1b20;
+  border-color: rgba(255,255,255,0.14);
+}
+body[data-theme="night"] .dp-layer-row .dp-lthumb {
+  background: #1a1b20 repeating-conic-gradient(#26272e 0 25%, #1a1b20 0 50%) 0/8px 8px;
+}
+body[data-theme="night"] .dp-textedit {
+  color: #eef1f6;
+}
+
+/* ---------- Image preview magnifying lens ---------- */
+body[data-theme="night"] .pv-lens {
+  border-color: rgba(255,255,255,0.5);
+  background-color: #14141a;
+}
+
+/* ---------- About window scrollbar ---------- */
+body[data-theme="night"] .about-card {
+  --sb-track-color: #1c1d24;
+  --sb-thumb-color: #3a3d4a;
+}
