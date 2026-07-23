@@ -751,7 +751,7 @@ function readNodeCenters() {
   const layer = document.getElementById('layer');
   if (!layer) return;
   const layerBox = layer.getBoundingClientRect();
-  const scale = layerBox.width ? 2400 / layerBox.width : 1;
+  const scale = layerBox.width ? 2200 / layerBox.width : 1;
   const next = {};
   NODE_KEYS.forEach(key => {
     const el = document.getElementById('n-' + key);
@@ -816,8 +816,8 @@ function fitLayer() {
     return;
   }
   const pad = Math.max(40, Math.min(wrap.clientWidth, wrap.clientHeight) * 0.04);
-  const sx = (wrap.clientWidth - pad) / 2400;
-  const sy = (wrap.clientHeight - pad) / 1600;
+  const sx = (wrap.clientWidth - pad) / 2200;
+  const sy = (wrap.clientHeight - pad) / 1300;
   const minScale = 0.18;
   const s = Math.max(minScale, Math.min(sx, sy, 1.0));
   layer.style.left = (pad / 2) + 'px';
@@ -949,13 +949,12 @@ document.getElementById('stage').addEventListener('click', () => {
     const isMobile = window.matchMedia('(max-width: 760px)').matches;
     const dockSafe = isMobile ? 128 : 0;
     const edge = isMobile ? 14 : 24;
-    const bottomEdge = isMobile ? 14 : 4;
     const nodeW = (node?.offsetWidth || 170);
     const nodeH = (node?.offsetHeight || 170);
     const minX = Math.max(0, (wr.left - lr.left + edge) / s);
-    const maxX = Math.min(2400 - nodeW, (wr.right - lr.left - edge) / s - nodeW);
+    const maxX = Math.min(2200 - nodeW, (wr.right - lr.left - edge) / s - nodeW);
     const minY = Math.max(0, (wr.top - lr.top + edge) / s);
-    const maxY = (wr.bottom - lr.top - dockSafe - bottomEdge) / s - nodeH;
+    const maxY = (wr.bottom - lr.top - dockSafe - edge) / s - nodeH;
     return {
       minX,
       maxX: Math.max(minX, maxX),
@@ -1097,9 +1096,9 @@ const dock = document.getElementById('dock');
     const visible = wr ? {
       x1: Math.max(0, (safeStartX - lr.left + edge) / s),
       y1: Math.max(0, (startY - lr.top + edge) / s),
-      x2: Math.min(2400, (safeEndX - lr.left - edge) / s),
-      y2: Math.min(1600, (endY - lr.top - edge) / s)
-    } : { x1:40, y1:40, x2:2360, y2:1560 };
+      x2: Math.min(2200, (safeEndX - lr.left - edge) / s),
+      y2: Math.min(1300, (endY - lr.top - edge) / s)
+    } : { x1:40, y1:40, x2:2160, y2:1260 };
     if (visible.x2 <= visible.x1) { visible.x1 = 40; visible.x2 = 2160; }
     if (visible.y2 <= visible.y1) { visible.y1 = 40; visible.y2 = 1260; }
     const rectW = visible.x2 - visible.x1;
@@ -1911,18 +1910,7 @@ function initCanvas(w,h, keepLayers){
   renderLayerList();
   fitZoom();
 }
-// Default canvas now matches the user's actual screen/monitor resolution
-// (falls back to 1200x800 only if screen dimensions are unavailable).
-function getScreenCanvasSize(){
-  const dpr = window.devicePixelRatio || 1;
-  const w = Math.round((window.screen && window.screen.width  ? window.screen.width  : 1200) * dpr);
-  const h = Math.round((window.screen && window.screen.height ? window.screen.height : 800)  * dpr);
-  return { w: w || 1200, h: h || 800 };
-}
-{
-  const s = getScreenCanvasSize();
-  initCanvas(s.w, s.h, false);
-}
+initCanvas(1200,800,false);
 
 function activeLayer(){ return state.layers[state.activeLayer]; }
 
@@ -2833,20 +2821,11 @@ $('fileOpenInput').addEventListener('change', e=>{
 $('btnNew').addEventListener('click', ()=>$('newModalBack').classList.add('dp-show'));
 $('btnNewCancel').addEventListener('click', ()=>$('newModalBack').classList.remove('dp-show'));
 document.querySelectorAll('.dp-modal .dp-presets button').forEach(b=>{
-  if(b.dataset.screen){
-    // "My Screen" preset: fill in the user's actual monitor resolution
-    b.addEventListener('click', ()=>{
-      const s = getScreenCanvasSize();
-      $('newW').value = s.w; $('newH').value = s.h;
-    });
-    return;
-  }
   b.addEventListener('click', ()=>{ $('newW').value=b.dataset.w; $('newH').value=b.dataset.h; });
 });
 $('btnNewCreate').addEventListener('click', ()=>{
-  // No artificial upper bound — canvas size is only limited by the browser/device itself.
-  const w = Math.max(1, Math.round(+$('newW').value) || 1200);
-  const h = Math.max(1, Math.round(+$('newH').value) || 800);
+  const w = Math.max(16, +$('newW').value||1200);
+  const h = Math.max(16, +$('newH').value||800);
   initCanvas(w,h,false);
   $('newModalBack').classList.remove('dp-show');
   showToast('New canvas created');
