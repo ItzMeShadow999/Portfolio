@@ -317,7 +317,7 @@ body[data-theme="night"] .tb-item.active { background:rgba(90,150,255,0.22); bor
 
 /* ============ TOP MENU BAR ============ */
 #menubar { display:flex; justify-content:space-between; align-items:center;
-  position:fixed; top:0; left:0; right:0; height:38px; z-index:200;
+  position:fixed; top:0; left:0; right:0; height:38px; z-index:230;
   padding:0 16px; gap:12px; white-space:nowrap;
   background:rgba(255,255,255,0.5);
   backdrop-filter:blur(16px) saturate(160%);
