@@ -322,3 +322,81 @@ body[data-theme="night"] .bookshelf .shelf-plank {
   background: linear-gradient(180deg, #4a3018 0%, #34210f 50%, #211408 100%);
 }
 body[data-theme="night"] .bookshelf .book { background: var(--dm-surface-2); }
+
+/* ============================================================
+   Dark Mode patch v4 — Photos, properly rebuilt for Night
+   The v3 pass gave Photos the same generic dark-card treatment
+   as every other collectionModal view (Bookshelf, Watchlist).
+   That's fine for those two, but Photos is a full-bleed image
+   grid — it should look like a native dark-mode photo library
+   (obsidian canvas, flush edge-to-edge grid, floating glass tab
+   bar), not "a light card that got recolored." This section is
+   specific to #collectionModal.kind-photos and wins on
+   specificity over the generic .cm-card / .cm-head rules above.
+   ============================================================ */
+
+body[data-theme="night"] #collectionModal.kind-photos .cm-card {
+  background: #08090c;
+}
+body[data-theme="night"] #collectionModal.kind-photos .cm-head {
+  background: #0c0d10;
+  border-bottom-color: rgba(255,255,255,0.06);
+}
+body[data-theme="night"] #collectionModal.kind-photos .cm-title { color: var(--dm-text-primary); }
+body[data-theme="night"] #collectionModal.kind-photos .cm-body { background: #08090c; }
+
+body[data-theme="night"] #collectionModal.kind-photos .ios-photos-head {
+  padding-bottom: 16px;
+}
+body[data-theme="night"] #collectionModal.kind-photos .ios-photos-title {
+  color: var(--dm-text-primary);
+}
+body[data-theme="night"] #collectionModal.kind-photos .ios-photos-sub {
+  color: var(--dm-text-muted);
+}
+
+body[data-theme="night"] #collectionModal.kind-photos .ios-photos-grid {
+  gap: 3px;
+  background: #000;
+}
+body[data-theme="night"] #collectionModal.kind-photos .ios-photo {
+  background: #0a0a0a;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+body[data-theme="night"] #collectionModal.kind-photos .ios-photo:hover {
+  transform: scale(1.03);
+  filter: brightness(1.08);
+  box-shadow: 0 0 0 1.5px var(--dm-accent), 0 6px 16px rgba(0,0,0,0.6);
+  z-index: 2;
+  position: relative;
+}
+
+body[data-theme="night"] #collectionModal.kind-photos .ios-photos-tabs {
+  background: rgba(18,20,26,0.82);
+  color: var(--dm-text-muted);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+body[data-theme="night"] #collectionModal.kind-photos .ios-photos-tabs .ios-tab.active {
+  color: var(--dm-accent);
+}
+body[data-theme="night"] #collectionModal.kind-photos .ios-photos-tabs .ios-tab svg {
+  stroke: currentColor;
+}
+
+body[data-theme="night"] #collectionModal.kind-photos .cm-body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--dm-surface-3) transparent;
+}
+body[data-theme="night"] #collectionModal.kind-photos .cm-body::-webkit-scrollbar { width: 10px; }
+body[data-theme="night"] #collectionModal.kind-photos .cm-body::-webkit-scrollbar-track { background: transparent; }
+body[data-theme="night"] #collectionModal.kind-photos .cm-body::-webkit-scrollbar-thumb {
+  background: var(--dm-surface-3);
+  border-radius: 99px;
+  border: 2px solid #08090c;
+}
+body[data-theme="night"] #collectionModal.kind-photos .cm-body::-webkit-scrollbar-thumb:hover {
+  background: var(--dm-accent-dim);
+}
+
+body[data-theme="night"] .ios-lb-thumb.active { border-color: var(--dm-accent); }
+body[data-theme="night"] .ios-lb-top { color: var(--dm-text-primary); }
